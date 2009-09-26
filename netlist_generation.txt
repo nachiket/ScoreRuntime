@@ -1,0 +1,63 @@
+
+Generating netlists with ScoreRuntime.
+-----------------------------------------
+
+ScoreRuntime performs operations once per timeslice. An option exists
+to instruct the runtime system to output a netlist representing
+streams between scheduled for each timeslice. Currently, connections
+to the cpu are not output (that can be changed quickly, if desired).
+
+> ScoreRuntime ... -netlist ...
+
+With this option, ScoreRuntime will create a directory hiearchy and
+emit netlists after each execution. The hiearchy has the following
+structure:
+
+.
+`-- netlist
+    |-- netlist_cp10_cmb20.1012613933
+    |   |-- net.0
+    |   |-- net.1
+    |   |-- net.2
+    |   |-- net.3
+    |   |-- net.4
+    |   |-- net.5
+    |   |-- net.6
+    |   |-- net.7
+    |   `-- net.8
+    `-- netlist_cp16_cmb16.1012613791
+        |-- net.0
+        |-- net.1
+        |-- net.2
+        |-- net.3
+        |-- net.4
+        |-- net.5
+        `-- net.6
+
+
+Directory 'netlist' will be automatically created (unless it already
+exists) in the current directory. For each run, ScoreRuntime creates
+directory named 'netlist_cpX_cmbY.T', where X is the number of CPs, Y
+-- CMBs, and T is unix time in seconds since 01/01/1970. T prevents
+old results from being overwritten, given the fact that one cannot run
+two ScoreRuntime processes at the same time on the same machine.  In
+each netlist_cpX_cmbY.T directory, one will find net.<timeslice>
+files. These are netlists for each timeslice, formatted as follows:
+
+-----------------------------
+<number of nets>
+<id1>\t<id2>
+<id3>\t<id4>
+<id5>\t<id6>
+..
+.
+-------eof-------------------
+
+Each line contains a net with one source and one sink, since streams
+are used. Node ids are computed in the following manner:
+
+id(CP[i])  = 2 * i
+id(CMB[i]) = 2 * i + 1
+
+
+

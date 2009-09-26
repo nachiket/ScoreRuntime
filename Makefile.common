@@ -1,0 +1,48 @@
+## Scheduler Makefile.common
+
+DOPROFILING = 0
+OPTIMIZE = 0
+
+# Nachiket removed this nonsense
+PLOCK = 0
+
+
+ifeq ($(PROF),1)
+PROF_FLAG = -pg
+else
+PROF_FLAG =
+endif
+
+ifeq ($(PLOCK),1)
+PLOCK_LIB = -lsysmp
+else
+PLOCK_LIB =
+endif
+
+# when NDEBUG is defined, the assertions disappear ( assert() )
+ifeq ($(OPTIMIZE), 0)
+DEBUGFLAG = -g
+else
+DEBUGFLAG = -O3 -DNDEBUG
+endif
+
+
+TOOL_PATH=
+
+COMMON_FLAGS = $(DEBUGFLAG) $(GPROFFLAG) -Wall $(COMMON_DEFINES)
+
+CFLAGS = $(COMMON_FLAGS)
+CXXFLAGS = $(COMMON_FLAGS)
+
+CC = $(TOOL_PATH)gcc
+CXX = $(TOOL_PATH)g++
+AR = ar
+AR_OPTS = rc
+MAKE = make
+
+INCLUDE = -I$(PAPI_INC) -I/opt/leda/incl -I./include -I. $(SCHEDULER_INCLUDES) \
+	-include ScoreImplConf.h
+
+LIB = -L./lib -L. -L/opt/leda \
+	-lpthread -lleda -lX11 -ldl -lm -lperfctr $(PLOCK_LIB)
+

@@ -1,0 +1,41 @@
+Visualization of ScoreRuntime state.
+
+To enable visualization, one must follow two steps: 
+(1) instruct the ScoreRuntime to collect data into the
+    log file
+(2) use ScorePlayer to view the logfile.
+
+
+Step 1: Collect data from the ScoreRuntime into the log
+        file.
+
+Run:
+ScoreRuntime -vf <log.file.name>
+
+The description of state (pages, segments, streams) are 
+going to be stored in the log file. It is a binary file,
+i.e. not very viewable by a text editor. Since ScoreRuntime
+does not exit automatically, you can Ctl-C when it is Idle,
+and no data corruption should occur in the log file.
+
+
+Step 2: "Play" the log file.
+
+Run:
+ScorePlayer <log.file.name>
+
+The player will start xvcg program which displays the actual
+graphs and will offer you a prompt in a form:
+Frame <frame_number> (<time_slice_number>) > 
+
+The following commands can be used at the prompt:
+q..........................Quit the ScorePlayer
+g<frame_number>............Go to the specified frame number
+f<increment>...............Forward by the specified number of frames (default 1)
+b<decrement>...............Back by the specified number of frames (default 1)
+s<slice_number>............Search for the frame with slice_number
+'Enter key'................Equivalent to f1 (forward by 1 frame)
+h..........................Print command help
+
+Invalid arguments are ignored (ex. g1000 is ignored if there is no
+frame number 1000).

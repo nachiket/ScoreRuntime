@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>Static Scheduler Notes</title>
+  </head>
+
+  <body>
+    <h2>Notes</h2>
+    Static scheduler (ScoreSchedulerStatic) inherits from ScoreScheduler class. <br>
+    Took all code from dynamic scheduler and placed in static scheduler. <br>
+    Turned off ASPLOS2000 option in ScoreRuntime/Makefile. <br>
+    Removed all ASPLOS2000 conditional compilation statements <br>
+    Got rid of clustering.  Should schedule everything as pages and segments for now.
+
+    <p>
+
+    Created ScoreSSched class to hold static scheduling information (see below).
+
+    <p>
+
+    method for scheduling: <br>
+    call createSchedule() whenever a new operator is inserted.  make a new schedule.<br>
+
+    on every cycle, look for next timeslice in static schedule, place on array, 
+    and let simulator run for stated number of cycles. <br>
+
+    static schedule is cyclic until nodes (pages or segments) are done.<br>
+
+
+    <h3>Issues</h3>
+    If nodes become done, should we reschedule?  Should we ignore?
+
+
+    <h2>Files</h2>
+
+<h3>ScoreSSched.h, ScoreSSched.cc </h3>
+
+Created a class to hold info for static schedule:
+
+<pre>
+            ScoreSSched       slist_item
+           ---------------   -------
+ssched --> | sschedList  |-->|  .  |-->
+           ---------------   ---.---
+           | numPages    |      .
+           ---------------      .  sschedSlice_t
+           | numSegments |     ---------------      -----
+           ---------------     | pageList    |----->|   |--> ScorePage
+                               ---------------      -----
+                               | segmentList |---.  |   |--> ScorePage
+                               ---------------   |  -----
+                               | cycleToRun  |   |    .
+                               ---------------   |    .    [numPages]
+                                                 |    .
+                                                 |  -----
+                                                 |  |   |--> ScorePage
+                                                 |  -----
+                                                 |
+                                                 |
+                                                 |  -----
+                                                  ->|   |--> ScoreSegment
+                                                    -----
+                                                    |   |--> ScoreSegment
+                                                    -----
+                                                      .
+                                                      .    [numSegments]
+                                                      .
+                                                    -----
+                                                    |   |--> ScoreSegment
+                                                    -----
+</pre>
+
+<hr>
+
+<h3>ScoreSchedulerStatic.h</h3>
+
+
+[see comments labeled as: "// newstuff:"]
+
+<pre>
+    // (which pages/segments to place on array, cycles to run this timeslice)
+  ScoreSSched *ssched;
+
+    // flag for existence of new operator
+  int newOperators;
+
+    // stores list of pages/segments that should be scheduled
+  ScoreCustomList<ScorePage *> *sschedPageList;
+  ScoreCustomList<ScoreSegment *> *sschedSegmentList;
+
+    // fill ssched with new schedule
+  virtual void createSchedule();
+    // returns number of cycles to run this slice for
+  virtual unsigned int applySchedule();
+
+</pre>
+
+<hr>
+
+<h3>ScoreSchedulerStatic.cc</h3>
+
+
+[see comments labeled as: "// newstuff:"]
+
+<h4>ScoreSchedulerStatic()</h4>
+
+<pre>
+ScoreSchedulerStatic()
+    // initialize to no new operators yet
+  newOperators = 0;
+
+    // make empty schedule
+  ssched = new ScoreSSched(numPhysicalCP, numPhysicalCMB);
+</pre>
+
+<hr>
+
+<h4>addOperator()</h4>
+
+<pre>
+addOperator() [called by ScoreRuntime]
+  call construct routine for operator (.so)
+
+  make new ScoreProcess(pid, SharedObject)
+    make new feedback graph
+
+  append process onto processList
+
+  ScoreProcess::addOperator
+    Adds an operator instance to the process;
+    Adds the pages and memory segments to the process.
+    Read feedback
+
+  add pages from new operator into sschedPageList
+  add segments from new operator into sschedSegmentList
+
+  set newOperators = 1
+
+  init and recordkeeping
+
+  wakeup scheduler
+</pre>
+
+<hr>
+
+<h4>doSchedule()</h4>
+
+<pre>
+doSchedule()  [called by ScoreRuntime]
+  get lock on sched data mutex
+
+  currentTimeslice++
+
+  getCurentStatus()
+
+  gatherStatusInfo()
+
+  findDonePagesSegments()
+
+  findFaultedMemSeg()
+
+  dealWithDeadlock()
+
+  if(newOperators)
+    createSchedule()
+    reset newOperators = 0
+
+  cyclesToRun = applySchedule()
+
+  performPlacement()
+
+  advanceSimulatorTimeOffset(cycleToRun)
+
+  issueReconfigCommands()
+
+  performCleanup()
+
+  requestNextTimeslice()
+
+  release lock on sched data mutex
+</pre>
+
+<hr>
+
+<h4>createSchedule()</h4>
+
+<pre>
+createSchedule()
+  if needed, erase old schedule
+
+  for (number of steps in cyclic schedule)
+    add a new slice
+    fill in number of cycles to run this slice
+      schedule pages from sschedPageList
+      schedule segments from sschedSegmentList
+</pre>
+
+<hr>
+
+<h4>applySchedule()</h4>
+
+<pre>
+applySchedule()
+  get next slice in schedule
+  
+  add page/segments from slice to:
+    scheduledPageList, scheduledMemSegList
+    
+  make sure to update:
+     removedMemSegList
+     doneNotRemovedPageList
+     doneNotRemovedMemSegList
+     scheduledPageList
+     scheduledMemSegList
+     faultedMemSegList
+
+  return number of cycles to run this slice
+</pre>
+
+    <hr>
+    <address><a href="mailto:celaine@eecs.berkeley.edu">Elaine Cheong</a></address>
+Last modified: Fri Jul 28 2000
+  </body>
+</html>
+

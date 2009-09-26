@@ -1,0 +1,35 @@
+
+include Makefile.common
+
+INSTANCESRCS = ScoreSegmentOperatorReadOnly_instance.cc \
+               ScoreSegmentOperatorReadWrite_instance.cc \
+               ScoreSegmentOperatorSeqReadOnly_instance.cc \
+               ScoreSegmentOperatorSeqReadWrite_instance.cc \
+               ScoreSegmentOperatorSeqWriteOnly_instance.cc \
+               ScoreSegmentOperatorWriteOnly_instance.cc \
+
+INSTANCEOBJS = $(addsuffix .o, $(basename $(INSTANCESRCS)))
+INSTANCESHAREDOBJS = $(addsuffix .so, $(basename $(INSTANCESRCS)))
+
+all: $(INSTANCESHAREDOBJS) ScoreSharedObject_helper.o
+
+%.o: %.cc
+	$(CXX) -fPIC -c $(CXXFLAGS) $(INCLUDE) $<
+
+%.so: %.o libScoreRuntime.a ScoreSharedObject_helper.o
+	$(CXX) $(CXXFLAGS) -shared -nostartfiles -o $@ $< ScoreSharedObject_helper.o $(LIB) -lScoreRuntime
+
+clean:
+	rm -f $(INSTANCEOBJS) $(INSTANCESHAREDOBJS)
+
+depend:
+	rm -f Makefile.instance.dep
+	$(CXX) -M $(CXXFLAGS) $(INCLUDE) $(INSTANCESRCS) > Makefile.instance.dep
+	
+
+-include Makefile.instance.dep
+
+
+
+
+

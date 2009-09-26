@@ -1,0 +1,38 @@
+sm/page.h
+Dan Nicholson dbn.lists at gmail.com
+Tue Apr 22 13:02:14 MDT 2008
+
+* Previous message: asm/page.h
+* Next message: asm/page.h
+* Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+    On Tue, Apr 22, 2008 at 11:47 AM, Jeremy Huntwork
+    <jhuntwork at linuxfromscratch.org> wrote:
+    >
+    >  Running through a build here (with a couple of package updates) and ran
+    >  across an error when running 'make test' for chapter 6 perl. Essentially
+    >  amounts to a 'No such file' error for asm/page.h.
+    >
+    >  Tracking it down, it appears that recent Linux headers no longer install
+    >  asm/page.h. (I don't know how far back this goes, I'm testing with
+    >  2.6.25). The culprit seems to be only one file where asm/page.h is
+    >  included. I'm going to see if I can remove the include and get a good
+    >  result.
+
+    Yep. It looks like asm/page.h, asm/elf.h, asm/user.h and linux/user.h
+    are no longer installed in 2.6.25.
+
+    http://kerneltrap.org/mailarchive/linux-kernel/2007/10/30/368690
+
+    For page.h, we'll need to patch so that getpagesize() or sysconf(
+    _SC_PAGESIZE) is used instead of PAGE_SIZE. That's the way it always
+    should have been, anyway. Which source file in perl is choking?
+
+    --
+    Dan
+
+* Previous message: asm/page.h
+* Next message: asm/page.h
+* Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+More information about the lfs-dev mailing list
