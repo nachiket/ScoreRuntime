@@ -33,6 +33,8 @@
 
 #ifdef __cplusplus
 
+#include <iostream>
+
 using std::cout;
 using std::endl;
 using std::cerr;
