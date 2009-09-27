@@ -387,7 +387,7 @@ bool parseArg(char *str, int *number)
 
 void ScorePlayer::printHelpMsg()
 {
-  static char *helpMsg =
+  static const char *helpMsg =
     "q..........................Quit the ScorePlayer\n" \
     "g<frame_number>............Go to the specified frame number\n" \
     "f<increment>...............Forward by the specified number of frames (default 1)\n" \

@@ -37,16 +37,34 @@ class ScoreStreamType
 
 public:
   ScoreStreamType(int new_is_signed, int new_width):
-    is_signed(new_is_signed), int_width(new_width), fract_width(0) {}
-  ScoreStreamType(int new_is_signed, int new_int_width, int new_fract_width):
-    is_signed(new_is_signed), int_width(new_int_width), 
-    fract_width(new_fract_width)
+    is_signed(new_is_signed), 
+    int_width(new_width), fract_width(0),
+    is_float(0), is_double(0) 
     {}
+  ScoreStreamType(int new_is_signed, int new_int_width, int new_fract_width):
+    is_signed(new_is_signed), 
+    int_width(new_int_width), fract_width(new_fract_width),
+    is_float(0), is_double(0)
+    {}
+  ScoreStreamType(int new_is_signed, int new_is_float, int new_is_double, int new_width):
+    is_signed(0), 
+    int_width(0), fract_width(0),
+    is_float(new_is_float), is_double(new_is_double)
+    {}
+
+   // Nachiket added method for floats/doubles
+   // signed is irrelevant but retained for having 4-input constructor for disambiguation...
+    
   // probably add stuff to this and move these to private
   //   once we have an idea of how we're going to use
+
   int is_signed;
   int int_width;
   int fract_width;
+
+  // Nachiket added support for floating-point
+  int is_float;
+  int is_double;
 
 };
 

@@ -153,7 +153,8 @@ int get_schedulerid()
   
   cerr << "ScoreOperator.schedulerid: could not get scheduler id from " 
        << SCORE_SCHEDULER_ID_FILE << endl;
-  exit(1);
+// Nachiket edit: what is this??? Do we really need this
+//  exit(1);
   
 }
 

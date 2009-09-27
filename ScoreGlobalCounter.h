@@ -86,7 +86,9 @@ struct perfctr_state *getUserKstate();
 
 
 extern ScoreGlobalCounter *globalCounter;
+/* PAPI not work - Nachiket edit 27th September
 extern volatile const struct perfctr_cpu_state *usr_cpu_state;
+*/
 extern unsigned long long *totalStreamOverheadPtr;
 
 #endif

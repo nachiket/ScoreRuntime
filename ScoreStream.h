@@ -300,14 +300,7 @@ typedef unsigned int AllocationTag;
     unsigned long long ___t; \
     unsigned long long ___u; \
     unsigned long long ___b, ___e; \
-    rdtscll(___t); \
-    ___b = usr_cpu_state->sum.tsc + (___t - usr_cpu_state->start.tsc); \
     x->stream_write(y,0,___b); \
-    rdtscll(___t); \
-    ___e = usr_cpu_state->sum.tsc + (___t - usr_cpu_state->start.tsc); \
-    *totalStreamOverheadPtr  += ((___e - ___b) + STREAM_OVERHEAD+55); \
-    rdtscll(___u); \
-    *totalStreamOverheadPtr  += (___u - ___t); \
   }
 
 #define STREAM_READ(x,y) \
@@ -315,14 +308,7 @@ typedef unsigned int AllocationTag;
     unsigned long long ___t; \
     unsigned long long ___u; \
     unsigned long long ___b, ___e; \
-    rdtscll(___t); \
-    ___b = usr_cpu_state->sum.tsc + (___t - usr_cpu_state->start.tsc); \
     y = x->stream_read(___b); \
-    rdtscll(___t); \
-    ___e = usr_cpu_state->sum.tsc + (___t - usr_cpu_state->start.tsc); \
-    *totalStreamOverheadPtr  += ((___e - ___b) + STREAM_OVERHEAD+55); \
-    rdtscll(___u); \
-    *totalStreamOverheadPtr  += (___u - ___t); \
   }
 
 
