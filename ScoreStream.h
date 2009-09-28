@@ -82,8 +82,7 @@ using std::endl;
 using std::cerr;
 
 #define NO_STREAM (ScoreStream *)-1
-//#define DEFAULT_N_SLOTS SCORE_INPUTFIFO_CAPACITY
-#define DEFAULT_N_SLOTS 256
+#define DEFAULT_N_SLOTS SCORE_INPUTFIFO_CAPACITY
 #define ARRAY_FIFO_SIZE 256
 #define EOS 0xdeadbeef
 #define DONE_MUTEX 2
@@ -359,8 +358,7 @@ class ScoreStream {
   AllocationTag tag_copy1;
 
  public:
-  //void *operator new(size_t, AllocationTag = ALLOCTAG_SHARED);
-  void *operator new(size_t, AllocationTag = ALLOCTAG_PRIVATE); // by default private
+  void *operator new(size_t, AllocationTag = ALLOCTAG_SHARED);
   void operator delete(void*,size_t);
   ScoreStream();
   ScoreStream(int,int,int,ScoreType, unsigned int, int depth_hint = 0); 

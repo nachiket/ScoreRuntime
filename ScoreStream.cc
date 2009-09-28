@@ -39,8 +39,15 @@
 #include "ScoreCustomStack.h"
 #include "ScoreConfig.h"
 #include "ScoreStreamStitch.h"
+#include <iostream> // added by Nachiket for newer file IO constructs
+#include <ios> // added by Nachiket for newer file IO constructs
 
 #include "ScorePage.h"
+
+using std::ios;
+using std::fstream;
+using std::setfill;
+using std::setw;
 
 #if 0
 #define PRINT_MSG(_msg_)     fprintf(stderr, "%d: %s: %s\n", __LINE__, __FUNCTION__, # _msg_)
@@ -70,20 +77,33 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
   int file = (int) open("/tmp/streamid",O_RDONLY);
   
   if (file < 0) {
-    perror("ERROR: Could not open /tmp/streamid");
-    exit(errno);
-  }
-  
-  if (read(file, &tempID, 4) != 4) {
-    perror("ERROR: Did not get 4 bytes of data back");
-    exit(errno);
+    cout << "Initialize /tmp/streamid" << endl;
+    close(file);
+    // initialize the file..
+    fstream outfile("/tmp/streamid",ios::out);
+    outfile << setfill('0');
+    outfile << setw(4);
+    outfile << 0;
+    outfile.close();
+  } else {
+    int rdCount = read(file, &tempID, 4);
+    if(rdCount!=4) {
+      cout << "Got merely " << rdCount << "bytes" << endl;
+      perror("ERROR: Did not get 1 bytes of data back");
+      exit(errno);
+    }
+    cout << "Found existing /tmp/streamid:" << tempID << endl;
+    close(file);
   }
 
-  // stupid fool
-  if(currentID==tempID) {
-  	tempID=currentID+1;
-  }
-  close(file);
+
+  // Nachiket added update routine...
+  // need to get new streamID
+  fstream outfile("/tmp/streamid",ios::out);
+  outfile << setfill('0');
+  outfile << setw(4);
+  outfile << tempID+1;
+  outfile.close();
 
   size_t allocatedSize = 0;
 
@@ -102,6 +122,8 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 	exit(errno);
       }
     } else {
+      cout << currentID << endl;
+      cout << tempID << endl;
       perror("currentID -- stream new operator -- creation ");
       exit(errno);
     }
