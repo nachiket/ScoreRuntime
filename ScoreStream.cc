@@ -985,6 +985,8 @@ void stream_close(ScoreStream *strm) {
     if (USE_POLLING_STREAMS) {
       strm->acquire.sem_num = 0;
       PRINT_SEM(b_acquire,strm);
+      // Nahciket tweets... WTF is the deal with these semaphores?
+      cout << "Attemping to access semaphore id=" << ScoreStream::doneSemId << endl;
       while(semop(ScoreStream::doneSemId, &(strm->acquire), 1) == -1) {
 	perror("semop -- stream_close -- acquire");
 	if (errno != EINTR)
