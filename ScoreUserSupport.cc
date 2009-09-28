@@ -72,7 +72,8 @@ extern "C" void score_exit() {
   unsigned long long threadTime = -1;
   unsigned long long runningTime = -1;
   int simCycle = -1; 
-  
+
+  /*
   printf("********************\n");
   printf("*Program Statistics*\n");
   printf("********************\n");
@@ -96,6 +97,7 @@ extern "C" void score_exit() {
 	 globalCounter->threadCounter->record->totalStreamOverhead);
   printf("Max program running time is:   %llu\n",threadTime + simCycle -
 	 globalCounter->threadCounter->record->totalStreamOverhead);
+  */
 
   ScoreOperator::forAllOperators();
 }

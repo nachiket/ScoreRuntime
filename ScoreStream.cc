@@ -251,6 +251,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 				       unsigned int user_stream_type,
 				       int depth_hint_t) {
 
+
 #ifndef NDEBUG
   // check length_t is not greater than was allocated
   if (tag_copy1 == ALLOCTAG_SHARED) {
@@ -300,6 +301,8 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
   start_val[0] = length_t+1;
   start_val[1] = 0;
   start_val[2] = 1;
+	cout << "length_t="  << length_t << " store as " << start_val[0] << endl;
+	//exit(-1);
 
   head = tail = 0; 
   token_written = token_read = token_eos = 0;
@@ -316,6 +319,15 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 	perror("doneSemId -- semget -- creation ");
 	exit(errno);
       }
+      /*
+      else {
+		// copied by Nachiket from ScoreRuntime.cc
+	      if (semctl(doneSemId, 0, SETALL, arg) == -1) {
+		      perror("gDoneSemId -- semctl -- initialization");
+		      exit(errno);
+	      }
+      }
+      */
     }
   } else {
     // create and initialize the semaphores
@@ -330,6 +342,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
       perror("semget -- stream constructor -- creation ");
       exit(errno);
     }
+    cout << "Semaphore status:" << semid << " for streamID=" << streamID  << endl;
   }
   
   acquire.sem_num = 0;
@@ -498,7 +511,11 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
   } else {
     if (!(sched_isStitch)) {
       acquire.sem_num = TO_CONSUME;
+
+      union semun arg;
+      int value=semctl(semid, 0, GETVAL, arg);
     
+//      cout << "Acquiring semaphore for read=" << semid << " value=" << value << endl;
       while (semop(semid, &acquire, 1) == -1) {
 	perror("semop -- stream_read -- acquire ");
 	if (errno != EINTR)
@@ -540,11 +557,17 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
     if (!(sched_isStitch)) {
       release.sem_num = AVAIL_SLOTS;
     
+      union semun arg;
+      int value = semctl(semid, 0, GETVAL, arg);
+
+//      cout << "Releasing semaphore for read=" << semid  << " before_value=" << value << endl;
       while (semop(semid, &release, 1) == -1){
 	perror("semop -- stream_read -- release ");
 	if (errno != EINTR)
 	  exit(errno);
       }
+      value = semctl(semid, 0, GETVAL, arg);
+//      cout << "Releasing semaphore for read=" << semid  << " after_value=" << value << endl;
     } else {
       while (sem_post(&sem_AVAIL_SLOTS) == -1){
 	perror("sem_post -- stream_read -- AVAIL_SLOTS ");
@@ -667,6 +690,10 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
     if (!(sched_isStitch)) {
       acquire.sem_num = AVAIL_SLOTS;
     
+      union semun arg;
+      int value = semctl(semid, 0, GETVAL, arg);
+
+//      cout << "Acquiring semaphore for write=" << semid << " value=" << value << endl;
       while (semop(semid, &acquire, 1) == -1){
 	perror("semop -- stream_write -- acquire ");
 	if (errno != EINTR)
@@ -720,6 +747,10 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
     if (!(sched_isStitch)) {
       release.sem_num = TO_CONSUME;
     
+      union semun arg;
+      int value = semctl(semid, 0, GETVAL, arg);
+
+//      cout << "Releasing semaphore for write=" << semid << " value=" << value << endl;
       while (semop(semid, &release, 1) == -1){
 	perror("semop -- stream_write -- release ");
 	if (errno != EINTR)

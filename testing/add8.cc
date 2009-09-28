@@ -108,6 +108,7 @@ void *nonfunc_add8::proc_run() {
           for (int j=retime_length_1;j>0;j--)
             cc_b_retime[j]=cc_b_retime[j-1];
           cc_b_retime[0]=cc_b;
+//	  cout << "We recognize input0=" << cc_a_retime[0] << " and input1=" << cc_b_retime[0] << endl;
           STREAM_WRITE_NOACC(out[0],(cc_a_retime[0]+cc_b_retime[0]));
         }
         else

@@ -93,7 +93,7 @@
 
 // Nachiket set this to 0 to avoid ThreadCounter and perfctr
 #define TIMEACC  0
-#define USE_POLLING_STREAMS  1
+#define USE_POLLING_STREAMS  0
 #define PRINTSTATE  0
 #define PLOCK 1
 
