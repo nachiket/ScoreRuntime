@@ -26,6 +26,10 @@ nonfunc_add8::nonfunc_add8(UNSIGNED_SCORE_STREAM n_cc_a,UNSIGNED_SCORE_STREAM n_
   char * name=mangle(add8_name,0,params);
   char * instance_fn=resolve(name);
   if (instance_fn!=(char *)NULL) {
+
+	// Nachiket add
+	cout << "Array Simulator Invoked" << endl;
+
     long slen;
     long alen;
     long blen;
@@ -52,6 +56,9 @@ nonfunc_add8::nonfunc_add8(UNSIGNED_SCORE_STREAM n_cc_a,UNSIGNED_SCORE_STREAM n_
        exit(2);    }
   }
   else {
+	// Nachiket add
+	cout << "Created a thread for operator" << endl;
+
   result=NEW_UNSIGNED_SCORE_STREAM(9);
     declareIO(2,1);
     bindOutput(0,result,new ScoreStreamType(0,9));
@@ -67,6 +74,8 @@ nonfunc_add8::nonfunc_add8(UNSIGNED_SCORE_STREAM n_cc_a,UNSIGNED_SCORE_STREAM n_
 }
 
 void *nonfunc_add8::proc_run() {
+	// Nachiket add
+	cout << "proc_run invoked" << endl;
   enum state_syms {STATE_only};
   state_syms state=STATE_only;
   unsigned long cc_a;

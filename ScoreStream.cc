@@ -59,7 +59,7 @@ using std::setw;
 
 int ScoreStream::doneSemId = -1;
 
-#if 0
+#if 1
 #define PRINT_SEM(__op__,__ptr__) \
 fprintf(stderr, "%d: %s: %s stream[%u] type[%x]\n", __LINE__, __FUNCTION__, # __op__, (unsigned int) __ptr__, __ptr__ ? (*(AllocationTag*)__ptr__) : -1);
 #else 
@@ -308,6 +308,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 
   if (USE_POLLING_STREAMS) {
     
+    cout << "Semaphore status:" << ScoreStream::doneSemId << endl;
     // one shared semaphore needs to be initialized
     if (doneSemId == -1) {
       if ((doneSemId = semget(0xfeedbabe, 1, IPC_CREAT | 0666))
@@ -490,6 +491,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
   }
 
   if (USE_POLLING_STREAMS) {
+    // Nachifix: Why is this thread quitting?
     while (head == tail) {
       sched_yield();
     }
@@ -985,13 +987,17 @@ void stream_close(ScoreStream *strm) {
     if (USE_POLLING_STREAMS) {
       strm->acquire.sem_num = 0;
       PRINT_SEM(b_acquire,strm);
-      // Nahciket tweets... WTF is the deal with these semaphores?
+      // /*
+      // Nachiket's fix... WTF is the deal with these semaphores?
       cout << "Attemping to access semaphore id=" << ScoreStream::doneSemId << endl;
+      int wtf = semop(ScoreStream::doneSemId, &(strm->acquire), 1);
+      cout << "WTF:" << wtf << endl;
       while(semop(ScoreStream::doneSemId, &(strm->acquire), 1) == -1) {
 	perror("semop -- stream_close -- acquire");
 	if (errno != EINTR)
 	  exit(errno);
       }
+      //*/
       PRINT_SEM(acquire,strm);
     } else {
       // want to acquire the mutex DONE_MUTEX first

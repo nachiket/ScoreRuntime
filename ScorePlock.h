@@ -2,6 +2,7 @@
 #define _ScorePlock_h__
 
 // Nachiket disables PLOCKS..
+// WHY????????
 #undef PLOCK
 
 #if PLOCK

@@ -734,6 +734,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
+
 /* 
   // Nachiket removed this to avoid perfctr bs
   ScoreThreadCounter *shmptr = new ScoreThreadCounter(RUNTIME);

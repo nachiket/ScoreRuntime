@@ -30,13 +30,14 @@
 #ifndef _ScoreImplConf_H
 #define _ScoreImplConf_H
 
+// Nachiket fix
 // Apparently this was already defined somewher...
 // #define _GNU_SOURCE
 
 #define VERSION    3.1
 
 /***/
-#define DYNAMIC_SCHEDULER 1
+#define DYNAMIC_SCHEDULER 0
 #define LEDA_STL_ITERATORS 1
 
 
