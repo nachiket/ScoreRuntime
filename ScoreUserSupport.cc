@@ -48,9 +48,9 @@ extern "C" void score_init() {
   globalCounter = new ScoreGlobalCounter();
   /* PAPI not work
   usr_cpu_state = globalCounter->threadCounter->get_cpu_state();
-  */
   totalStreamOverheadPtr =
     &(globalCounter->threadCounter->record->totalStreamOverhead);
+  */
 
 #if TIMEACC || DOPROFILING
   globalCounter->threadCounter->ScoreThreadCounterEnable(USER_PROG);
@@ -61,12 +61,17 @@ extern "C" void score_init() {
 
 extern "C" void score_exit() {
   //  unsigned long long currentTime = rdtsc64();
+  /* PAPI not work
   unsigned long long threadTime = globalCounter->threadCounter->read_tsc() - 
     globalCounter->threadTimeStart;
 
   unsigned long long runningTime = globalCounter->ScoreGlobalCounterRead();
   int simCycle = globalCounter->threadCounter->record->simCycle -
     globalCounter->simStartCycle;      
+  */
+  unsigned long long threadTime = -1;
+  unsigned long long runningTime = -1;
+  int simCycle = -1; 
   
   printf("********************\n");
   printf("*Program Statistics*\n");

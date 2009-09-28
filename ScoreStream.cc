@@ -67,16 +67,21 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
   void *ptr = 0;
 
   // need to get new streamID
-  int file = (int) open("/proc/streamid",O_RDONLY);
+  int file = (int) open("/tmp/streamid",O_RDONLY);
   
   if (file < 0) {
-    perror("ERROR: Could not open /proc/streamid");
+    perror("ERROR: Could not open /tmp/streamid");
     exit(errno);
   }
   
   if (read(file, &tempID, 4) != 4) {
     perror("ERROR: Did not get 4 bytes of data back");
     exit(errno);
+  }
+
+  // stupid fool
+  if(currentID==tempID) {
+  	tempID=currentID+1;
   }
   close(file);
 
@@ -117,6 +122,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
     currentID = tempID;
 
     allocatedSize = size + sizeof(AllocationTag);
+
   } else { // allocTag did not match predefined values
     fprintf(stderr, "invalid allocation tag %x\n", allocTag);
     exit(1);
@@ -196,6 +202,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
     assert(tag_copy1 == last_tag);
 
   } else if (tag_copy1 == ALLOCTAG_PRIVATE) {
+//  cout << length_t << "," << ARRAY_FIFO_SIZE << endl;
     assert(length_t == ARRAY_FIFO_SIZE);
 
     AllocationTag last_tag = *((AllocationTag*)
