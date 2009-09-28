@@ -32,15 +32,14 @@ int main(int argc, char *argv[]) {
 
     cout << "Finished populating streams!!" << endl;
 
-
-    cout << "Finished evaluating operator" << endl;
-
     // Dump stream into file
     while (!STREAM_EOS(c)) {
         unsigned char byte;
         STREAM_READ(c, byte);
         cout << "Byte=" << (int)(byte) << endl;
     }
+
+    cout << "Finished reading streams!!" << endl;
 
     STREAM_FREE(c);
 

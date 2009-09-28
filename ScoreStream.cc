@@ -1018,17 +1018,13 @@ void stream_close(ScoreStream *strm) {
     if (USE_POLLING_STREAMS) {
       strm->acquire.sem_num = 0;
       PRINT_SEM(b_acquire,strm);
-      // /*
       // Nachiket's fix... WTF is the deal with these semaphores?
       cout << "Attemping to access semaphore id=" << ScoreStream::doneSemId << endl;
-      int wtf = semop(ScoreStream::doneSemId, &(strm->acquire), 1);
-      cout << "WTF:" << wtf << endl;
       while(semop(ScoreStream::doneSemId, &(strm->acquire), 1) == -1) {
 	perror("semop -- stream_close -- acquire");
 	if (errno != EINTR)
 	  exit(errno);
       }
-      //*/
       PRINT_SEM(acquire,strm);
     } else {
       // want to acquire the mutex DONE_MUTEX first
