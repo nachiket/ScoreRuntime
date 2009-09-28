@@ -40,6 +40,7 @@
 #include "ScoreConfig.h"
 #include "ScoreStreamStitch.h"
 #include <iostream> // added by Nachiket for newer file IO constructs
+#include <iomanip> // added by Nachiket for newer file IO constructs
 #include <ios> // added by Nachiket for newer file IO constructs
 
 #include "ScorePage.h"
@@ -73,6 +74,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 
   void *ptr = 0;
 
+/* idiotic code switch
   // need to get new streamID
   int file = (int) open("/tmp/streamid",O_RDONLY);
   
@@ -92,9 +94,44 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
       perror("ERROR: Did not get 1 bytes of data back");
       exit(errno);
     }
-    cout << "Found existing /tmp/streamid:" << tempID << endl;
+    cout << "Found existing /tmp/streamid: " << tempID << endl;
     close(file);
   }
+*/
+
+
+  fstream infile("/tmp/streamid",ios::in);
+
+  if (infile.fail() || infile.bad()) {
+	  cout << "Initialize /tmp/streamid" << endl;
+	  infile.close();
+	  // initialize the file..
+	  fstream outfile("/tmp/streamid",ios::out);
+	  outfile << setfill('0');
+	  outfile << setw(4);
+	  outfile << 1;
+	  tempID=0;
+	  outfile.close();
+  } else {
+	  char* buffer=new char[4];
+	  infile.read(buffer,4);
+	  tempID=(buffer[3]-48)+
+		  10*(buffer[2]-48)+
+		  100*(buffer[1]-48)+
+		  1000*(buffer[0]-48);
+	  cout << "Found existing /tmp/streamid: " << tempID << endl;
+	  infile.close();
+
+	  // Nachiket added update routine...
+	  // need to get new streamID
+	  fstream outfile("/tmp/streamid",ios::out);
+	  outfile << setfill('0');
+	  outfile << setw(4);
+	  outfile << tempID+1;
+	  outfile.close();
+
+  }
+
 
 
   // Nachiket added update routine...
