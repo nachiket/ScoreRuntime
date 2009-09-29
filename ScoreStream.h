@@ -298,6 +298,14 @@ typedef unsigned int AllocationTag;
 #define STREAM_READ_NOACC(x) (x->stream_read()) 
 #define STREAM_WRITE_NOACC(x,y) (x->stream_write(y))
 
+#define STREAM_WRITE_DOUBLE(x,y) \
+  { \
+    double y_val=y;  \
+    long long int* y_ptr = (long long int*) &y_val; \
+    x->stream_write(*y_ptr); \
+  }
+
+#define STREAM_READ_DOUBLE(x) (x->stream_read_double())
 
 #define MACRO_OVERHEAD 162
 #define STREAM_WRITE(x,y) \
@@ -373,6 +381,7 @@ class ScoreStream {
 		    long long unsigned _cTime = 0);
   void stream_write_array(long long int, int writingEOS = 0); 
   long long int stream_read(long long unsigned _cTime = 0);
+  double stream_read_double(long long unsigned _cTime = 0);
 
   long long int stream_read_array();
 

@@ -479,6 +479,13 @@ long long int ScoreStream::stream_read_array() {
   return read_local_buffer;
 };
 
+double ScoreStream::stream_read_double(long long unsigned _cTime) {
+	long long int value=stream_read(_cTime);
+	long long int* ptr = &value;
+	double* ptr_dbl = (double*) ptr;
+	return *ptr_dbl;
+}
+
 long long int ScoreStream::stream_read(long long unsigned _cTime) {
 
   long long unsigned cTime;
