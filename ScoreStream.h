@@ -111,6 +111,11 @@ typedef unsigned int AllocationTag;
    (new TypedScoreStream<SCORE_STREAM_SIGNED_FIXED_TYPE>(i,f,DEFAULT_N_SLOTS,NOT_USER_STREAM))
 #define NEW_UNSIGNED_FIXED_STREAM(i,f) \
    (new TypedScoreStream<SCORE_STREAM_UNSIGNED_FIXED_TYPE>(i,f,DEFAULT_N_SLOTS,NOT_USER_STREAM))
+// Added by Nachiket to support floating-point streams
+#define NEW_FLOAT_SCORE_STREAM() \
+   (new TypedScoreStream<SCORE_STREAM_FLOAT_TYPE>(32,0,DEFAULT_N_SLOTS,NOT_USER_STREAM))
+#define NEW_DOUBLE_SCORE_STREAM() \
+   (new TypedScoreStream<SCORE_STREAM_DOUBLE_TYPE>(64,0,DEFAULT_N_SLOTS,NOT_USER_STREAM))
 
 
 #define NEW_READ_SCORE_STREAM() (new ScoreStream(64,0,DEFAULT_N_SLOTS,SCORE_STREAM_UNTYPED,USER_READ_STREAM))
@@ -715,6 +720,8 @@ class TypedScoreStream : public ScoreStream
 };
 
 typedef ScoreStream* SCORE_STREAM;
+typedef TypedScoreStream<SCORE_STREAM_FLOAT_TYPE>* FLOAT_SCORE_STREAM;
+typedef TypedScoreStream<SCORE_STREAM_DOUBLE_TYPE>* DOUBLE_SCORE_STREAM;
 typedef TypedScoreStream<SCORE_STREAM_BOOLEAN_TYPE>* BOOLEAN_SCORE_STREAM;
 typedef TypedScoreStream<SCORE_STREAM_SIGNED_TYPE>* SIGNED_SCORE_STREAM;
 typedef TypedScoreStream<SCORE_STREAM_UNSIGNED_TYPE>* UNSIGNED_SCORE_STREAM;

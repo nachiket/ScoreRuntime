@@ -11,8 +11,8 @@ int main(int argc, char *argv[]) {
 
     score_init();
 
-    BOOLEAN_SCORE_STREAM  fire = NEW_READ_BOOLEAN_SCORE_STREAM();
-    BOOLEAN_SCORE_STREAM  fired = NEW_WRITE_BOOLEAN_SCORE_STREAM();
+    BOOLEAN_SCORE_STREAM  fire = NEW_BOOLEAN_SCORE_STREAM();
+    BOOLEAN_SCORE_STREAM  fired = NEW_BOOLEAN_SCORE_STREAM();
     //BOOLEAN_SCORE_STREAM  fired;
     
     NEW_tb(fire, fired);
