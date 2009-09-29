@@ -22,8 +22,8 @@ int main(int argc, char *argv[]) {
 
     for(int i=0; i<6;i++) {
         cout << "Updating stream with value " << i << endl;
-    	STREAM_WRITE(a, i);
-    	STREAM_WRITE(b, i);
+    	STREAM_WRITE(a, i*1e6);
+    	STREAM_WRITE(b, i*1e-6);
         //STREAM_WRITE(c, false);
         STREAM_WRITE(c, true);
     }
