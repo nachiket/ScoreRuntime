@@ -142,6 +142,11 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
   outfile << tempID+1;
   outfile.close();
 
+  if(errno) {
+  	perror("Something went wrong..");
+	exit(errno);
+  }
+
   size_t allocatedSize = 0;
 
   if (allocTag == ALLOCTAG_SHARED) {
@@ -301,8 +306,8 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
   start_val[0] = length_t+1;
   start_val[1] = 0;
   start_val[2] = 1;
-	cout << "length_t="  << length_t << " store as " << start_val[0] << endl;
-	//exit(-1);
+//	cout << "length_t="  << length_t << " store as " << start_val[0] << endl;
+//	exit(-1);
 
   head = tail = 0; 
   token_written = token_read = token_eos = 0;
@@ -311,7 +316,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 
   if (USE_POLLING_STREAMS) {
     
-    cout << "Semaphore status:" << ScoreStream::doneSemId << endl;
+//    cout << "Semaphore status:" << ScoreStream::doneSemId << endl;
     // one shared semaphore needs to be initialized
     if (doneSemId == -1) {
       if ((doneSemId = semget(0xfeedbabe, 1, IPC_CREAT | 0666))
@@ -342,7 +347,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
       perror("semget -- stream constructor -- creation ");
       exit(errno);
     }
-    cout << "Semaphore status:" << semid << " for streamID=" << streamID  << endl;
+//    cout << "Semaphore status:" << semid << " for streamID=" << streamID  << endl;
   }
   
   acquire.sem_num = 0;
@@ -1180,6 +1185,7 @@ void stream_close(ScoreStream *strm) {
 
 void stream_free(ScoreStream *strm) {
 
+
   // make sure this is not a double free.
   if (strm->consumerFreed) {
     cerr << "SCORESTREAMERR: TRYING TO DOUBLE FREE A STREAM! " << 
@@ -1514,6 +1520,8 @@ void stream_close_hw(ScoreStream *strm) {
 
 
 void stream_free_hw(ScoreStream *strm) {
+
+
   if (!(strm->sched_isStitch)) {
     if (VERBOSEDEBUG || DEBUG) {
       cerr << "[SID=" << strm->streamID << "]   stream_free_hw called" << endl;
@@ -1533,6 +1541,9 @@ void stream_free_hw(ScoreStream *strm) {
       
       strm->acquire.sem_num = DONE_MUTEX;
       
+  if(errno) {
+    perror("stupid fuck");
+  }
       while (semop(strm->semid, &(strm->acquire), 1) == -1){
 	perror("semop -- stream_free_hw -- acquire ");
 	if (errno != EINTR)

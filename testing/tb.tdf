@@ -1,0 +1,13 @@
+tb(input boolean fire, output boolean fired) {
+	state a (fire):
+		fired=false;
+		if(fire) {goto b;}
+	state b ():
+		goto c;
+	state c ():
+		goto d;
+	state d ():
+		fired=true;
+		goto a;
+
+}

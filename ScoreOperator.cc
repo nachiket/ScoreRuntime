@@ -150,9 +150,21 @@ int get_schedulerid()
       if ((fcnt==1) & (sidnum!=-1))  // added size check 5/19/99 amd
 	return(sidnum);
     }
+
+  // For safety?
+  if(errno) {
+    perror("Yeah yeah... ");
+    errno=0;
+  }
+  if(errno) {
+    perror("Yeah yeah... ");
+    errno=0;
+  }
+
+  return 0;
   
-  cerr << "ScoreOperator.schedulerid: could not get scheduler id from " 
-       << SCORE_SCHEDULER_ID_FILE << endl;
+//  cerr << "ScoreOperator.schedulerid: could not get scheduler id from " 
+//       << SCORE_SCHEDULER_ID_FILE << endl;
 // Nachiket edit: what is this??? Do we really need this
 //  exit(1);
   

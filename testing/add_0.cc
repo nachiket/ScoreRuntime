@@ -1,6 +1,6 @@
 // cctdfc autocompiled instance file
 // tdfc version 1.160
-// Sun Sep 27 19:18:33 2009
+// Mon Sep 28 21:25:14 2009
 
 #include "Score.h"
 #include <stdlib.h>
@@ -12,7 +12,7 @@ extern ScoreIOMaskType add_0_consumes[];
 extern ScoreIOMaskType add_0_produces[];
 class Page_add_0: public ScorePage {
 public:
-  Page_add_0(UNSIGNED_SCORE_STREAM n_result,UNSIGNED_SCORE_STREAM n_cc_a,UNSIGNED_SCORE_STREAM n_cc_b) {
+  Page_add_0(UNSIGNED_SCORE_STREAM n_result,UNSIGNED_SCORE_STREAM n_cc_a,UNSIGNED_SCORE_STREAM n_cc_b,BOOLEAN_SCORE_STREAM n_cc_c) {
     retime_length_0=0;
     cc_a_retime=new unsigned long long [retime_length_0+1];
     for (int j=retime_length_0;j>=0;j--)
@@ -21,10 +21,15 @@ public:
     cc_b_retime=new unsigned long long [retime_length_1+1];
     for (int j=retime_length_1;j>=0;j--)
       cc_b_retime[j]=0;
-    declareIO(2,1);
+    retime_length_2=0;
+    cc_c_retime=new int [retime_length_2+1];
+    for (int j=retime_length_2;j>=0;j--)
+      cc_c_retime[j]=0;
+    declareIO(3,1);
     bindOutput(0,n_result,new ScoreStreamType(0,0));
     bindInput(0,n_cc_a,new ScoreStreamType(0,0));
     bindInput(1,n_cc_b,new ScoreStreamType(0,0));
+    bindInput(2,n_cc_c,new ScoreStreamType(0,1));
     state=add_0_state_only;
     states=2;
     produces=add_0_produces;
@@ -32,13 +37,14 @@ public:
     source="add in add.tdf";
     // cc_n = 0
     loc=NO_LOCATION;
-    input_rates=new int[2];
+    input_rates=new int[3];
     output_rates=new int[1];
     input_rates[0]=-1;
     input_rates[1]=-1;
+    input_rates[2]=-1;
     output_rates[0]=-1;
-    input_free=new int[2];
-    for (int i=0;i<2;i++)
+    input_free=new int[3];
+    for (int i=0;i<3;i++)
       input_free[i]=0;
     output_close=new int[1];
     for (int i=0;i<1;i++)
@@ -47,6 +53,7 @@ public:
   int pagestep() { 
     unsigned long long cc_a;
     unsigned long long cc_b;
+    int cc_c;
     int done=0;
     int canfire=1;
     switch(state) {
@@ -58,7 +65,10 @@ public:
         int data_1=STREAM_DATA_ARRAY(in[1]);
         int eos_1=0;
         if (data_1) eos_1=STREAM_EOS_ARRAY(in[1]);
-        if (1 && data_0 && !eos_0 && data_1 && !eos_1) {
+        int data_2=STREAM_DATA_ARRAY(in[2]);
+        int eos_2=0;
+        if (data_2) eos_2=STREAM_EOS_ARRAY(in[2]);
+        if (1 && data_0 && !eos_0 && data_1 && !eos_1 && data_2 && !eos_2) {
           if (1 && !STREAM_FULL_ARRAY(out[0])) {
             cc_a=STREAM_READ_ARRAY(in[0]);
             for (int j=retime_length_0;j>0;j--)
@@ -68,11 +78,24 @@ public:
             for (int j=retime_length_1;j>0;j--)
               cc_b_retime[j]=cc_b_retime[j-1];
             cc_b_retime[0]=cc_b;
-            STREAM_WRITE_ARRAY(out[0],(cc_a_retime[0]+cc_b_retime[0]));
+            cc_c=STREAM_READ_ARRAY(in[2]);
+            for (int j=retime_length_2;j>0;j--)
+              cc_c_retime[j]=cc_c_retime[j-1];
+            cc_c_retime[0]=cc_c;
+            if (cc_c_retime[0]) {
+              {
+                STREAM_WRITE_ARRAY(out[0],(cc_a_retime[0]+cc_b_retime[0]));
+              }
+            }
+            else {
+              {
+                STREAM_WRITE_ARRAY(out[0],(cc_a_retime[0]-cc_b_retime[0]));
+              }
+            }
           }
         }
         else
-         if (0 || (data_0 && eos_0) || (data_1 && eos_1)) done=1; else canfire=0;
+         if (0 || (data_0 && eos_0) || (data_1 && eos_1) || (data_2 && eos_2)) done=1; else canfire=0;
         }
         break; 
       } // end case add_0_state_only
@@ -88,6 +111,7 @@ public:
       STREAM_CLOSE(out[0]);
       STREAM_FREE(in[0]);
       STREAM_FREE(in[1]);
+      STREAM_FREE(in[2]);
       state=add_0_state_this_page_is_done;
       return(0);
     }
@@ -98,21 +122,23 @@ private:
   unsigned long long *cc_a_retime;
   int retime_length_1;
   unsigned long long *cc_b_retime;
+  int retime_length_2;
+  int *cc_c_retime;
   int *input_free;
   int *output_close;
 };
-ScoreIOMaskType add_0_consumes[]={3,0};
+ScoreIOMaskType add_0_consumes[]={7,0};
 ScoreIOMaskType add_0_produces[]={1,0};
 class add_0: public ScoreOperatorInstance {
 public:
-  add_0(UNSIGNED_SCORE_STREAM add_0,UNSIGNED_SCORE_STREAM cc_a,UNSIGNED_SCORE_STREAM cc_b) {
+  add_0(UNSIGNED_SCORE_STREAM add_0,UNSIGNED_SCORE_STREAM cc_a,UNSIGNED_SCORE_STREAM cc_b,BOOLEAN_SCORE_STREAM cc_c) {
     pages=1;
     segments=0;
     page=new (ScorePage *)[1];
     segment=new (ScoreSegment *)[0];
     page_group=new int[1];
     segment_group=new int[0];
-    ScorePage *add_0_inst=new Page_add_0(add_0,cc_a,cc_b);
+    ScorePage *add_0_inst=new Page_add_0(add_0,cc_a,cc_b,cc_c);
     page[0]=add_0_inst;
     page_group[0]=NO_GROUP;
   }
@@ -121,5 +147,5 @@ extern "C" ScoreOperatorInstance *construct(char *argbuf) {
   add_arg *data;
   data=(add_arg *)malloc(sizeof(add_arg));
   memcpy(data,argbuf,sizeof(add_arg));
-  return(new add_0(((UNSIGNED_SCORE_STREAM)STREAM_ID_TO_OBJ(data->i0)),((UNSIGNED_SCORE_STREAM)STREAM_ID_TO_OBJ(data->i1)),((UNSIGNED_SCORE_STREAM)STREAM_ID_TO_OBJ(data->i2))));
+  return(new add_0(((UNSIGNED_SCORE_STREAM)STREAM_ID_TO_OBJ(data->i0)),((UNSIGNED_SCORE_STREAM)STREAM_ID_TO_OBJ(data->i1)),((UNSIGNED_SCORE_STREAM)STREAM_ID_TO_OBJ(data->i2)),((BOOLEAN_SCORE_STREAM)STREAM_ID_TO_OBJ(data->i3))));
 }

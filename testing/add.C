@@ -14,11 +14,12 @@ int main(int argc, char *argv[]) {
     UNSIGNED_SCORE_STREAM  a     = NEW_READ_UNSIGNED_SCORE_STREAM(6);
     UNSIGNED_SCORE_STREAM  b     = NEW_READ_UNSIGNED_SCORE_STREAM(6);
     //UNSIGNED_SCORE_STREAM  c     = NEW_WRITE_UNSIGNED_SCORE_STREAM(6);
+    BOOLEAN_SCORE_STREAM d = NEW_READ_BOOLEAN_SCORE_STREAM();
     UNSIGNED_SCORE_STREAM  c; //     = NEW_WRITE_UNSIGNED_SCORE_STREAM(6);
     
     cout << "Finished defining streams!!" << endl;
 
-    c=add8(a,b);
+    c=add8(a,b,d);
 
     cout << "Defined the operator" << endl;
 
@@ -26,9 +27,13 @@ int main(int argc, char *argv[]) {
         cout << "Updating stream with value " << i << endl;
     	STREAM_WRITE(a, i);
     	STREAM_WRITE(b, i);
+        //STREAM_WRITE(d, false);
+        STREAM_WRITE(d, true);
     }
+
     STREAM_CLOSE(a);
     STREAM_CLOSE(b);
+    STREAM_CLOSE(d);
 
     cout << "Finished populating streams!!" << endl;
 

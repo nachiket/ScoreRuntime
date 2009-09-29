@@ -1,6 +1,6 @@
 // cctdfc autocompiled header file
 // tdfc version 1.160
-// Sun Sep 27 19:18:33 2009
+// Mon Sep 28 21:25:14 2009
 
 #include "Score.h"
 #include <errno.h>
@@ -16,10 +16,10 @@ char * add_name="add";
 void * add_proc_run(void *obj) {
   return(((nonfunc_add *)obj)->proc_run()); }
 ScoreOperatorElement *nonfunc_addinit_instances() {
-  return(ScoreOperator::addOperator(add_name,1,3,1));  }
+  return(ScoreOperator::addOperator(add_name,1,4,1));  }
 ScoreOperatorElement *nonfunc_add::instances=nonfunc_addinit_instances();
 
-nonfunc_add::nonfunc_add(unsigned long n_cc_n,UNSIGNED_SCORE_STREAM n_cc_a,UNSIGNED_SCORE_STREAM n_cc_b)
+nonfunc_add::nonfunc_add(unsigned long n_cc_n,UNSIGNED_SCORE_STREAM n_cc_a,UNSIGNED_SCORE_STREAM n_cc_b,BOOLEAN_SCORE_STREAM n_cc_c)
 {
   int *params=(int *)malloc(1*sizeof(int));
   cc_n=n_cc_n;
@@ -38,6 +38,7 @@ nonfunc_add::nonfunc_add(unsigned long n_cc_n,UNSIGNED_SCORE_STREAM n_cc_a,UNSIG
     data->i0=STREAM_OBJ_TO_ID(result);
     data->i1=STREAM_OBJ_TO_ID(n_cc_a);
     data->i2=STREAM_OBJ_TO_ID(n_cc_b);
+    data->i3=STREAM_OBJ_TO_ID(n_cc_c);
     alen=sizeof(add_arg);
     slen=strlen(instance_fn);
     blen=sizeof(long)+sizeof(long)+slen+alen;
@@ -55,12 +56,14 @@ nonfunc_add::nonfunc_add(unsigned long n_cc_n,UNSIGNED_SCORE_STREAM n_cc_a,UNSIG
   }
   else {
   result=NEW_UNSIGNED_SCORE_STREAM(cc_n);
-    declareIO(2,1);
+    declareIO(3,1);
     bindOutput(0,result,new ScoreStreamType(0,cc_n));
     bindInput(0,n_cc_a,new ScoreStreamType(0,cc_n));
     SCORE_MARKREADSTREAM(n_cc_a,globalCounter->threadCounter);
     bindInput(1,n_cc_b,new ScoreStreamType(0,cc_n));
     SCORE_MARKREADSTREAM(n_cc_b,globalCounter->threadCounter);
+    bindInput(2,n_cc_c,new ScoreStreamType(0,1));
+    SCORE_MARKREADSTREAM(n_cc_c,globalCounter->threadCounter);
     pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
     pthread_attr_init(a_thread_attribute);
     pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
@@ -81,8 +84,13 @@ void *nonfunc_add::proc_run() {
   unsigned long long *cc_b_retime=new unsigned long long [retime_length_1+1];
   for (int j=retime_length_1;j>=0;j--)
     cc_b_retime[j]=0;
-  int *input_free=new int[2];
-  for (int i=0;i<2;i++)
+  int cc_c;
+  int retime_length_2=0;
+  int *cc_c_retime=new int [retime_length_2+1];
+  for (int j=retime_length_2;j>=0;j--)
+    cc_c_retime[j]=0;
+  int *input_free=new int[3];
+  for (int i=0;i<3;i++)
     input_free[i]=0;
   int *output_close=new int[1];
   for (int i=0;i<1;i++)
@@ -92,7 +100,8 @@ void *nonfunc_add::proc_run() {
         {
         int eos_0=STREAM_EOS(in[0]);
         int eos_1=STREAM_EOS(in[1]);
-        if (1&&!eos_0&&!eos_1) {
+        int eos_2=STREAM_EOS(in[2]);
+        if (1&&!eos_0&&!eos_1&&!eos_2) {
           cc_a=STREAM_READ_NOACC(in[0]);
           for (int j=retime_length_0;j>0;j--)
             cc_a_retime[j]=cc_a_retime[j-1];
@@ -101,7 +110,20 @@ void *nonfunc_add::proc_run() {
           for (int j=retime_length_1;j>0;j--)
             cc_b_retime[j]=cc_b_retime[j-1];
           cc_b_retime[0]=cc_b;
-          STREAM_WRITE_NOACC(out[0],(cc_a_retime[0]+cc_b_retime[0]));
+          cc_c=STREAM_READ_NOACC(in[2]);
+          for (int j=retime_length_2;j>0;j--)
+            cc_c_retime[j]=cc_c_retime[j-1];
+          cc_c_retime[0]=cc_c;
+          if (cc_c_retime[0]) {
+            {
+              STREAM_WRITE_NOACC(out[0],(cc_a_retime[0]+cc_b_retime[0]));
+            }
+          }
+          else {
+            {
+              STREAM_WRITE_NOACC(out[0],(cc_a_retime[0]-cc_b_retime[0]));
+            }
+          }
         }
         else
          done=1;
@@ -109,12 +131,13 @@ void *nonfunc_add::proc_run() {
   STREAM_CLOSE(out[0]);
   STREAM_FREE(in[0]);
   STREAM_FREE(in[1]);
+  STREAM_FREE(in[2]);
   return((void*)NULL); }
 
-UNSIGNED_SCORE_STREAM add(unsigned long cc_n,UNSIGNED_SCORE_STREAM cc_a,UNSIGNED_SCORE_STREAM cc_b) {
-   nonfunc_add *res=new nonfunc_add(cc_n,cc_a,cc_b);
+UNSIGNED_SCORE_STREAM add(unsigned long cc_n,UNSIGNED_SCORE_STREAM cc_a,UNSIGNED_SCORE_STREAM cc_b,BOOLEAN_SCORE_STREAM cc_c) {
+   nonfunc_add *res=new nonfunc_add(cc_n,cc_a,cc_b,cc_c);
  return(res->getResult()); }
 #undef NEW_nonfunc_add
-extern "C" void *NEW_nonfunc_add(unsigned long i0,UNSIGNED_SCORE_STREAM i1,UNSIGNED_SCORE_STREAM i2) {
-  return((void *) (new nonfunc_add( i0, i1, i2)));
+extern "C" void *NEW_nonfunc_add(unsigned long i0,UNSIGNED_SCORE_STREAM i1,UNSIGNED_SCORE_STREAM i2,BOOLEAN_SCORE_STREAM i3) {
+  return((void *) (new nonfunc_add( i0, i1, i2, i3)));
 }

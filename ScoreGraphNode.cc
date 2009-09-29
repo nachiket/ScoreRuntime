@@ -85,8 +85,14 @@ ScoreGraphNode::~ScoreGraphNode() {
   int i;
   for (i = 0; i < inputs; i++) {
     SCORE_STREAM currentStream = in[i];
+
+    if(errno) {
+      errno=0;
+      perror("Crazy mofo");
+    }
     
     if (currentStream != NULL) {
+    cout << "Who are you??" << endl;
       STREAM_FREE_HW(currentStream);
     }
   }
@@ -94,6 +100,7 @@ ScoreGraphNode::~ScoreGraphNode() {
     SCORE_STREAM currentStream = out[i];
     
     if (currentStream != NULL) {
+    cout << "And, who are you??" << endl;
       STREAM_CLOSE_HW(currentStream);
     }
   }
