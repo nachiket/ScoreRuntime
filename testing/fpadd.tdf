@@ -1,6 +1,8 @@
 // floating-point addition
 double fpadd(input double a, input double b, input boolean c)
 {
-	state only(a,b,c): if(c) {fpadd=a+b;} else {fpadd=a-b;}
+	state only(a,b,c): 
+		if(c) {fpadd=a+b;} else {fpadd=a-b;}
+		printf("Hellow world!\n");
 }
 

@@ -119,7 +119,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 		  10*(buffer[2]-48)+
 		  100*(buffer[1]-48)+
 		  1000*(buffer[0]-48);
-	  cout << "Found existing /tmp/streamid: " << tempID << endl;
+	  //cout << "Found existing /tmp/streamid: " << tempID << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
