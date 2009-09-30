@@ -101,7 +101,7 @@
 // this defines the amount of FIFO buffer space each input stream has
 // (in number of tokens).
 #define SCORE_INPUTFIFO_CAPACITY_ARRAY    256
-#define SCORE_INPUTFIFO_CAPACITY          4
+#define SCORE_INPUTFIFO_CAPACITY          256
 //#define SCORE_INPUTFIFO_CAPACITY          (1<<15)
 
 // this defines the default number of "spare" segment stitch and stream

@@ -324,15 +324,18 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 	perror("doneSemId -- semget -- creation ");
 	exit(errno);
       }
-      /*
+      ///*
       else {
-		// copied by Nachiket from ScoreRuntime.cc
+	      // copied by Nachiket from ScoreRuntime.cc
+	      static ushort start_val_tmp = 1;
+	      arg.array = &start_val_tmp;
+
 	      if (semctl(doneSemId, 0, SETALL, arg) == -1) {
 		      perror("gDoneSemId -- semctl -- initialization");
 		      exit(errno);
 	      }
       }
-      */
+      //*/
     }
   } else {
     // create and initialize the semaphores
@@ -1031,7 +1034,10 @@ void stream_close(ScoreStream *strm) {
       strm->acquire.sem_num = 0;
       PRINT_SEM(b_acquire,strm);
       // Nachiket's fix... WTF is the deal with these semaphores?
-      cout << "Attemping to access semaphore id=" << ScoreStream::doneSemId << endl;
+      union semun arg;
+      int value=semctl(ScoreStream::doneSemId, 0, GETVAL, arg);
+
+      cout << "Attemping to access semaphore id=" << ScoreStream::doneSemId << " with value=" << value << endl;
       while(semop(ScoreStream::doneSemId, &(strm->acquire), 1) == -1) {
 	perror("semop -- stream_close -- acquire");
 	if (errno != EINTR)
