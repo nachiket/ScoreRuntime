@@ -59,7 +59,7 @@ using std::setw;
 
 int ScoreStream::doneSemId = -1;
 
-#if 1
+#if 0
 #define PRINT_SEM(__op__,__ptr__) \
 fprintf(stderr, "%d: %s: %s stream[%u] type[%x]\n", __LINE__, __FUNCTION__, # __op__, (unsigned int) __ptr__, __ptr__ ? (*(AllocationTag*)__ptr__) : -1);
 #else 
@@ -1037,7 +1037,7 @@ void stream_close(ScoreStream *strm) {
       union semun arg;
       int value=semctl(ScoreStream::doneSemId, 0, GETVAL, arg);
 
-      cout << "Attemping to access semaphore id=" << ScoreStream::doneSemId << " with value=" << value << endl;
+//      cout << "Attemping to access semaphore id=" << ScoreStream::doneSemId << " with value=" << value << endl;
       while(semop(ScoreStream::doneSemId, &(strm->acquire), 1) == -1) {
 	perror("semop -- stream_close -- acquire");
 	if (errno != EINTR)
