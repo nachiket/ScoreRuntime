@@ -1066,7 +1066,8 @@ void stream_close(ScoreStream *strm) {
     // need to write a EOS token to the stream
     // strm->stream_write(EOS, 1);
     
-    if (strm->isGCable()) { // recycle everything
+    if (0) { // recycle everything
+    //if (strm->isGCable()) { // recycle everything
       if (VERBOSEDEBUG || DEBUG || VERBOSE_STREAM) {
 	cerr << "[SID=" << strm->streamID << "]   stream_close GCing stream" <<
 	  endl;
@@ -1162,7 +1163,8 @@ void stream_close(ScoreStream *strm) {
     // need to write a EOS token to the stream
     //strm->stream_write(EOS, 1);
 
-    if (strm->isGCable()) { // recycle everything
+    if (0) { // recycle everything
+    //if (strm->isGCable()) { // recycle everything
       // have to do this here since this is the only time we know if we
       // can truly GC this stream!
       ScoreStreamStitch *strmStitch = (ScoreStreamStitch *) strm;
@@ -1267,7 +1269,8 @@ void stream_free(ScoreStream *strm) {
     
     strm->consumerFreed = 1;
     
-    if (strm->isGCable()) { // recycle everything
+    //if (strm->isGCable()) { // recycle everything
+    if (0) { // recycle everything
       if (VERBOSEDEBUG || DEBUG || VERBOSE_STREAM) {
 	cerr << "[SID=" << strm->streamID << "]   stream_free GCing stream" <<
 	  endl;
@@ -1324,8 +1327,10 @@ void stream_free(ScoreStream *strm) {
       // if the sink is an operator, then we will not get a
       // stream_free_hw later on, so detach the segment now.
       if (shouldDetach) {
+      cout << "Detaching segment..." << endl;
         strm->memoized_runtimePtr = NULL;
 	shmdt((char *)strm); // detach memory segment
+      cout << "DetachED segment..." << endl;
       }
     }
   } else {
