@@ -153,11 +153,7 @@ int get_schedulerid()
 
   // For safety?
   if(errno) {
-    perror("Yeah yeah... ");
-    errno=0;
-  }
-  if(errno) {
-    perror("Yeah yeah... ");
+//    perror("Yeah yeah... ");
     errno=0;
   }
 
