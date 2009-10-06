@@ -1276,6 +1276,16 @@ void stream_close(ScoreStream *strm) {
   }
 }
 
+// Added a simple stream frame close signal..
+void stream_frame_close(ScoreStream *strm) {
+
+	if (VERBOSE_STREAM)
+		cerr << "[SID=" << strm->streamID << "]   entering stream_frame_close" << endl;
+
+	// need to write a EOFR token to the stream
+	strm->stream_write(EOFR, 1);
+}
+
 
 void stream_free(ScoreStream *strm) {
 

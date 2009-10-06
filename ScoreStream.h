@@ -330,6 +330,7 @@ typedef unsigned int AllocationTag;
 
 #define STREAM_FREE(x) (stream_free(x))
 #define STREAM_CLOSE(x) (stream_close(x))
+#define STREAM_FRAME_CLOSE(x) (stream_frame_close(x))
 #define STREAM_FREE_HW(x) (stream_free_hw(x))
 #define STREAM_CLOSE_HW(x) (stream_close_hw(x))
 #define STREAM_EOS_ARRAY(x) (x->stream_eos_array())
@@ -423,7 +424,7 @@ class ScoreStream {
   void incrementInputConsumption();
 
   int stream_eos();
-  int stream_eof();
+  int stream_eofr();
   int stream_data();
   int stream_data_any();
   int stream_data_array() {
@@ -717,6 +718,7 @@ SCORE_STREAM_ID streamOBJ_to_ID(ScoreStream *);
 ScoreStream *streamID_to_OBJ(SCORE_STREAM_ID);
 void stream_free(ScoreStream *);
 void stream_close(ScoreStream *);
+void stream_frame_close(ScoreStream *);
 void stream_free_hw(ScoreStream *);
 void stream_close_hw(ScoreStream *);
 void stream_gc(ScoreStream *);
