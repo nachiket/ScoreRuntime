@@ -330,7 +330,7 @@ typedef unsigned int AllocationTag;
 
 #define STREAM_FREE(x) (stream_free(x))
 #define STREAM_CLOSE(x) (stream_close(x))
-#define STREAM_FRAME_CLOSE(x) (stream_frame_close(x))
+#define FRAME_CLOSE(x) (stream_frame_close(x))
 #define STREAM_FREE_HW(x) (stream_free_hw(x))
 #define STREAM_CLOSE_HW(x) (stream_close_hw(x))
 #define STREAM_EOS_ARRAY(x) (x->stream_eos_array())
