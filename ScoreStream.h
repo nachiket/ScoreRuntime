@@ -334,6 +334,7 @@ typedef unsigned int AllocationTag;
 #define STREAM_CLOSE_HW(x) (stream_close_hw(x))
 #define STREAM_EOS_ARRAY(x) (x->stream_eos_array())
 #define STREAM_EOS(x) (x->stream_eos())
+#define STREAM_EOFR(x) (x->stream_eofr())
 #define STREAM_DATA(x) (x->stream_data())
 #define STREAM_DATA_ARRAY(x) (x->stream_data_array())
 #define STREAM_FULL(x) (x->stream_full())
@@ -422,6 +423,7 @@ class ScoreStream {
   void incrementInputConsumption();
 
   int stream_eos();
+  int stream_eof();
   int stream_data();
   int stream_data_any();
   int stream_data_array() {
@@ -700,7 +702,7 @@ class ScoreStream {
   int fixed;
   int depth_hint;
   int head, tail;
-  int token_written, token_read, token_eos;
+  int token_written, token_read, token_eos, token_eofr;
   enum {AVAIL_SLOTS, TO_CONSUME};
   ushort start_val[3];
   int length;

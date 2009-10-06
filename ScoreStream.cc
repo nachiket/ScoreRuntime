@@ -872,6 +872,85 @@ int ScoreStream::stream_eos() {
   return(isEOS);
 }
 
+// End-of-Frame signal added
+int ScoreStream::stream_eofr() {
+
+  int isEOFR = 0;
+
+  token_eofr++;
+
+  // make sure there is a token in the stream
+  // and exam it to see if it is a EOF token
+  // otherwise block
+
+  long long int local_buffer;
+
+  if (VERBOSEDEBUG)
+    cout << "[SID=" << streamID << "]  "
+	 << "   Entering stream_eos \n";
+
+  if (USE_POLLING_STREAMS) {
+    while (head == tail) {
+      sched_yield();
+    }
+  } else {
+    if (!(sched_isStitch)) {
+      acquire.sem_num = TO_CONSUME;
+    
+      while (semop(semid, &acquire, 1) == -1){
+	perror("semop -- stream_read -- acquire ");
+	if (errno != EINTR)
+	  exit(errno);
+      }
+    } else {
+      while (sem_wait(&sem_TO_CONSUME) == -1){
+	perror("sem_wait -- stream_read -- TO_CONSUME ");
+	if (errno != EINTR)
+	  exit(errno);
+      }
+    }
+  }
+
+  // producer need not have closed the stream...
+  // there can potentially be more than 1 token
+  if (get_numtokens() >= 1) {
+    local_buffer = buffer[head].token;
+    
+    // check the token value to make sure it is the EOF token.
+    if (local_buffer == (long long int)EOFR) {
+      isEOFR = 1;
+      
+      // TODO: Wtf is this?
+      if (snkFunc != STREAM_OPERATOR_TYPE) {
+	sink->incrementInputConsumption(snkNum);
+      }
+    } else {
+      isEOFR = 0;
+    }
+  }
+
+
+  if (!USE_POLLING_STREAMS) {
+    if (!(sched_isStitch)) {
+      release.sem_num = TO_CONSUME;
+      
+      while (semop(semid, &release, 1) == -1){
+	perror("semop -- stream_write -- release ");
+	if (errno != EINTR)
+	  exit(errno);
+      }
+    } else {
+      while (sem_post(&sem_TO_CONSUME) == -1){
+	perror("sem_post -- stream_write -- TO_CONSUME ");
+	if (errno != EINTR)
+	  exit(errno);
+      }
+   }
+  }
+
+  return(isEOFR);
+}
+
 
 int ScoreStream::stream_data() {
 
