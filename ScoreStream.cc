@@ -915,6 +915,7 @@ int ScoreStream::stream_eofr() {
   // there can potentially be more than 1 token
   if (get_numtokens() >= 1) {
     local_buffer = buffer[head].token;
+    // NACHIKET: DO NOT CONSUME TOKEN!! FOOL!! head = (head+1) % (length+1+1);
     
     // check the token value to make sure it is the EOF token.
     if (local_buffer == (long long int)EOFR) {
