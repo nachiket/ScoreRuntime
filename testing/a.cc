@@ -36,13 +36,15 @@ int main(int argc, char *argv[]) {
 	data=(stream_arg *)malloc(sizeof(stream_arg));
 	data->send_stream_id=STREAM_OBJ_TO_ID(send_stream);
 	data->receive_stream_id=STREAM_OBJ_TO_ID(receive_stream);
+	cout << "a.cc: send_stream_id=" << data->send_stream_id << endl;
+	cout << "a.cc: receive_stream_id=" << data->receive_stream_id << endl;;
 	int len=sizeof(stream_arg);
-	msgp=(struct msgbuf *)malloc(sizeof(msgbuf)+sizeof(char)*(len));
+	msgp=(struct msgbuf *)malloc(sizeof(msgbuf)+sizeof(char)*(len+sizeof(long)-1));
 	cout << "a.cc: schedulerid=" << ipcID << endl;
 	memcpy(msgp->mtext,&len,sizeof(long));
 	memcpy(msgp->mtext+sizeof(long),data,len);
 	msgp->mtype=SCORE_INSTANTIATE_MESSAGE_TYPE;
-	int res=msgsnd(ipcID, msgp, len+1, 0) ;
+	int res=msgsnd(ipcID, msgp, len+sizeof(long), 0) ;
 	if (res==-1) {
 		cerr <<"a.cc: errno=" << errno << endl;
 		exit(2);    
@@ -54,7 +56,6 @@ int main(int argc, char *argv[]) {
 		STREAM_WRITE_DOUBLE(send_stream, (double)i);
 	}
 	
-	STREAM_CLOSE(send_stream);
 
 	// Receive tokens
 	for(i=0;i<10;i++) {
@@ -62,6 +63,7 @@ int main(int argc, char *argv[]) {
 		cout << "a.cc: RECEIVE i=" << i << ", j=" << j << endl;
 	}
 	
+	STREAM_CLOSE(send_stream);
 	STREAM_CLOSE(receive_stream);
 
 	score_exit();

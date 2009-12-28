@@ -40,7 +40,8 @@ int main(int argc, char *argv[]) {
 	// go into a loop to get messages from a.cc
 	int len;
 	char *argbuf;
-	while (1) {
+	bool ctrl_pkt_received=false;
+	while (!ctrl_pkt_received) {
 		int msgsz = msgrcv(ipcID, msgp, sizeof(rmsgbuf), SCORE_INSTANTIATE_MESSAGE_TYPE, 0);
 
 		// process the message.
@@ -57,6 +58,7 @@ int main(int argc, char *argv[]) {
 			memcpy(argbuf, msgp->mtext+4, len);
 
 			cout << "b.cc: Received ctrl pkt." << endl;
+			ctrl_pkt_received=true;
 		}
 	}
 
@@ -65,6 +67,8 @@ int main(int argc, char *argv[]) {
 	memcpy(data,argbuf,sizeof(stream_arg));
 
 	// initialize the stream object pointers
+	cout << "b.cc: receive_stream_id=" << data->send_stream_id << endl;
+        cout << "b.cc: send_stream_id=" << data->receive_stream_id << endl;
 	receive_stream = (DOUBLE_SCORE_STREAM)STREAM_ID_TO_OBJ(data->send_stream_id);
 	send_stream = (DOUBLE_SCORE_STREAM)STREAM_ID_TO_OBJ(data->receive_stream_id);
 
@@ -74,16 +78,15 @@ int main(int argc, char *argv[]) {
 		cout << "b.cc: RECEIVE i=" << i << ", j=" << j << endl;
 	}
 	
-	bool eos=STREAM_EOS(receive_stream);
-	STREAM_CLOSE(receive_stream);
-
 	// Send stream
-	for(i=0;i<=0;i++) {
+	for(i=0;i<=10;i++) {
 		cout << "b.cc: SEND i=" << i << endl;
 		STREAM_WRITE_DOUBLE(send_stream, (double)i+1);
 	}
 
-	STREAM_CLOSE(send_stream);
+	//bool eos=STREAM_EOS(receive_stream);
+	//STREAM_CLOSE(receive_stream);
+	//STREAM_CLOSE(send_stream);
 
 	score_exit();
 }
