@@ -726,7 +726,7 @@ bool ScoreStateGraph::writeNetlist(FILE *myfile, bool uniqRes)
 
 void ScoreStateGraph::shortenName(const char *src, char *snk)
 {
-  char *ptr = strstr(src, "in");
+  const char *ptr = strstr(src, "in");
 
   // if in was found
   if (ptr) {
