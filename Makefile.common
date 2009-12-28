@@ -44,5 +44,5 @@ INCLUDE = -I$(PAPI_INC) -I/opt/leda/incl -I./include -I. $(SCHEDULER_INCLUDES) \
 	-include ScoreImplConf.h
 
 LIB = -L./lib -L. -L/opt/leda \
-	-lpthread -lleda -lX11 -ldl -lm -lperfctr $(PLOCK_LIB)
+	-lpthread -lleda -lX11 -ldl -lm $(PLOCK_LIB)
 
