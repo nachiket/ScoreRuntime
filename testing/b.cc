@@ -34,8 +34,20 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	int ipcID;
-	scanf("%d",&ipcID);
+	//int ipcID;
+	//scanf("%d",&ipcID);
+
+	// Setup IPC
+	key_t ipcKey = ftok(".", 0);
+	if (ipcKey == -1) {
+		cerr << "b.cc: ipc key error!" << endl;
+		exit(1);
+	}
+	int ipcID = msgget(ipcKey, IPC_CREAT|0666);
+	cout << "b.cc: Id=" << ipcID << endl;
+	//int dummyID;
+	//scanf("%d",&dummyID);
+
 
 	// go into a loop to get messages from a.cc
 	int len;
