@@ -19,13 +19,16 @@ typedef struct rmsgbuf {
 
 using namespace std;
 
+DOUBLE_SCORE_STREAM receive_stream;
+DOUBLE_SCORE_STREAM send_stream;
+DOUBLE_SCORE_STREAM receive_stream1;
+DOUBLE_SCORE_STREAM send_stream1;
+
 int main(int argc, char *argv[]) {
 
 	score_init();
 
 	int i=0;
-	DOUBLE_SCORE_STREAM receive_stream;
-	DOUBLE_SCORE_STREAM send_stream;
 
 	// Receive stream ids for the shared stream structures...
 	rmsgbuf *msgp = new struct rmsgbuf();
@@ -33,9 +36,6 @@ int main(int argc, char *argv[]) {
 		cerr << "Insufficient memory to instantiate IPC buffer!" << endl;
 		exit(1);
 	}
-
-	//int ipcID;
-	//scanf("%d",&ipcID);
 
 	// Setup IPC
 	key_t ipcKey = ftok(".", 0);
@@ -45,9 +45,6 @@ int main(int argc, char *argv[]) {
 	}
 	int ipcID = msgget(ipcKey, IPC_CREAT|0666);
 	cout << "b.cc: Id=" << ipcID << endl;
-	//int dummyID;
-	//scanf("%d",&dummyID);
-
 
 	// go into a loop to get messages from a.cc
 	int len;
@@ -81,8 +78,12 @@ int main(int argc, char *argv[]) {
 	// initialize the stream object pointers
 	cout << "b.cc: receive_stream_id=" << data->send_stream_id << endl;
         cout << "b.cc: send_stream_id=" << data->receive_stream_id << endl;
+	cout << "b.cc: receive_stream1_id=" << data->send_stream1_id << endl;
+        cout << "b.cc: send_stream1_id=" << data->receive_stream1_id << endl;
 	receive_stream = (DOUBLE_SCORE_STREAM)STREAM_ID_TO_OBJ(data->send_stream_id);
 	send_stream = (DOUBLE_SCORE_STREAM)STREAM_ID_TO_OBJ(data->receive_stream_id);
+	receive_stream1 = (DOUBLE_SCORE_STREAM)STREAM_ID_TO_OBJ(data->send_stream1_id);
+	send_stream1 = (DOUBLE_SCORE_STREAM)STREAM_ID_TO_OBJ(data->receive_stream1_id);
 
 	// Receive stream
 	for(i=0;i<10;i++) {

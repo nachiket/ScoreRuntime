@@ -20,6 +20,8 @@ int main(int argc, char *argv[]) {
 
 	DOUBLE_SCORE_STREAM send_stream = NEW_DOUBLE_SCORE_STREAM();
 	DOUBLE_SCORE_STREAM receive_stream = NEW_DOUBLE_SCORE_STREAM();
+	DOUBLE_SCORE_STREAM send_stream1 = NEW_DOUBLE_SCORE_STREAM();
+	DOUBLE_SCORE_STREAM receive_stream1 = NEW_DOUBLE_SCORE_STREAM();
 
 	// Setup IPC
 	key_t ipcKey = ftok(".", 0);
@@ -36,8 +38,12 @@ int main(int argc, char *argv[]) {
 	data=(stream_arg *)malloc(sizeof(stream_arg));
 	data->send_stream_id=STREAM_OBJ_TO_ID(send_stream);
 	data->receive_stream_id=STREAM_OBJ_TO_ID(receive_stream);
+	data->send_stream1_id=STREAM_OBJ_TO_ID(send_stream1);
+	data->receive_stream1_id=STREAM_OBJ_TO_ID(receive_stream1);
 	cout << "a.cc: send_stream_id=" << data->send_stream_id << endl;
 	cout << "a.cc: receive_stream_id=" << data->receive_stream_id << endl;;
+	cout << "a.cc: send_stream1_id=" << data->send_stream1_id << endl;
+	cout << "a.cc: receive_stream1_id=" << data->receive_stream1_id << endl;;
 	int len=sizeof(stream_arg);
 	msgp=(struct msgbuf *)malloc(sizeof(msgbuf)+sizeof(char)*(len+sizeof(long)-1));
 	cout << "a.cc: schedulerid=" << ipcID << endl;
