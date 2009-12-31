@@ -3,12 +3,13 @@
 
 #include "xilscorestream.h"
 #include "xilscorestreamtype.h"
+#define STREAM_OPERATOR_TYPE 1
 
 class ScoreGraphNode {
 
 public: 
   ScoreGraphNode();
-  virtual ~ScoreGraphNode();
+  ~ScoreGraphNode(); // cannot be a virtual destructor! Whoa!
 
   int getInputs() {return(inputs);}
   int getOutputs() {return(outputs);}

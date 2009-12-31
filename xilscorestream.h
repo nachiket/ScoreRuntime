@@ -1,10 +1,13 @@
 #ifndef _ScoreStream_H
 #define _ScoreStream_H
 
+#define VERBOSE false
+
+#include "stdio.h"
 #include <sys/types.h>
 #include <pthread.h>
 #include "xilscoretype.h"
-#include "xilscorenode.h"
+//#include "xilscorenode.h"
 
 // Depth if not defined..
 #define DEFAULT_SIZE 256
@@ -18,19 +21,19 @@
 //			CONSTRUCTORS
 //----------------------------------------------------
 // **********no depth_hint*********** 
-#define NEW_SCORE_STREAM() 		(new ScoreStream(64,0,DEFAULT_SIZE,SCORE_STREAM_UNTYPED,NOT_USER_STREAM))
-#define NEW_SIGNED_SCORE_STREAM(w) 	(new TypedScoreStream<SCORE_STREAM_SIGNED_TYPE>(w,0,DEFAULT_SIZE,NOT_USER_STREAM))
-#define NEW_UNSIGNED_SCORE_STREAM(w) 	(new TypedScoreStream<SCORE_STREAM_UNSIGNED_TYPE>(w,0,DEFAULT_SIZE,NOT_USER_STREAM))
-#define NEW_BOOLEAN_SCORE_STREAM() 	(new TypedScoreStream<SCORE_STREAM_BOOLEAN_TYPE>(1,0,DEFAULT_SIZE,NOT_USER_STREAM))
-#define NEW_FLOAT_SCORE_STREAM() 	(new TypedScoreStream<SCORE_STREAM_FLOAT_TYPE>(32,0,DEFAULT_SIZE,NOT_USER_STREAM))
-#define NEW_DOUBLE_SCORE_STREAM() 	(new TypedScoreStream<SCORE_STREAM_DOUBLE_TYPE>(64,0,DEFAULT_SIZE,NOT_USER_STREAM))
+#define NEW_SCORE_STREAM() 		(new ScoreStream(64,0,DEFAULT_SIZE,SCORE_STREAM_UNTYPED))
+#define NEW_SIGNED_SCORE_STREAM(w) 	(new TypedScoreStream<SCORE_STREAM_SIGNED_TYPE>(w,0,DEFAULT_SIZE))
+#define NEW_UNSIGNED_SCORE_STREAM(w) 	(new TypedScoreStream<SCORE_STREAM_UNSIGNED_TYPE>(w,0,DEFAULT_SIZE))
+#define NEW_BOOLEAN_SCORE_STREAM() 	(new TypedScoreStream<SCORE_STREAM_BOOLEAN_TYPE>(1,0,DEFAULT_SIZE))
+#define NEW_FLOAT_SCORE_STREAM() 	(new TypedScoreStream<SCORE_STREAM_FLOAT_TYPE>(32,0,DEFAULT_SIZE))
+#define NEW_DOUBLE_SCORE_STREAM() 	(TypedScoreStream<SCORE_STREAM_DOUBLE_TYPE>(64,0,DEFAULT_SIZE))
 // ********depth_hint macros********* 
-#define NEW_SCORE_STREAM_DEPTH_HINT(dh) 		(new ScoreStream(64,0,DEFAULT_SIZE,SCORE_STREAM_UNTYPED,NOT_USER_STREAM,dh))
-#define NEW_SIGNED_SCORE_STREAM_DEPTH_HINT(w,dh) 	(new TypedScoreStream<SCORE_STREAM_SIGNED_TYPE>(w,0,DEFAULT_SIZE,NOT_USER_STREAM,dh))
-#define NEW_UNSIGNED_SCORE_STREAM_DEPTH_HINT(w,dh) 	(new TypedScoreStream<SCORE_STREAM_UNSIGNED_TYPE>(w,0,DEFAULT_SIZE,NOT_USER_STREAM,dh))
-#define NEW_BOOLEAN_SCORE_STREAM_DEPTH_HINT(dh) 	(new TypedScoreStream<SCORE_STREAM_BOOLEAN_TYPE>(1,0,DEFAULT_SIZE,NOT_USER_STREAM, dh))
-#define NEW_FLOAT_SCORE_STREAM_DEPTH_HINT(dh) 		(new TypedScoreStream<SCORE_STREAM_FLOAT_TYPE>(32,0,DEFAULT_SIZE,NOT_USER_STREAM, dh))
-#define NEW_DOUBLE_SCORE_STREAM_DEPTH_HINT(dh) 		(new TypedScoreStream<SCORE_STREAM_DOUBLE_TYPE>(64,0,DEFAULT_SIZE,NOT_USER_STREAM, dh))
+#define NEW_SCORE_STREAM_DEPTH_HINT(dh) 		(new ScoreStream(64,0,DEFAULT_SIZE,SCORE_STREAM_UNTYPED,dh))
+#define NEW_SIGNED_SCORE_STREAM_DEPTH_HINT(w,dh) 	(new TypedScoreStream<SCORE_STREAM_SIGNED_TYPE>(w,0,DEFAULT_SIZE,dh))
+#define NEW_UNSIGNED_SCORE_STREAM_DEPTH_HINT(w,dh) 	(new TypedScoreStream<SCORE_STREAM_UNSIGNED_TYPE>(w,0,DEFAULT_SIZE,dh))
+#define NEW_BOOLEAN_SCORE_STREAM_DEPTH_HINT(dh) 	(new TypedScoreStream<SCORE_STREAM_BOOLEAN_TYPE>(1,0,DEFAULT_SIZE,dh))
+#define NEW_FLOAT_SCORE_STREAM_DEPTH_HINT(dh) 		(new TypedScoreStream<SCORE_STREAM_FLOAT_TYPE>(32,0,DEFAULT_SIZE,dh))
+#define NEW_DOUBLE_SCORE_STREAM_DEPTH_HINT(dh) 		(new TypedScoreStream<SCORE_STREAM_DOUBLE_TYPE>(64,0,DEFAULT_SIZE,dh))
 
 //----------------------------------------------------
 //			CONNECTIONS
@@ -84,15 +87,13 @@ class ScoreStream {
 
  public:
   // Constructors..
-  void *operator new(size_t);
-  void operator delete(void*,size_t);
+//  void *operator new(size_t);
+//  void operator delete(void*,size_t);
   ScoreStream();
-  ScoreStream(int,int,int,ScoreType, unsigned int, int depth_hint = 0); 
+  ScoreStream(int,int,int,ScoreType, int depth_hint = 0); 
               //width, fixed, length, type, user stream type
   ~ScoreStream();
 
-  // Mutex for exclusive access to the stream
-  ptread_mutex_t mutex;
 
   // Read-Write operations
   void stream_write(long long int, int writingEOS = 0);
@@ -112,9 +113,8 @@ class ScoreStream {
   int stream_data_any();
 
   int stream_full() {
-    if (VERBOSEDEBUG)
-      cout << "[SID=" << streamID << "]  "
-	   << "   Entering stream_full \n";
+    if (VERBOSE)
+      xil_printf("[SID=%d]  Entering stream_full \n",streamID);
 
     // if the head pointer is ahead of the tail pointer by one,
     // then the stream is full and the fucntion will return 1
@@ -131,9 +131,8 @@ class ScoreStream {
   };
 
   int stream_empty() {
-    if (VERBOSEDEBUG)
-      cout << "[SID=" << streamID << "]  "
-           << "   Entering stream_empty \n";
+    if (VERBOSE)
+      xil_printf("[SID=%d]  Entering stream_empty \n",streamID);
 
     // if the head pointer is equal to the tail pointer,
     // then the stream is empty and the fucntion will return 1
@@ -147,17 +146,16 @@ class ScoreStream {
      * fill in src slot w/ node given       *
      * check widths (types) for consistency */
 
-    if (VERBOSEDEBUG || DEBUG) {
-      cout << "[SID=" << streamID << "]  "
-	   << "   stream_bind_src got called" << endl;
+    if (VERBOSE) {
+      xil_printf("[SID=%d]  Entering stream_bind_src \n",streamID);
     }
 
     if (src != NULL) { 
-      cerr << "stream_bind_src: src node not NULL" << endl;
-      exit(1);
+      xil_printf("ERROR: stream_bind_src: src node not NULL\n");
+      //exit(1);
     } else {
-      sched_src = src = srcNode;
-      sched_srcFunc = srcFunc = newSrcFunc;
+      src = srcNode;
+      srcFunc = newSrcFunc;
     }
   }
 
@@ -167,38 +165,35 @@ class ScoreStream {
      * fill in sink slot w/ node given      *
      * check widths (types) for consistency */
 
-    if (VERBOSEDEBUG || DEBUG) {
-      cout << "[SID=" << streamID << "]  "
-	   << "   stream_bind_snk got called" << endl;
+    if (VERBOSE) {
+      xil_printf("[SID=%d]  Entering stream_bind_snk \n",streamID);
     }
 
     if (sink != NULL) {
-      cerr << "stream_bind_sink: sink node not NULL" << endl;
-      exit(1);
+      xil_printf("stream_bind_sink: sink node not NULL\n");
+      //exit(1);
     } else {
-      sched_sink = sink = sinkNode;
-      sched_snkFunc = snkFunc = newSnkFunc;
+      sink = sinkNode;
+      snkFunc = newSnkFunc;
     }
   }
 
   void stream_unbind_src() {
-    if (VERBOSEDEBUG || DEBUG) {
-      cout << "[SID=" << streamID << "]  "
-	   << "   stream_unbind_src got called" << endl;
+    if (VERBOSE) {
+      xil_printf("[SID=%d]  Entering stream_nubind_src \n",streamID);
     }
 
-    sched_src = src = NULL;
-    sched_srcFunc = srcFunc = 0;
+    src = NULL;
+    srcFunc = 0;
   }
 
   void stream_unbind_sink() {
-    if (VERBOSEDEBUG || DEBUG) {
-      cout << "[SID=" << streamID << "]  "
-	   << "   stream_unbind_snk got called" << endl;
+    if (VERBOSE) {
+      xil_printf("[SID=%d]  Entering stream_unbind_snk \n",streamID);
     }
 
-    sched_sink = sink = NULL;
-    sched_snkFunc = snkFunc = 0;
+    sink = NULL;
+    snkFunc = 0;
   }
 
   int get_stream_tokens_eos() { return token_eos;}
@@ -212,14 +207,16 @@ class ScoreStream {
   int get_depth_hint() {return depth_hint;}
 
   ScoreType get_type() {return type;}
-  int get_numtokens();
+  int get_numtokens() {return head-tail;};
 
+
+  // Mutex for exclusive access to the stream
   int streamID;
+  pthread_mutex_t mutex;
   int producerClosed;
   int consumerFreed;
   ScoreGraphNode *src;
   ScoreGraphNode *sink;
-  struct sembuf acquire,release;
   int srcFunc;
   int snkFunc;
   int srcNum;
@@ -245,10 +242,10 @@ class ScoreStream {
   ScoreType type;
 
   // have to figure out how to select between one of these..
-  bool bool_buffer[ARRAY_FIFO_SIZE+1+1];
-  int int_buffer[ARRAY_FIFO_SIZE+1+1];
-  float float_buffer[ARRAY_FIFO_SIZE+1+1];
-  double double_buffer[ARRAY_FIFO_SIZE+1+1]; // LOL@double_buffer
+//  bool bool_buffer[ARRAY_FIFO_SIZE+1+1];
+//  int int_buffer[ARRAY_FIFO_SIZE+1+1];
+//  float float_buffer[ARRAY_FIFO_SIZE+1+1];
+  double* buffer; // LOL@double_buffer
 };
 
 void stream_free(ScoreStream *);
@@ -260,8 +257,8 @@ template <ScoreType ScoreType_t>
 class TypedScoreStream : public ScoreStream
 {
  public:
-  TypedScoreStream(int width_t_, int fixed_t_, int length_t_, unsigned int usr_stream_type, int depth_hint_t_ = 0) :
-    ScoreStream(width_t_, fixed_t_, length_t_, ScoreType_t, usr_stream_type, depth_hint_t_) 
+  TypedScoreStream(int width_t_, int fixed_t_, int length_t_, int depth_hint_t_ = 0) :
+    ScoreStream(width_t_, fixed_t_, length_t_, ScoreType_t, depth_hint_t_) 
     {}
 };
 
@@ -272,3 +269,4 @@ typedef TypedScoreStream<SCORE_STREAM_BOOLEAN_TYPE>* BOOLEAN_SCORE_STREAM;
 typedef TypedScoreStream<SCORE_STREAM_SIGNED_TYPE>* SIGNED_SCORE_STREAM;
 typedef TypedScoreStream<SCORE_STREAM_UNSIGNED_TYPE>* UNSIGNED_SCORE_STREAM;
 
+#endif

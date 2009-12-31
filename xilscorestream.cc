@@ -1,36 +1,18 @@
 #include <pthread.h>
-#include "xilxcorenode.h"
+#include <sys/bufmalloc.h>
+#include <sys/process.h>
+#include "xilscorenode.h"
 #include "xilscorestream.h"
 
 #define sched_yield yield
 
-void *ScoreStream::operator new(size_t size) {
-
-	void *ptr = 0;
-
-	// create a memory region for use as the buffer..
-	ptr = malloc(size);
-	if (!ptr) {
-		perror("ptr -- stream new operator -- unable to malloc mem");
-		exit(errno);
-	}
-
-	return ptr;
-}
-
-void ScoreStream::operator delete(void *rawMem, size_t size)
-{
-	ScoreStream *strm = (ScoreStream *)rawMem;
-	free(rawMem);
-}
-
+static membuf_t pool;
+char membuf_data[256][4] __attribute__ ((aligned(4)));
 
 ScoreStream::ScoreStream() {}
 
-
 ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 		ScoreType type_t,
-		unsigned int user_stream_type,
 		int depth_hint_t) {
 
 
@@ -50,9 +32,9 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 
 	// Create a mutex for this stream  
 	int ret=pthread_mutex_init(&mutex, NULL);
-	if(ret==EAGAIN) {
-		xil_printf("mutex -- init -- creating failure out of resources");
-		exit(1);
+	if(ret!=0) {
+		xil_printf("ERROR: Cannot create mutex\n");
+//		exit(1);
 	}
 
 	producerClosed = 0;
@@ -65,17 +47,21 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 	snkFunc = STREAM_OPERATOR_TYPE;
 
 
+	buffer = (double *)bufmalloc(pool, sizeof(double)*depth_hint);
 }
 
 ScoreStream::~ScoreStream()
 {
-	if (VERBOSEDEBUG || DEBUG) {
-		cerr << "[SID=" << streamID << "][" << (unsigned int) this << "] "
-			<< "ScoreStream Destructor called on " << streamID << endl;
+	if (VERBOSE ) {
+		xil_printf("ERROR: [SID=%d] ScoreStream Destructor called\n", streamID);
 	}
 
 	pthread_mutex_destroy(&mutex);
 
+}
+
+double ScoreStream::stream_read_double() {
+	return stream_read();
 }
 
 long long int ScoreStream::stream_read() {
@@ -84,8 +70,8 @@ long long int ScoreStream::stream_read() {
 
 	// if stream is freed, disallow any more reads.
 	if (consumerFreed) {
-		cerr << "xilscorestream.h: Attempting to read from a freed stream!" << endl;
-		exit(1);
+		xil_printf("ERROR: xilscorestream.h: Attempting to read from a freed stream! [SID=%d]\n",streamID);
+//		exit(1);
 	}
 
 	// check to see if empty
@@ -95,12 +81,12 @@ long long int ScoreStream::stream_read() {
 
 	// core read operation
 	pthread_mutex_lock(&mutex);
-	local_buffer = buffer[head].token;
+	local_buffer = buffer[head];
 	head = (head+1) % (length+1+1);
 	token_read++;
 	pthread_mutex_unlock(&mutex);
 
-	if (VERBOSEDEBUG || DEBUG) {
+	if (VERBOSE ) {
 		printf("[SID=%d]   Stream Read: %llx \n", streamID, local_buffer);
 
 	}
@@ -108,18 +94,22 @@ long long int ScoreStream::stream_read() {
 	return local_buffer;
 }
 
+void ScoreStream::stream_write_double(double input, int writingEOS) {
+	stream_write(input, writingEOS);
+}
+
 void ScoreStream::stream_write(long long int input, int writingEOS) {
 
 	// if the producerClosed, then disallow any more writes!
 	if (producerClosed && !writingEOS) {
-		cerr << "xilscorestream.h: Attempting to write a closed stream [SID=" << streamID << endl;
-		exit(1);
+		xil_printf("ERROR: xilscorestream.h: Attempting to write a closed stream [SID=%d]\n", streamID);
+//		exit(1);
 	}
 
 	// if the sinkIsDone, then just complete since all tokens are being thrown away!
 	if (sinkIsDone) {
 		if (VERBOSE) {
-			cout << "[SID=" << streamID << "]  Throwing away written token since sinkIsDone!" << endl;
+			xil_printf("[SID=%d]  Throwing away written token since sinkIsDone!\n", streamID);
 		}
 
 		return;
@@ -131,16 +121,15 @@ void ScoreStream::stream_write(long long int input, int writingEOS) {
 		sched_yield();
 	}
 
-	pthread_mutex_lock(&pthread);
+	pthread_mutex_lock(&mutex);
 	// core write operation
-	buffer[tail].token = input;
-	buffer[tail].timeStamp = cTime;
+	buffer[tail]= input;
 	tail = (tail+1) % (length+1+1);
 	token_written++;
-	pthread_mutex_unlock(&pthread);
+	pthread_mutex_unlock(&mutex);
 
 	if (VERBOSE) {
-		printf("[SID=%d]   Stream Write: %llx \n", streamID,input);
+		xil_printf("[SID=%d]   Stream Write: %llx \n", streamID,input);
 	}
 
 }
@@ -150,12 +139,12 @@ int ScoreStream::stream_eos() {
 
 	int isEOS = 0;
 
-	token_eos++;
+//	token_eos++;
 
 	long long int local_buffer;
 
 	if (VERBOSE)
-		cout << "[SID=" << streamID << "]  entering stream_eos \n";
+		xil_printf("[SID=%d]  entering stream_eos \n", streamID);
 
 	// check empty
 	while (head == tail) {
@@ -165,7 +154,7 @@ int ScoreStream::stream_eos() {
 	// check
 	pthread_mutex_lock(&mutex);
 	if (producerClosed && (get_numtokens() == 1)) {
-		local_buffer = buffer[head].token;
+		local_buffer = buffer[head];
 
 		if (local_buffer == (long long int)EOS) {
 			isEOS = 1;
@@ -184,7 +173,7 @@ int ScoreStream::stream_eofr() {
 
 	int isEOFR = 0;
 
-	token_eofr++;
+//	token_eofr++;
 
 	// make sure there is a token in the stream
 	// and exam it to see if it is a EOF token
@@ -193,7 +182,7 @@ int ScoreStream::stream_eofr() {
 	long long int local_buffer;
 
 	if (VERBOSE)
-		cout << "[SID=" << streamID << "]  entering stream_eos \n";
+		xil_printf("[SID=%d]  entering stream_eos \n", streamID);
 
 	while (head == tail) {
 		sched_yield();
@@ -202,7 +191,7 @@ int ScoreStream::stream_eofr() {
 	// check
 	pthread_mutex_lock(&mutex);
 	if (get_numtokens() >= 1) {
-		local_buffer = buffer[head].token;
+		local_buffer = buffer[head];
 
 		// check the token value to make sure it is the EOF token.
 		if (local_buffer == (long long int)EOFR) {
@@ -219,17 +208,17 @@ int ScoreStream::stream_eofr() {
 void stream_close(ScoreStream *strm) {
 
 	if (VERBOSE) 
-		cerr << "[SID=" << strm->streamID << "]   entering stream_close" << endl;
+		xil_printf("ERROR: [SID=%d]   entering stream_close\n", strm->streamID);
 
 	// make sure this is not a double close.
 	if (strm->producerClosed) {
-		cerr << "xilscorestream.h Error: Trying to double-close a stream!" << srtm->streaID << endl;
-		exit(1);
+		xil_printf("ERROR: xilscorestream.h Error: Trying to double-close a stream! Id=%d\n", strm->streamID);
+//		exit(1);
 	}
 
-	pthread_mutex_lock(&mutex);
+	pthread_mutex_lock(&(strm->mutex));
 	strm->producerClosed = 1;
-	pthread_mutex_unlock(&mutex);
+	pthread_mutex_unlock(&(strm->mutex));
 
 	strm->stream_write(EOS, 1);
 }
@@ -237,7 +226,7 @@ void stream_close(ScoreStream *strm) {
 void stream_frame_close(ScoreStream *strm) {
 
 	if (VERBOSE)
-		cerr << "[SID=" << strm->streamID << "]   entering stream_frame_close" << endl;
+		xil_printf("ERROR: [SID=%d]   entering stream_frame_close\n", strm->streamID);
 
 	// need to write a EOFR token to the stream
 	strm->stream_write(EOFR, 1);
@@ -247,18 +236,18 @@ void stream_frame_close(ScoreStream *strm) {
 void stream_free(ScoreStream *strm) {
 
 	if (VERBOSE) {
-		cerr << "[SID=" << strm->streamID << "]   entering stream_free" << endl;
+		xil_printf("ERROR: [SID=%d]   entering stream_free\n",strm->streamID);
 	}
 
 	// make sure this is not a double free.
 	if (strm->consumerFreed) {
-		cerr << "xilscorestream.h Error: Trying to double-free a stream!" << srtm->streaID << endl;
-		exit(1);
+		xil_printf("ERROR: xilscorestream.h Error: Trying to double-free a stream! Id=%d\n", strm->streamID);
+//		exit(1);
 	}
 
-	pthread_mutex_lock(&mutex);    
+	pthread_mutex_lock(&(strm->mutex));    
 	strm->consumerFreed = 1;
-	pthread_mutex_unlock(&mutex);    
+	pthread_mutex_unlock(&(strm->mutex));    
 
 }
 
