@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <semaphore.h>
 #include "xilscoretype.h"
+#include "xilscorenode.h"
 
 // Depth if not defined..
 #define DEFAULT_SIZE 256
