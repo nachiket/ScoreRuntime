@@ -2,7 +2,7 @@
 #define _ScoreStream_H
 
 #include <sys/types.h>
-#include <semaphore.h>
+#include <pthread.h>
 #include "xilscoretype.h"
 #include "xilscorenode.h"
 
@@ -90,6 +90,9 @@ class ScoreStream {
   ScoreStream(int,int,int,ScoreType, unsigned int, int depth_hint = 0); 
               //width, fixed, length, type, user stream type
   ~ScoreStream();
+
+  // Mutex for exclusive access to the stream
+  ptread_mutex_t mutex;
 
   // Read-Write operations
   void stream_write(long long int, int writingEOS = 0);
