@@ -733,7 +733,7 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
 #endif
 
   if (VERBOSE_STREAM) {
-    cerr << "stream_write_array -- line " << __LINE__ << " [SID=" << streamID
+    cerr << "stream_write -- line " << __LINE__ << " [SID=" << streamID
 	 << "][" << (unsigned int)this 
 	 << "] " << (sched_isStitch ? "STITCH" : "NOT")
 	 << " producerClosed = " << producerClosed
@@ -840,6 +840,12 @@ int ScoreStream::stream_eos() {
     //       EOS TOKEN AND SETTING THE PRODUCERCLOSED FLAG IS NOT ATOMIC,
     //       THEN THIS IS A POSSIBLE CONDITION!
     if (local_buffer == (long long int)EOS) {
+     if(local_buffer == (long long int)EOFR) {
+     	cout << "EOS AND EOFR are overlapping??" << endl;
+     } else {
+        cout << "EOS and EOFR are playing some trick.." << endl;
+     }
+
       isEOS = 1;
       
       if (snkFunc != STREAM_OPERATOR_TYPE) {
@@ -1071,6 +1077,8 @@ unsigned long long ScoreStream::stream_head_futuretime() {
 
 
 void stream_close(ScoreStream *strm) {
+
+cout << "stream_close called on " << strm->streamID << endl;
 
   if (VERBOSE_STREAM) 
     cerr << "[SID=" << strm->streamID << "]   entering stream_close" << endl;
@@ -1631,6 +1639,7 @@ void stream_close_hw(ScoreStream *strm) {
 
 void stream_free_hw(ScoreStream *strm) {
 
+cout << "---------------------Seriously??" << endl;
 
   if (!(strm->sched_isStitch)) {
     if (VERBOSEDEBUG || DEBUG) {
