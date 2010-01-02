@@ -1280,16 +1280,18 @@ void stream_close(ScoreStream *strm) {
 // Added a simple stream frame close signal..
 void stream_frame_close(ScoreStream *strm) {
 
+cout << "frame_close called on " << strm->streamID << endl;
 	if (VERBOSE_STREAM)
 		cerr << "[SID=" << strm->streamID << "]   entering stream_frame_close" << endl;
 
 	// need to write a EOFR token to the stream
-	strm->stream_write(EOFR, 1);
+	strm->stream_write(EOFR, 0); // Maa-Behen!
 }
 
 
 void stream_free(ScoreStream *strm) {
 
+cout << "stream_free called on " << strm->streamID << endl;
 
   // make sure this is not a double free.
   if (strm->consumerFreed) {
