@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 	cout << "b.cc: Id=" << ipcID << endl;
 
 	// go into a loop to get messages from a.cc
-	int len;
+	long len;
 	char *argbuf;
 	bool ctrl_pkt_received=false;
 	while (!ctrl_pkt_received) {
@@ -64,12 +64,19 @@ int main(int argc, char *argv[]) {
 			// get the components from the message.
 			memcpy(&len, msgp->mtext, 4);
 			argbuf = new char[len];
-			memcpy(argbuf, msgp->mtext+4, len);
+			memcpy(argbuf, msgp->mtext+sizeof(long), len);
 
-			cout << "b.cc: Received ctrl pkt." << endl;
+			cout << "b.cc: Received ctrl pkt. with length=" << len << endl;
 			ctrl_pkt_received=true;
 		}
 	}
+
+	int index=0;
+	cout << "Debug argbug" << endl;
+	for(index=0;index<len;index++) {
+		cout << argbuf[index] << endl;
+	}
+	cout << "Debug argbug" << endl;
 
 	stream_arg *data;
 	data=(stream_arg *)malloc(sizeof(stream_arg));

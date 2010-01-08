@@ -119,7 +119,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 		  10*(buffer[2]-48)+
 		  100*(buffer[1]-48)+
 		  1000*(buffer[0]-48);
-	  //cout << "Found existing /tmp/streamid: " << tempID << endl;
+	  cout << "Found existing /tmp/streamid: " << tempID << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
@@ -131,8 +131,6 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 	  outfile.close();
 
   }
-
-
 
   // Nachiket added update routine...
   // need to get new streamID
@@ -1822,6 +1820,8 @@ ScoreStream *streamID_to_OBJ(SCORE_STREAM_ID id) {
   if (VERBOSEDEBUG || DEBUG) {
     cout << "   ID_to_OBJ " << endl;
   }
+
+  cout << "Debugmsg: Attempting to get scorestream object for id=" << id << endl;
 
   if ((shmptr=(ScoreStream *)shmat(id, 0, 0))==(ScoreStream *) -1) {
     perror("shmptr -- streamID_to_OBJ -- attach ");

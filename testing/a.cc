@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	int ipcID = msgget(ipcKey, IPC_CREAT|0666);
-	cout << "a.cc: Id=" << ipcID << endl;
+	cout << "a.cc: Id=" << ipcID << " long=" << sizeof(long) << " int=" << sizeof(int)<< endl;
 
 	// Construct a message with stream object ids..
 	stream_arg *data;
@@ -44,9 +44,16 @@ int main(int argc, char *argv[]) {
 	cout << "a.cc: receive_stream_id=" << data->receive_stream_id << endl;;
 	cout << "a.cc: send_stream1_id=" << data->send_stream1_id << endl;
 	cout << "a.cc: receive_stream1_id=" << data->receive_stream1_id << endl;;
-	int len=sizeof(stream_arg);
+	long len=sizeof(stream_arg);
+	int index=0;
+//	cout << "Debug argbug" << endl;
+//	for(index=0;index<len;index++) {
+//		cout << data[index] << endl;
+//	}
+//	cout << "Debug argbug" << endl;
+
 	msgp=(struct msgbuf *)malloc(sizeof(msgbuf)+sizeof(char)*(len+sizeof(long)-1));
-	cout << "a.cc: schedulerid=" << ipcID << endl;
+	cout << "a.cc: schedulerid=" << ipcID << " len=" << len << endl;
 	memcpy(msgp->mtext,&len,sizeof(long));
 	memcpy(msgp->mtext+sizeof(long),data,len);
 	msgp->mtype=SCORE_INSTANTIATE_MESSAGE_TYPE;
