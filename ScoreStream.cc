@@ -132,8 +132,6 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 
   }
 
-  cout << "What is this??" << endl;
-
   // Nachiket added update routine...
   // need to get new streamID
   fstream outfile("/tmp/streamid",ios::out);
@@ -1821,6 +1819,8 @@ ScoreStream *streamID_to_OBJ(SCORE_STREAM_ID id) {
   if (VERBOSEDEBUG || DEBUG) {
     cout << "   ID_to_OBJ " << endl;
   }
+
+  cout << "Debugmsg: Attempting to get scorestream object for id=" << id << endl;
 
   if ((shmptr=(ScoreStream *)shmat(id, 0, 0))==(ScoreStream *) -1) {
     perror("shmptr -- streamID_to_OBJ -- attach ");
