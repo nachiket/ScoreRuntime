@@ -261,7 +261,7 @@ void ScoreGraphNode::print(FILE *f, bool printShort)
   }
   
   fprintf(f, "%s %d [%d] %s:\n", node_names[node_names_index],
-	  uniqTag, (unsigned int) this,
+	  uniqTag, (long) this,
 	  _isPage ? ((ScorePage*)this)->getSource() : "");
   
   if (!printShort) {
