@@ -154,7 +154,7 @@ public:
     LINKEDLIST->tail = freeNode; \
     LINKEDLIST->count++; \
     LINKEDLISTITEM = freeNode; \
-    if (CUSTOM_VERBOSE) cerr << "APPEND: list = " << ((unsigned int)(LINKEDLIST)) << ", elem = " << ((unsigned int)(ELEM)) << \
+    if (CUSTOM_VERBOSE) cerr << "APPEND: list = " << ((long)(LINKEDLIST)) << ", elem = " << ((long)(ELEM)) << \
        ", item = " << LINKEDLISTITEM << endl; \
   }
 #else
@@ -227,7 +227,7 @@ public:
     LINKEDLIST->count = 0; \
     LINKEDLIST->head = SCORECUSTOMLINKEDLIST_NULL; \
     LINKEDLIST->tail = SCORECUSTOMLINKEDLIST_NULL; \
-    if (CUSTOM_VERBOSE) cerr << "CLEAR: list = " << ((unsigned int)(LINKEDLIST)) << endl; \
+    if (CUSTOM_VERBOSE) cerr << "CLEAR: list = " << ((long)(LINKEDLIST)) << endl; \
   }
 #else
 #define SCORECUSTOMLINKEDLIST_CLEAR(LINKEDLIST) \
@@ -250,7 +250,7 @@ public:
     assert((LINKEDLISTITEM >= 0) && \
            (LINKEDLISTITEM < (int) LINKEDLIST->bound) && \
            LINKEDLIST->buffer[LINKEDLISTITEM].valid); \
-    if (CUSTOM_VERBOSE) cerr << "DELITEM: list = " << ((unsigned int)(LINKEDLIST)) << ", elem = " << ((unsigned int)(LINKEDLIST->buffer[LINKEDLISTITEM].theitem)) << ", item = " << LINKEDLISTITEM << endl; \
+    if (CUSTOM_VERBOSE) cerr << "DELITEM: list = " << ((long)(LINKEDLIST)) << ", elem = " << ((long)(LINKEDLIST->buffer[LINKEDLISTITEM].theitem)) << ", item = " << LINKEDLISTITEM << endl; \
     _prev = LINKEDLIST->buffer[LINKEDLISTITEM].prev; \
     _next = LINKEDLIST->buffer[LINKEDLISTITEM].next; \
     if (_prev != SCORECUSTOMLINKEDLIST_NULL) { \

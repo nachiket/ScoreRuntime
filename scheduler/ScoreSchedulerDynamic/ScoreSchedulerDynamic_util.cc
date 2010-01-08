@@ -72,7 +72,7 @@ void printGraphNodeCustomList(const char *msg,
 
     SCORECUSTOMLIST_ITEMAT(l, i, currentNode);
     
-    cerr << "SCHED: " << (unsigned int) currentNode << endl;
+    cerr << "SCHED: " << (long) currentNode << endl;
   }
 }
 
@@ -85,7 +85,7 @@ void printStitchCustomList(const char *msg,
     
     SCORECUSTOMLIST_ITEMAT(l, i, currentStitch);
     
-    cerr << "SCHED: " << (unsigned int) currentStitch << endl;
+    cerr << "SCHED: " << (long) currentStitch << endl;
   }
 }
 
@@ -98,7 +98,7 @@ void printFaultedMemSeg(ScoreCustomList<ScoreSegment*> *l)
 
     SCORECUSTOMLIST_ITEMAT(l, i, currentSegment);
 
-    cerr << "SCHED:    FAULTED MEMSEG: " << (unsigned int) currentSegment << 
+    cerr << "SCHED:    FAULTED MEMSEG: " << (long) currentSegment << 
       "(TRA: " << currentSegment->traAddr << 
       " FAULTADDR: " << currentSegment->sched_faultedAddr << ")" << endl;
   }
@@ -113,7 +113,7 @@ void printClusterCustomList(const char *msg,
     
     SCORECUSTOMLIST_ITEMAT(l, i, currentCluster);
     
-    cerr << "SCHED: " << (unsigned int) currentCluster << endl;
+    cerr << "SCHED: " << (long) currentCluster << endl;
   }
 }
 
@@ -137,7 +137,7 @@ void printSchedStateBeforeScheduleClusters
 
     SCORECUSTOMLIST_ITEMAT(headClusterList, i, currentCluster);
       
-    cerr << "SCHED:    CLUSTER " << (unsigned int) currentCluster << endl;
+    cerr << "SCHED:    CLUSTER " << (long) currentCluster << endl;
     for (j = 0; j < SCORECUSTOMLIST_LENGTH(currentCluster->nodeList);
 	 j++) {
       ScoreGraphNode *currentNode;
@@ -152,7 +152,7 @@ void printSchedStateBeforeScheduleClusters
 	cerr << "SCHED:       UNKNOWN ";
       }
 
-      cerr << (unsigned int) currentNode << endl;
+      cerr << (long) currentNode << endl;
     }
   }
 #if FRONTIERLIST_USEPRIORITY
@@ -195,7 +195,7 @@ void printSchedStateBeforeScheduleClusters
     SCORECUSTOMLINKEDLIST_ITEMAT(frontierClusterList, 
 				 listItem, currentCluster);
       
-    cerr << "SCHED:    CLUSTER " << (unsigned int) currentCluster << endl;
+    cerr << "SCHED:    CLUSTER " << (long) currentCluster << endl;
     for (i = 0; i < SCORECUSTOMLIST_LENGTH(currentCluster->nodeList);
 	 i++) {
       ScoreGraphNode *currentNode;
@@ -210,7 +210,7 @@ void printSchedStateBeforeScheduleClusters
 	cerr << "SCHED:       UNKNOWN ";
       }
 
-      cerr << (unsigned int) currentNode << endl;
+      cerr << (long) currentNode << endl;
     }
 
     SCORECUSTOMLINKEDLIST_GOTONEXT(frontierClusterList, listItem);
@@ -226,7 +226,7 @@ void printSchedStateBeforeScheduleClusters
     SCORECUSTOMLINKEDLIST_ITEMAT(waitingClusterList, 
 				 listItem, currentCluster);
       
-    cerr << "SCHED:    CLUSTER " << (unsigned int) currentCluster << endl;
+    cerr << "SCHED:    CLUSTER " << (long) currentCluster << endl;
     for (i = 0; i < SCORECUSTOMLIST_LENGTH(currentCluster->nodeList);
 	 i++) {
       ScoreGraphNode *currentNode;
@@ -241,7 +241,7 @@ void printSchedStateBeforeScheduleClusters
 	cerr << "SCHED:       UNKNOWN ";
       }
 
-      cerr << (unsigned int) currentNode << endl;
+      cerr << (long) currentNode << endl;
     }
 
     SCORECUSTOMLINKEDLIST_GOTONEXT(waitingClusterList, listItem);
@@ -307,7 +307,7 @@ void printSchedStateAfterScheduleClusters
     SCORECUSTOMLINKEDLIST_ITEMAT(frontierClusterList, 
 				 listItem, currentCluster);
       
-    cerr << "SCHED:    CLUSTER " << (unsigned int) currentCluster << endl;
+    cerr << "SCHED:    CLUSTER " << (long) currentCluster << endl;
     for (i = 0; i < SCORECUSTOMLIST_LENGTH(currentCluster->nodeList);
 	 i++) {
       ScoreGraphNode *currentNode;
@@ -322,7 +322,7 @@ void printSchedStateAfterScheduleClusters
 	cerr << "SCHED:       UNKNOWN ";
       }
 
-      cerr << (unsigned int) currentNode << endl;
+      cerr << (long) currentNode << endl;
     }
 
     SCORECUSTOMLINKEDLIST_GOTONEXT(frontierClusterList, listItem);
@@ -338,7 +338,7 @@ void printSchedStateAfterScheduleClusters
     SCORECUSTOMLINKEDLIST_ITEMAT(waitingClusterList, 
 				 listItem, currentCluster);
       
-    cerr << "SCHED:    CLUSTER " << (unsigned int) currentCluster << endl;
+    cerr << "SCHED:    CLUSTER " << (long) currentCluster << endl;
     for (i = 0; i < SCORECUSTOMLIST_LENGTH(currentCluster->nodeList);
 	 i++) {
       ScoreGraphNode *currentNode;
@@ -353,7 +353,7 @@ void printSchedStateAfterScheduleClusters
 	cerr << "SCHED:       UNKNOWN ";
       }
 
-      cerr << (unsigned int) currentNode << endl;
+      cerr << (long) currentNode << endl;
     }
 
     SCORECUSTOMLINKEDLIST_GOTONEXT(waitingClusterList, listItem);
@@ -368,7 +368,7 @@ void printSchedStateAfterScheduleClusters
       SCORECUSTOMLIST_ITEMAT(scheduledPageList, i, currentPage);
 
       cerr << "SCHED:    SCHEDULED PAGE: " << 
-	(unsigned int) currentPage << endl;
+	(long) currentPage << endl;
     }
     cerr << "SCHED: NUMBER OF SCHEDULED MEMSEG: " << 
       SCORECUSTOMLIST_LENGTH(scheduledMemSegList) << endl;
@@ -378,7 +378,7 @@ void printSchedStateAfterScheduleClusters
       SCORECUSTOMLIST_ITEMAT(scheduledMemSegList, i, currentMemSeg);
 
       cerr << "SCHED:    SCHEDULED MEMSEG: " << 
-	(unsigned int) currentMemSeg << endl;
+	(long) currentMemSeg << endl;
     }
     cerr << "SCHED: NUMBER OF REMOVED PAGES: " << 
       SCORECUSTOMLIST_LENGTH(removedPageList) << endl;
@@ -388,7 +388,7 @@ void printSchedStateAfterScheduleClusters
       SCORECUSTOMLIST_ITEMAT(removedPageList, i, currentPage);
 
       cerr << "SCHED:    REMOVED PAGE: " << 
-	(unsigned int) currentPage << endl;
+	(long) currentPage << endl;
     }
     cerr << "SCHED: NUMBER OF REMOVED MEMSEG: " << 
       SCORECUSTOMLIST_LENGTH(removedMemSegList) << endl;
@@ -398,7 +398,7 @@ void printSchedStateAfterScheduleClusters
       SCORECUSTOMLIST_ITEMAT(removedMemSegList, i, currentMemSeg);
 
       cerr << "SCHED:    REMOVED MEMSEG: " << 
-	(unsigned int) currentMemSeg << endl;
+	(long) currentMemSeg << endl;
     }
   }
 }
@@ -410,12 +410,12 @@ void printArrayState(ScoreArrayCP *arrayCP, unsigned numPhysicalCP,
   
   for (i = 0; i < numPhysicalCP; i++) {
     cerr << "SCHED: arrayCP[" << i << "]: "
-      "active " << (unsigned int) arrayCP[i].active <<
-      " actual " << (unsigned int) arrayCP[i].actual << endl;
+      "active " << (long) arrayCP[i].active <<
+      " actual " << (long) arrayCP[i].actual << endl;
   }
   for (i = 0; i < numPhysicalCMB; i++) {
     cerr << "SCHED: arrayCMB[" << i << "]: "
-      "active " << (unsigned int) arrayCMB[i].active <<
-      " actual " << (unsigned int) arrayCMB[i].actual << endl;
+      "active " << (long) arrayCMB[i].active <<
+      " actual " << (long) arrayCMB[i].actual << endl;
   }
 }

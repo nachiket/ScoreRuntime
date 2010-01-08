@@ -427,7 +427,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 ScoreStream::~ScoreStream()
 {
   if (VERBOSEDEBUG || DEBUG) {
-    cerr << "[SID=" << streamID << "][" << (unsigned int) this << "] "
+    cerr << "[SID=" << streamID << "][" << (long) this << "] "
 	 << "ScoreStream Destructor called on " << streamID << endl;
   }
   
@@ -506,7 +506,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
   long long int local_buffer;
 
   if (VERBOSEDEBUG || DEBUG || VERBOSE_STREAM)
-    cout << "[SID=" << streamID << "][" << (unsigned int) this << "] "
+    cout << "[SID=" << streamID << "][" << (long) this << "] "
 	 << " producerClosed = " << producerClosed
 	 << "   Entering stream_read " << streamID 
 	 << " interProcess=" << interProcess
@@ -598,7 +598,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
 void ScoreStream::stream_write_array(long long int input,int writingEOS) {
 
   if (VERBOSEDEBUG || DEBUG || VERBOSE_STREAM)
-    cout << "[SID=" << streamID << "][" << (unsigned int) this << "] "
+    cout << "[SID=" << streamID << "][" << (long) this << "] "
 	 << " producerClosed = " << producerClosed
 	 << "   Entering stream_write_array(" <<input << ", " << writingEOS
 	 << ")" << endl;
@@ -607,7 +607,7 @@ void ScoreStream::stream_write_array(long long int input,int writingEOS) {
   // if the producerClosed, then disallow any more writes!
   if (producerClosed && !writingEOS) {
     cerr << "SCORESTREAMERR: ATTEMPTING TO WRITE TO A CLOSED STREAM! -- line "
-	 << __LINE__ << " [SID=" << streamID << "][" << (unsigned int)this 
+	 << __LINE__ << " [SID=" << streamID << "][" << (long)this 
 	 << "] " << (sched_isStitch ? "STITCH" : "NOT")
 	 << " producerClosed = " << producerClosed << endl;
     assert(0);
@@ -622,7 +622,7 @@ void ScoreStream::stream_write_array(long long int input,int writingEOS) {
 
   if (VERBOSE_STREAM) {
     cerr << "stream_write_array -- line " << __LINE__ << " [SID=" << streamID
-	 << "][" << (unsigned int)this 
+	 << "][" << (long)this 
 	 << "] " << (sched_isStitch ? "STITCH" : "NOT")
 	 << " producerClosed = " << producerClosed
 	 << " tail = " << tail << " length = " << length << endl; 
@@ -651,7 +651,7 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
    */
 
   if (VERBOSEDEBUG || DEBUG || VERBOSE_STREAM)
-    cout << "[SID=" << streamID << "][" << (unsigned int) this << "] "
+    cout << "[SID=" << streamID << "][" << (long) this << "] "
 	 << " producerClosed = " << producerClosed
 	 << "   Entering stream_write(" << input << ", " << writingEOS
 	 << ")" << endl;
@@ -678,7 +678,7 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
   // if the producerClosed, then disallow any more writes!
   if (producerClosed && !writingEOS) {
     cerr << "SCORESTREAMERR: ATTEMPTING TO WRITE TO A CLOSED STREAM! -- line "
-	 << __LINE__ << " [SID=" << streamID << "][" << (unsigned int)this 
+	 << __LINE__ << " [SID=" << streamID << "][" << (long)this 
 	 << "] " << (sched_isStitch ? "STITCH" : "NOT")
 	 << " producerClosed = " << producerClosed << endl;
     assert(0);
@@ -734,7 +734,7 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
 
   if (VERBOSE_STREAM) {
     cerr << "stream_write -- line " << __LINE__ << " [SID=" << streamID
-	 << "][" << (unsigned int)this 
+	 << "][" << (long)this 
 	 << "] " << (sched_isStitch ? "STITCH" : "NOT")
 	 << " producerClosed = " << producerClosed
 	 << " tail = " << tail << " length = " << length << endl; 
@@ -1086,7 +1086,7 @@ cout << "stream_close called on " << strm->streamID << endl;
   // make sure this is not a double close.
   if (strm->producerClosed) {
     cerr << "SCORESTREAMERR: TRYING TO DOUBLE CLOSE A STREAM! " << 
-      (unsigned int) strm << endl;
+      (long) strm << endl;
     exit(1);
   }
 
@@ -1304,7 +1304,7 @@ cout << "stream_free called on " << strm->streamID << endl;
   // make sure this is not a double free.
   if (strm->consumerFreed) {
     cerr << "SCORESTREAMERR: TRYING TO DOUBLE FREE A STREAM! " << 
-      (unsigned int) strm << endl;
+      (long) strm << endl;
     exit(1);
   }
 
@@ -1893,14 +1893,14 @@ int compare(ScoreStream * const & left, ScoreStream * const & right) {
 void ScoreStream::print(FILE *f)
 {
   fprintf(f, "STREAM[streamID=%d,ptr=%u](tag_copy1=%x)\n", 
-	  streamID, (unsigned int)this, tag_copy1);
+	  streamID, (long)this, tag_copy1);
 
   static const char *func_str[] = { "OPER", "PAGE", "SEG" };
 
   assert((srcFunc > 0) && (srcFunc < 4));
 
   fprintf(f, "\t src: %s.out%d [%u]", func_str[srcFunc - 1],
-	  srcNum, (unsigned int)src);
+	  srcNum, (long)src);
   if (srcFunc > 1) { // it's PAGE or Segment
     assert(src);
     fprintf(f, "uniqTag = %d ", src->uniqTag);
@@ -1913,7 +1913,7 @@ void ScoreStream::print(FILE *f)
   assert((snkFunc > 0) && (snkFunc < 4));
 
   fprintf(f, "\tsink: %s.in%d [%u]", func_str[snkFunc - 1], 
-	  snkNum, (unsigned int)sink);
+	  snkNum, (long)sink);
   if (snkFunc > 1) { // it's PAGE or Segment
     assert(sink);
     fprintf(f, "uniqTag = %d ", sink->uniqTag);

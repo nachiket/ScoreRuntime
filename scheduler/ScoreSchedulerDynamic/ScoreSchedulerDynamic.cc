@@ -661,7 +661,7 @@ int ScoreSchedulerDynamic::addOperator(char *sharedObject, char *argbuf, pid_t p
       int j;
       cerr << "SCHED:    PAGE " << i << 
 	" (source=" << opi->page[i]->getSource() << ") " << 
-	(unsigned int) opi->page[i] << endl;
+	(long) opi->page[i] << endl;
       
       for (j = 0; j < opi->page[i]->getInputs(); j++) {
 	cerr << "SCHED:       INPUT " << j << " srcFunc " << 
@@ -673,7 +673,7 @@ int ScoreSchedulerDynamic::addOperator(char *sharedObject, char *argbuf, pid_t p
 	if (opi->page[i]->getSchedInput(j)->sched_sink == NULL) {
 	  cerr << "SINKISNULL ";
 	}
-	cerr << " " << (unsigned int) opi->page[i]->getSchedInput(j) << endl;
+	cerr << " " << (long) opi->page[i]->getSchedInput(j) << endl;
       }
       for (j = 0; j < opi->page[i]->getOutputs(); j++) {
 	cerr << "SCHED:       OUTPUT " << j << " srcFunc " << 
@@ -685,7 +685,7 @@ int ScoreSchedulerDynamic::addOperator(char *sharedObject, char *argbuf, pid_t p
 	if (opi->page[i]->getSchedOutput(j)->sched_sink == NULL) {
 	  cerr << "SINKISNULL ";
 	}
-	cerr << " " << (unsigned int) opi->page[i]->getSchedOutput(j) << endl;
+	cerr << " " << (long) opi->page[i]->getSchedOutput(j) << endl;
       }
     }
     cerr << "SCHED: ========================" << endl;
@@ -705,7 +705,7 @@ int ScoreSchedulerDynamic::addOperator(char *sharedObject, char *argbuf, pid_t p
 	if (opi->segment[i]->getSchedInput(j)->sched_sink == NULL) {
 	  cerr << "SINKISNULL ";
 	}
-	cerr << " " << (unsigned int) opi->segment[i]->getSchedInput(j)
+	cerr << " " << (long) opi->segment[i]->getSchedInput(j)
 	     << endl;
       }
       for (j = 0; j < opi->segment[i]->getOutputs(); j++) {
@@ -718,7 +718,7 @@ int ScoreSchedulerDynamic::addOperator(char *sharedObject, char *argbuf, pid_t p
 	if (opi->segment[i]->getSchedOutput(j)->sched_sink == NULL) {
 	  cerr << "SINKISNULL ";
 	}
-	cerr << (unsigned int) opi->segment[i]->getSchedOutput(j) << endl;
+	cerr << (long) opi->segment[i]->getSchedOutput(j) << endl;
       }
     }
     cerr << "SCHED: ========================" << endl;
@@ -1394,7 +1394,7 @@ int ScoreSchedulerDynamic::addOperator(char *sharedObject, char *argbuf, pid_t p
 	  ScoreCluster *currentCluster = clusterList.inf(listItem);
 
 	  cerr << "SCHED:    CLUSTER " << i << " (" << 
-	    (unsigned int) currentCluster << ")" << endl;
+	    (long) currentCluster << ")" << endl;
 	  for (i = 0; i < SCORECUSTOMLIST_LENGTH(currentCluster->nodeList);
 	       i++) {
 	    ScoreGraphNode *currentNode;
@@ -1409,7 +1409,7 @@ int ScoreSchedulerDynamic::addOperator(char *sharedObject, char *argbuf, pid_t p
 	    } else {
 	      cerr << "UNKNOWN";
 	    }
-	    cerr << " (" << (unsigned int) currentNode << ")" << endl;
+	    cerr << " (" << (long) currentNode << ")" << endl;
 	  }
 	}
 	cerr << "SCHED: ================================" << endl;
@@ -2433,7 +2433,7 @@ void ScoreSchedulerDynamic::findDonePagesSegments() {
       unsigned int numOutputs = (unsigned int) donePage->getOutputs();
 
       if (VERBOSEDEBUG || DEBUG) {
-	cerr << "SCHED: EXPLICIT DONE PAGE: " << (unsigned int) donePage << 
+	cerr << "SCHED: EXPLICIT DONE PAGE: " << (long) donePage << 
 	  endl;
       }
 
@@ -2523,7 +2523,7 @@ void ScoreSchedulerDynamic::findDonePagesSegments() {
 
       if (VERBOSEDEBUG || DEBUG) {
 	cerr << "SCHED: EXPLICIT DONE SEGMENT: " << 
-	  (unsigned int) doneSegment << endl;
+	  (long) doneSegment << endl;
       }
 
       // if this is a stitch buffer that is in SEQSINK mode, then ignore
@@ -2612,7 +2612,7 @@ void ScoreSchedulerDynamic::findDonePagesSegments() {
       } else {
 	if (VERBOSEDEBUG || DEBUG) {
 	  cerr << "SCHED: IGNORING EXPLICIT DONE STITCH BUFFER IN SEQSINK! " <<
-	    (unsigned int) doneSegment << endl;
+	    (long) doneSegment << endl;
 	}
       }
 
@@ -2657,7 +2657,7 @@ void ScoreSchedulerDynamic::findDonePagesSegments() {
 	    if (checkImplicitDonePagesSegments(attachedNode)) {
 	      if (VERBOSEDEBUG || DEBUG) {
 		cerr << "SCHED: IMPLICIT DONE NODE: " << 
-		  (unsigned int) attachedNode << endl;
+		  (long) attachedNode << endl;
 	      }
 	      
 	      attachedNode->sched_isDone = 1;
@@ -2754,7 +2754,7 @@ void ScoreSchedulerDynamic::findDonePagesSegments() {
 	    if (checkImplicitDonePagesSegments(attachedNode)) {
 	      if (VERBOSEDEBUG || DEBUG) {
 		cerr << "SCHED: IMPLICIT DONE NODE: " << 
-		  (unsigned int) attachedNode << endl;
+		  (long) attachedNode << endl;
 	      }
 	      
 	      attachedNode->sched_isDone = 1;
@@ -8910,7 +8910,7 @@ void ScoreSchedulerDynamic::resolveBufferLockedStreams(
 
     if (EXTRA_DEBUG) {
       cerr << "RESOLVING BUFFERLOCK on stream " <<
-	(unsigned int) currentStream << endl;
+	(long) currentStream << endl;
     }
     
     // make sure either end of the stream is not a stitch buffer!
@@ -9198,7 +9198,7 @@ void ScoreSchedulerDynamic::resolveDeadLockedCycles(
     forall_items(listItem2, *currentList) {
       ScoreStream *currentStream = currentList->inf(listItem2);
 
-      cerr << "SCHED:      STREAM " << (unsigned int) currentStream << endl;
+      cerr << "SCHED:      STREAM " << (long) currentStream << endl;
       cerr << "SCHED:        SRC: ";
       if (currentStream->sched_srcFunc == STREAM_OPERATOR_TYPE) {
 	cerr << "OPERATOR";
@@ -9211,7 +9211,7 @@ void ScoreSchedulerDynamic::resolveDeadLockedCycles(
       }
       if (!(currentStream->sched_srcIsDone)) {
 	if (currentStream->sched_srcFunc != STREAM_OPERATOR_TYPE) {
-	  cerr << "(" << (unsigned int) currentStream->sched_src << ")(" <<
+	  cerr << "(" << (long) currentStream->sched_src << ")(" <<
 	    currentStream->sched_srcNum << ")";
 	}
 	if (currentStream->sched_srcFunc == STREAM_PAGE_TYPE) {
@@ -9233,7 +9233,7 @@ void ScoreSchedulerDynamic::resolveDeadLockedCycles(
       }
       if (!(currentStream->sched_sinkIsDone)) {
 	if (currentStream->sched_snkFunc != STREAM_OPERATOR_TYPE) {
-	  cerr << "(" << (unsigned int) currentStream->sched_sink << ")(" <<
+	  cerr << "(" << (long) currentStream->sched_sink << ")(" <<
 	    currentStream->sched_snkNum << ")";
 	}
 	if (currentStream->sched_snkFunc == STREAM_PAGE_TYPE) {
@@ -9277,7 +9277,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
       SCORECUSTOMLIST_ITEMAT(currentProcess->operatorList, i, opi);
 
       cerr << "SCHED: OPERATOR INSTANCE ===> " << 
-	(unsigned int) opi << endl;
+	(long) opi << endl;
 
       cerr << "SCHED: PAGES===================" << endl;
       for (j = 0; j < opi->pages; j++) {
@@ -9285,7 +9285,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
 	  cerr << "SCHED:    PAGE " << j << 
 	    " (source=" << opi->page[j]->getSource() << ")" << 
 	    " (state=" << opi->page[j]->sched_lastKnownState << ")" << 
-	    "\t" << (unsigned int) opi->page[j] << endl;
+	    "\t" << (long) opi->page[j] << endl;
 	  
 	  for (k = 0; k < (unsigned int) opi->page[j]->getInputs(); k++) {
 	    cerr << "SCHED:       INPUT " << k << " srcFunc " << 
@@ -9306,7 +9306,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
 	    }
 	    cerr << "\t NODECONSUMED " << opi->page[j]->getInputConsumption(k) << endl;
 	    cerr << "\t PRODUCED " << STREAM_TOKENS_PRODUCED(opi->page[j]->getSchedInput(k)) << " CONSUMED " << STREAM_TOKENS_CONSUMED(opi->page[j]->getSchedInput(k)) << endl;
-	    cerr << "\t"<< (unsigned int) opi->page[j]->getSchedInput(j);
+	    cerr << "\t"<< (long) opi->page[j]->getSchedInput(j);
 	    if (opi->page[j]->getSchedInput(k)->sched_srcIsDone) {
 	      cerr << " (DONE!)" << endl;
 	    }
@@ -9331,7 +9331,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
 	    }
 	    cerr << "\t NODEPRODUCED " << opi->page[j]->getOutputProduction(k) << endl;
 	    cerr << "\t PRODUCED " << STREAM_TOKENS_PRODUCED(opi->page[j]->getSchedOutput(k)) << " CONSUMED " << STREAM_TOKENS_CONSUMED(opi->page[j]->getSchedOutput(k)) << endl;
-	    cerr << "\t"<< (unsigned int) opi->page[j]->getSchedOutput(k);
+	    cerr << "\t"<< (long) opi->page[j]->getSchedOutput(k);
 	    if (opi->page[j]->getSchedOutput(k)->sched_sinkIsDone) {
 	      cerr << " (DONE!)" << endl;
 	    }
@@ -9344,7 +9344,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
       for (j = 0; j < opi->segments; j++) {
 	if (opi->segment[j] != NULL) {
 	  cerr << "SCHED:    SEGMENT " << j <<
-	    "\t" << (unsigned int) opi->segment[j] << endl;
+	    "\t" << (long) opi->segment[j] << endl;
 	  
 	  for (k = 0; k < (unsigned int) opi->segment[j]->getInputs(); k++) {
 	    cerr << "SCHED:       INPUT " << k << " srcFunc " << 
@@ -9365,7 +9365,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
 	    }
 	    cerr << "\t NODECONSUMED " << opi->segment[j]->getInputConsumption(k) << endl;
 	    cerr << "\t PRODUCED " << STREAM_TOKENS_PRODUCED(opi->segment[j]->getSchedInput(k)) << " CONSUMED " << STREAM_TOKENS_CONSUMED(opi->segment[j]->getSchedInput(k)) << endl;
-	    cerr << "\t"<< (unsigned int) opi->segment[j]->getSchedInput(k);
+	    cerr << "\t"<< (long) opi->segment[j]->getSchedInput(k);
 	    if (opi->segment[j]->getSchedInput(k)->sched_srcIsDone) {
 	      cerr << " (DONE!)" << endl;
 	    }
@@ -9390,7 +9390,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
 	    }
 	    cerr << "\t NODEPRODUCED " << opi->segment[j]->getOutputProduction(k) << endl;
 	    cerr << "\t PRODUCED " << STREAM_TOKENS_PRODUCED(opi->segment[j]->getSchedOutput(k)) << " CONSUMED " << STREAM_TOKENS_CONSUMED(opi->segment[j]->getSchedOutput(k)) << endl;
-	    cerr << "\t"<< (unsigned int) opi->segment[j]->getSchedOutput(k);
+	    cerr << "\t"<< (long) opi->segment[j]->getSchedOutput(k);
 	    if (opi->segment[j]->getSchedOutput(k)->sched_sinkIsDone) {
 	      cerr << " (DONE!)" << endl;
 	    }
@@ -9409,7 +9409,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
       SCORECUSTOMLIST_ITEMAT(currentProcess->stitchBufferList, i, currentStitch);
       
       cerr << "SCHED:    STITCH " << i <<
-	"\t" << (unsigned int) currentStitch << endl;
+	"\t" << (long) currentStitch << endl;
       
       for (j = 0; j < (unsigned int) currentStitch->getInputs(); j++) {
 	cerr << "SCHED:       INPUT " << j << " srcFunc " << 
@@ -9430,7 +9430,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
 	}
 	cerr << "\t NODECONSUMED " << currentStitch->getInputConsumption(j) << endl;
 	cerr << "\t PRODUCED " << STREAM_TOKENS_PRODUCED(currentStitch->getSchedInput(j)) << " CONSUMED " << STREAM_TOKENS_CONSUMED(currentStitch->getSchedInput(j)) << endl;
-	cerr << "\t"<< (unsigned int) currentStitch->getSchedInput(j);
+	cerr << "\t"<< (long) currentStitch->getSchedInput(j);
 	if (currentStitch->getSchedInput(j)->sched_srcIsDone) {
 	  cerr << " (DONE!)" << endl;
 	}
@@ -9455,7 +9455,7 @@ void ScoreSchedulerDynamic::printCurrentState() {
 	}
 	cerr << "\t NODEPRODUCED " << currentStitch->getOutputProduction(j) << endl;
 	cerr << "\t PRODUCED " << STREAM_TOKENS_PRODUCED(currentStitch->getSchedOutput(j)) << " CONSUMED " << STREAM_TOKENS_CONSUMED(currentStitch->getSchedOutput(j)) << endl;
-	cerr << "\t"<< (unsigned int) currentStitch->getSchedOutput(j);
+	cerr << "\t"<< (long) currentStitch->getSchedOutput(j);
 	if (currentStitch->getSchedOutput(j)->sched_sinkIsDone) {
 	  cerr << " (DONE!)" << endl;
 	}

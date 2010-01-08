@@ -273,7 +273,7 @@ bool ScoreStateGraphEdge::writeVCG(FILE* myfile, bool splitCPU, bool noCPU)
   if(status & EDGE_STATUS_EMPTY)
     fprintf(myfile, "\n*EMPTY*");
   if (visualFile_complete) {
-    fprintf(myfile, "(%d) [%u]", num_tokens, (unsigned int)ptr_val);
+    fprintf(myfile, "(%d) [%u]", num_tokens, (long)ptr_val);
   }
 
   fprintf(myfile, "\"\n");
@@ -367,7 +367,7 @@ ScoreStateGraphNode* ScoreStateGraph::addNode(pid_t procId, int count, ScoreGrap
       sprintf(buf, "PID %d\\nPAGE %d\\n(source=%s)\\n(state=%d) [%d]",
 	      procId, count, ((ScorePage*)page)->getSource(),
 	      ((ScorePage*)page)->sched_lastKnownState,
-	      (unsigned int) page);
+	      (long) page);
     } else {
       shortenName(((ScorePage*)page)->getSource(), aux_buf);
       sprintf(buf, "%d \'%s\'\\n(state=%d)",
@@ -382,7 +382,7 @@ ScoreStateGraphNode* ScoreStateGraph::addNode(pid_t procId, int count, ScoreGrap
   case ScoreSegmentTag:
     if (visualFile_complete) {
       sprintf(buf, "PID %d\nSEGMENT %d [%d]\n%s", procId, count,
-	      (unsigned int) page,
+	      (long) page,
 	      segment_modes[((ScoreSegment*)page)->sched_mode]);
     } else {
       sprintf(buf, "%d %s", count,
@@ -397,7 +397,7 @@ ScoreStateGraphNode* ScoreStateGraph::addNode(pid_t procId, int count, ScoreGrap
   case ScoreSegmentStitchTag:
     if (visualFile_complete) {
       sprintf(buf, "PID %d\nSTITCH %d [%d]\n%s", procId, count,
-	      (unsigned int) page,
+	      (long) page,
 	      segment_modes[((ScoreSegment*)page)->sched_mode]);
     } else {
       sprintf(buf, "S%d %s", count,
@@ -448,9 +448,9 @@ ScoreStateGraphEdge* ScoreStateGraph::addEdge(pid_t procId,
   
   int status = 0;
   ScoreStateGraphNode *src =
-    addNode(procId, (int)(stream->sched_src), stream->sched_src);
+    addNode(procId, (long)(stream->sched_src), stream->sched_src);
   ScoreStateGraphNode *dest =
-    addNode(procId, (int)(stream->sched_sink), stream->sched_sink);
+    addNode(procId, (long)(stream->sched_sink), stream->sched_sink);
 
   if (stream->sched_isPotentiallyFull)
     status |= EDGE_STATUS_FULL;

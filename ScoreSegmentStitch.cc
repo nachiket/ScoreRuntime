@@ -139,7 +139,7 @@ int ScoreSegmentStitch::step() {
     if (STREAM_DATA(INSTREAM)) {
       if (STREAM_EOS_ARRAY(INSTREAM)) {
 	if (VERBOSEDEBUG || DEBUG || EXTRA_DEBUG) {
-	  cerr << "   STITCHSEG SEQSINK: [" << (unsigned int) this <<
+	  cerr << "   STITCHSEG SEQSINK: [" << (long) this <<
 	    "] received EOS input" << endl;
 	}
 
@@ -163,7 +163,7 @@ int ScoreSegmentStitch::step() {
 	address = writeAddr;
 	
 	if (VERBOSEDEBUG || DEBUG) {
-	  cerr << "   STITCHSEG SEQSINK: [" << (unsigned int) this << 
+	  cerr << "   STITCHSEG SEQSINK: [" << (long) this << 
 	    "] firing - address is " << address << endl;
 	}
 	
@@ -172,7 +172,7 @@ int ScoreSegmentStitch::step() {
 	  sim_isFaulted = 1;
 	  
 	  if (EXTRA_DEBUG) {
-	    cerr << "   STITCHSEG SEQSINK: [" << (unsigned int) this <<
+	    cerr << "   STITCHSEG SEQSINK: [" << (long) this <<
 	      "] is FULL and faulted\n";
 	  }
 
@@ -217,7 +217,7 @@ int ScoreSegmentStitch::step() {
     // empty then output an EOS on the output.
     if (hasReceivedEOS && isEmpty) {
       if (VERBOSEDEBUG || DEBUG || EXTRA_DEBUG) {
-	cerr << "   STITCHSEG SEQSRCSINK: [" << (unsigned int) this <<
+	cerr << "   STITCHSEG SEQSRCSINK: [" << (long) this <<
 	  "] having emptied the buffer and " <<
 	  "previously received an EOS, firing EOS to output" << endl;
       }
@@ -267,7 +267,7 @@ int ScoreSegmentStitch::step() {
 	if (STREAM_DATA(INSTREAM)) {
 	  if (STREAM_EOS_ARRAY(INSTREAM)) {
 	    if (VERBOSEDEBUG || DEBUG || EXTRA_DEBUG) {
-	      cerr << "   STITCHSEG SEQSRCSINK: [" << (unsigned int) this <<
+	      cerr << "   STITCHSEG SEQSRCSINK: [" << (long) this <<
 		"] received EOS input" << endl;
 	    }
 
@@ -280,7 +280,7 @@ int ScoreSegmentStitch::step() {
 	    
 	    if (isEmpty) {
 	      if (VERBOSEDEBUG || DEBUG || EXTRA_DEBUG) {
-		cerr << "   STITCHSEG SEQSRCSINK: [" << (unsigned int) this <<
+		cerr << "   STITCHSEG SEQSRCSINK: [" << (long) this <<
 		  "] having emptied the " <<
 		  "buffer and received an EOS, firing EOS to output" << endl;
 	      }
@@ -319,7 +319,7 @@ int ScoreSegmentStitch::step() {
 	    } else {
 	      if (VERBOSEDEBUG) {
 		cerr << "   STITCHSEG SEQSRCSINK: full! " <<
-		  (unsigned int) this << endl;
+		  (long) this << endl;
 	      }	    
 	    }
 	  }
