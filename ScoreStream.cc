@@ -1288,7 +1288,8 @@ cout << "stream_close called on " << strm->streamID << endl;
 // Added a simple stream frame close signal..
 void stream_frame_close(ScoreStream *strm) {
 
-cout << "frame_close called on " << strm->streamID << endl;
+//cout << "frame_close called on " << strm->streamID << endl;
+
 	if (VERBOSE_STREAM)
 		cerr << "[SID=" << strm->streamID << "]   entering stream_frame_close" << endl;
 
@@ -1299,7 +1300,7 @@ cout << "frame_close called on " << strm->streamID << endl;
 
 void stream_free(ScoreStream *strm) {
 
-cout << "stream_free called on " << strm->streamID << endl;
+//cout << "stream_free called on " << strm->streamID << endl;
 
   // make sure this is not a double free.
   if (strm->consumerFreed) {
@@ -1639,7 +1640,7 @@ void stream_close_hw(ScoreStream *strm) {
 
 void stream_free_hw(ScoreStream *strm) {
 
-cout << "---------------------Seriously??" << endl;
+//cout << "---------------------Seriously??" << endl;
 
   if (!(strm->sched_isStitch)) {
     if (VERBOSEDEBUG || DEBUG) {
