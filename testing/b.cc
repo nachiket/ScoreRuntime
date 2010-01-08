@@ -72,11 +72,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	int index=0;
-	cout << "Debug argbug" << endl;
-	for(index=0;index<len;index++) {
-		cout << argbuf[index] << endl;
-	}
-	cout << "Debug argbug" << endl;
+//	cout << "Debug argbug" << endl;
+//	for(index=0;index<len;index++) {
+//		cout << argbuf[index] << endl;
+//	}
+//	cout << "Debug argbug" << endl;
 
 	stream_arg *data;
 	data=(stream_arg *)malloc(sizeof(stream_arg));
