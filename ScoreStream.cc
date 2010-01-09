@@ -738,6 +738,10 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
 	 << " tail = " << tail << " length = " << length << endl; 
   }
 
+//if (((head - tail) == 1) ||
+//           ((tail == ((length+1+1)-1) && (head == 0)))) {
+//	   cout << "WTF?" << endl; exit(1);
+//	   }
   buffer[tail].token = input;
   buffer[tail].timeStamp = cTime;
   tail = (tail+1) % (length+1+1);
@@ -808,6 +812,7 @@ int ScoreStream::stream_eos() {
 
   if (USE_POLLING_STREAMS) {
     while (head == tail) {
+//    printf("boring... streamid=%d\n",streamID);
       sched_yield();
     }
   } else {

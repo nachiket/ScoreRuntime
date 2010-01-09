@@ -590,6 +590,9 @@ class ScoreStream {
   void set_length(int);
   int get_width() {return width;}
   int get_fixed() {return fixed;}
+
+  int get_head() {return head;}
+  int get_tail() {return tail;}
   
   int get_depth_hint() {return depth_hint;}
 
