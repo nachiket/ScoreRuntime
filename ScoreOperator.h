@@ -56,6 +56,7 @@ public:
   static void dumpGraphviz(ofstream *fout);
 
   virtual NodeTags getTag() { return ScoreOperatorTag; }
+  static ofstream* fout;
 
 protected:
   virtual char *mangle(char *base, int nparam, int *params);

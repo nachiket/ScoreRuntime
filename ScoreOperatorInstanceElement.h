@@ -38,9 +38,10 @@ class ScoreOperatorInstanceElement
 {
 
 public:
-  ScoreOperatorInstanceElement(int *new_params, ScoreOperator* op,
+  ScoreOperatorInstanceElement(int *new_params, ScoreOperator* new_op,
 			       ScoreOperatorInstanceElement *new_next):
-    params(new_params), next(new_next) { }
+    params(new_params), op(new_op), next(new_next) {}
+    //{ printf("Added operator=%s\n",new_op->getName()); }
   ScoreOperatorInstanceElement *getNext() {return(next);}
   int *getParams() { return(params); }
   ScoreOperator* getOperator() {return(op);}

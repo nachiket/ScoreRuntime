@@ -623,8 +623,17 @@ class ScoreStream {
   void print(FILE *f);
 
   char* name;
-  char* getName() {return name;};
-  void setName(char* name_arg) {name=(char*)malloc(strlen(name_arg)); sprintf(name, "%s",name_arg);};
+  void setName(char* name_arg) {
+  	name=(char*)malloc(strlen(name_arg)); 
+	sprintf(name, "%s",name_arg);
+//  	printf("Setting stream anme to %s\n",name);
+  }
+  char* getName() {
+  	if(name==NULL) {
+		printf("NULL stream name found\n");
+	}
+  	return name;
+  }
   int streamID;
   int recycleID;
   int semid;
