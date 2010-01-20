@@ -622,6 +622,9 @@ class ScoreStream {
 
   void print(FILE *f);
 
+  char* name;
+  char* getName() {return name;};
+  void setName(char* name_arg) {name=(char*)malloc(strlen(name_arg)); sprintf(name, "%s",name_arg);};
   int streamID;
   int recycleID;
   int semid;

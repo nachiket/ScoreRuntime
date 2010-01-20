@@ -195,9 +195,9 @@ ScoreOperatorElement *ScoreOperator::addOperator(char *name, int params,
 
 }
 
-void ScoreOperator::addInstance(ScoreOperatorElement *elm, int *params)
+void ScoreOperator::addInstance(ScoreOperatorElement *elm, ScoreOperator* op, int *params)
 {
-  elm->addInstance(params);
+  elm->addInstance(op, params);
 }
 
 FILE *ScoreOperator::feedback_file (char *base)
@@ -321,6 +321,19 @@ void ScoreOperator::dumpGraphviz(ofstream *fout) {
 		while (iptr!=(ScoreOperatorInstanceElement *)NULL)
 		{
 			*fout << "inside.." << eptr->getName() << endl;
+			ScoreOperator* op= iptr->getOperator();
+
+			// iterate over outputs
+			for (int i = 0; i < op->outputs; i++) {
+			    ScoreGraphNode *src=op->getOutput(i)->src;
+			    ScoreGraphNode *sink=op->getOutput(i)->sink;
+
+			    if(src!=NULL ** sink!=NULL) {
+				    *fout << src->getName() << "->" << sink->getName() << " label=["<<op->getOutput(i)->getName()<<"]" << endl;
+			    }
+			}
+
+	
 	      		iptr=iptr->getNext();
 		}
       		eptr=eptr->getNext();

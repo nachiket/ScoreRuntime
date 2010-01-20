@@ -33,6 +33,8 @@
 
 #include "ScoreOperatorInstanceElement.h"
 
+class ScoreOperator;
+
 class ScoreOperatorElement 
 {
 
@@ -49,7 +51,7 @@ public:
   int getTotalArgs() { return(total_args); }
   int getParamLocations() {return(param_locs);}
   ScoreOperatorInstanceElement *getInstance() {return(inst);}
-  void addInstance(int *instparams);
+  void addInstance(ScoreOperator* op, int *instparams);
 
   private:  
   char * name;

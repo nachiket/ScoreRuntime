@@ -31,18 +31,23 @@
 
 #define _ScoreOperatorInstanceElement_H
 
+class ScoreOperator;
+
+
 class ScoreOperatorInstanceElement 
 {
 
 public:
-  ScoreOperatorInstanceElement(int *new_params, 
+  ScoreOperatorInstanceElement(int *new_params, ScoreOperator* op,
 			       ScoreOperatorInstanceElement *new_next):
     params(new_params), next(new_next) { }
   ScoreOperatorInstanceElement *getNext() {return(next);}
   int *getParams() { return(params); }
+  ScoreOperator* getOperator() {return(op);}
 
   private:  
   int * params;
+  ScoreOperator* op;
   ScoreOperatorInstanceElement *next;
 
 };

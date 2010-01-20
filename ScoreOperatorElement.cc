@@ -32,10 +32,10 @@
 #include "ScoreConfig.h"
 
 
-void ScoreOperatorElement::addInstance(int *params)
+void ScoreOperatorElement::addInstance(ScoreOperator* op, int *params)
 {
 
-  ScoreOperatorInstanceElement *ninst=new ScoreOperatorInstanceElement(params,
+  ScoreOperatorInstanceElement *ninst=new ScoreOperatorInstanceElement(params, op,
 								       inst);
   inst=ninst;
 
