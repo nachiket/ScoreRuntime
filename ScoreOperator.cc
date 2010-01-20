@@ -312,3 +312,18 @@ void ScoreOperator::forAllOperators()
 
 }
 
+
+void ScoreOperator::dumpGraphviz(ofstream *fout) {
+	ScoreOperatorElement *eptr=oplist;
+	while (eptr!=(ScoreOperatorElement *)NULL)  
+	{
+		ScoreOperatorInstanceElement *iptr=eptr->getInstance();
+		while (iptr!=(ScoreOperatorInstanceElement *)NULL)
+		{
+			*fout << "inside.." << eptr->getName() << endl;
+	      		iptr=iptr->getNext();
+		}
+      		eptr=eptr->getNext();
+	}
+}
+
