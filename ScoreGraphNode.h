@@ -77,8 +77,22 @@ public:
   ScoreStreamType *outputType(int which) { return(out_types[which]); }
   ScoreStreamType *schedInputType(int which) { return(sched_in_types[which]); }
   ScoreStreamType *schedOutputType(int which) { return(sched_out_types[which]); }
+
+  // added by Nachiket on 1/20/2010 to store name of operator..
+  char* getName() {
+  	return name;
+  }
   
-  void declareIO(int new_inputs, int new_outputs) {
+  void declareIO(int new_inputs, int new_outputs, char* base=NULL) {
+  	// name added by Nachiket on 1/20/2010
+
+	if(base!=NULL) {
+		name=(char *)malloc(strlen(base));
+		memcpy(name,base,strlen(base));
+	} else {
+		name=NULL;
+	}
+
     int i;
 
     inputs=new_inputs;
@@ -406,6 +420,7 @@ public:
 #endif
 
 protected:
+  char* name; // added by Nachiket on 1/20/2010 to support dumping out stream connectivity information..
   int inputs; 
   int outputs;
   SCORE_STREAM *in;

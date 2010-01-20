@@ -1826,7 +1826,7 @@ ScoreStream *streamID_to_OBJ(SCORE_STREAM_ID id) {
     cout << "   ID_to_OBJ " << endl;
   }
 
-  cout << "Debugmsg: Attempting to get scorestream object for id=" << id << endl;
+//  cout << "Debugmsg: Attempting to get scorestream object for id=" << id << endl;
 
   if ((shmptr=(ScoreStream *)shmat(id, 0, 0))==(ScoreStream *) -1) {
     perror("shmptr -- streamID_to_OBJ -- attach ");
