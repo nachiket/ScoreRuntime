@@ -36,6 +36,10 @@
 #include "ScoreStreamType.h"
 #include "ScoreGraphNode.h"
 #include "ScoreConfig.h"
+#include <iostream>
+#include <fstream>
+
+using std::ofstream;
 
 class ScoreOperator: public ScoreGraphNode
 {
@@ -51,6 +55,7 @@ public:
   static void forAllOperators();
 
   virtual NodeTags getTag() { return ScoreOperatorTag; }
+  static ofstream* fout;
 
 protected:
   virtual char *mangle(char *base, int nparam, int *params);
@@ -66,6 +71,7 @@ protected:
 
 };
 
+//ofstream* ScoreOperator::fout=NULL;
 
 #endif
 
