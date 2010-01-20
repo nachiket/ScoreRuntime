@@ -328,7 +328,7 @@ void ScoreOperator::dumpGraphviz(ofstream *fout) {
 			    ScoreGraphNode *src=op->getOutput(i)->src;
 			    ScoreGraphNode *sink=op->getOutput(i)->sink;
 
-			    if(src!=NULL ** sink!=NULL) {
+			    if(src!=NULL && sink!=NULL) {
 				    *fout << src->getName() << "->" << sink->getName() << " label=["<<op->getOutput(i)->getName()<<"]" << endl;
 			    }
 			}
