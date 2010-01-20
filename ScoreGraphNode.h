@@ -88,7 +88,8 @@ public:
 
 	if(base!=NULL) {
 		name=(char *)malloc(strlen(base));
-		memcpy(name,base,strlen(base));
+		sprintf(name,"%s",base);
+		//memcpy(name,base,strlen(base));
 	} else {
 		name=NULL;
 	}
