@@ -69,6 +69,7 @@ protected:
   static FILE *feedback_file(char *base);
   static int schedulerId() {return(schedulerid);}
   static void addInstance(ScoreOperatorElement *elm, ScoreOperator* op, int *params);
+  static void addInstance(ScoreOperatorElement* elm, int *params);
 
 };
 

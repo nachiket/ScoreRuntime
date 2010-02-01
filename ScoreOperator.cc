@@ -201,6 +201,12 @@ void ScoreOperator::addInstance(ScoreOperatorElement *elm, ScoreOperator* op, in
   elm->addInstance(op, params);
 }
 
+void ScoreOperator::addInstance(ScoreOperatorElement* elm, int *params)
+{
+//	cout << "Setting operator=" << op->getName() << "in=" << op->getInputs() << " out=" << op->getOutputs() << endl;
+  elm->addInstance(NULL, params);
+}
+
 FILE *ScoreOperator::feedback_file (char *base)
 {
   if (fpath==(char *)NULL)
