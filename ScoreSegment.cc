@@ -91,7 +91,7 @@ void *ScoreSegment::operator new(size_t size) {
 		  10*(buffer[2]-48)+
 		  100*(buffer[1]-48)+
 		  1000*(buffer[0]-48);
-	  //        cout << "Found existing /tmp/streamid: " << tempID << endl;
+	          cout << "Found existing /tmp/streamid: " << tempID << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
@@ -106,11 +106,11 @@ void *ScoreSegment::operator new(size_t size) {
 
   // Nachiket added update routine...
   // need to get new streamID
-  fstream outfile("/tmp/streamid",ios::out);
-  outfile << setfill('0');
-  outfile << setw(4);
-  outfile << tempID+1;
-  outfile.close();
+//  fstream outfile("/tmp/streamid",ios::out);
+//  outfile << setfill('0');
+//  outfile << setw(4);
+//  outfile << tempID+1;
+//  outfile.close();
 
   if(errno) {
 	  perror("Something went wrong..");
@@ -312,7 +312,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 		  10*(buffer[2]-48)+
 		  100*(buffer[1]-48)+
 		  1000*(buffer[0]-48);
-	  //        cout << "Found existing /tmp/streamid: " << tempID << endl;
+	          cout << "Found existing /tmp/streamid: " << recycleID1 << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
@@ -327,11 +327,11 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 
   // Nachiket added update routine...
   // need to get new streamID
-  fstream outfile("/tmp/streamid",ios::out);
-  outfile << setfill('0');
-  outfile << setw(4);
-  outfile << recycleID1+1;
-  outfile.close();
+//  fstream outfile("/tmp/streamid",ios::out);
+//  outfile << setfill('0');
+//  outfile << setw(4);
+//  outfile << recycleID1+1;
+//  outfile.close();
 
   if(errno) {
 	  perror("Something went wrong..");
@@ -357,8 +357,10 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
   start_val[0] = 0;
 
   // create and initialize the semaphores
-  if ((semid=semget(segmentID, 1, IPC_EXCL | IPC_CREAT | 0666)) != -1) {
-    arg.array = start_val;
+  // if ((semid=semget(segmentID, 1, IPC_EXCL | IPC_CREAT | 0666)) != -1) {
+  if ((semid=semget(0xdeadaabe, 1, IPC_CREAT | 0666)) != -1) {
+    static ushort start_val_tmp = 1;		
+    arg.array = &start_val_tmp;
     if (semctl(semid, 0, SETALL, arg) == -1) {
       perror("semctl -- segment constructor -- initialization");
       exit(errno);

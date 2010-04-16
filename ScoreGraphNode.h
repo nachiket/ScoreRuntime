@@ -91,7 +91,10 @@ public:
 		sprintf(name,"%s",base);
 		//memcpy(name,base,strlen(base));
 	} else {
-		name=NULL;
+		//name=NULL;
+		char* newbase="nullname";
+		name=(char *)malloc(strlen(newbase));
+		sprintf(name,"%s",newbase);
 	}
 
     int i;
@@ -189,6 +192,7 @@ public:
   void bindOutput(int which, SCORE_STREAM strm,
 		  ScoreStreamType *stype) {
     out[which]=strm;
+//    cout << "which=" << which << endl;
     sched_out[which]=strm;
     strm->srcNum = which; // output of a graph node is a stream source
     strm->sched_srcNum = which; // output of a graph node is a stream source
@@ -201,6 +205,9 @@ public:
     } else if (_isOperator) {
       STREAM_BIND_SRC(strm,this,stype,STREAM_OPERATOR_TYPE);
     }
+
+//    cout << "out[which]=" << out[which] << endl;
+    
   }
 
   // this is used by the scheduler when building a processor node which does
@@ -420,12 +427,14 @@ public:
   unsigned int stat_fireCount;
 #endif
 
-protected:
-  char* name; // added by Nachiket on 1/20/2010 to support dumping out stream connectivity information..
+// moved outside protected to avoid NULL errors on out and in.. wtf?? 4/16/2010
+  SCORE_STREAM *out;
   int inputs; 
   int outputs;
+  char* name; // added by Nachiket on 1/20/2010 to support dumping out stream connectivity information.. // inserted between out and in ptrs.. 
   SCORE_STREAM *in;
-  SCORE_STREAM *out;
+
+protected:
   unsigned int *inConsumption;
   unsigned int *outProduction;
   ScoreStreamType **in_types;

@@ -42,8 +42,12 @@
 #include "ScoreOperator.h"
 #include "ScoreOperatorElement.h"
 #include "ScoreSegmentOperatorReadOnly.h"
+#include "ScoreSegmentReadOnly.h"
 #include "ScoreConfig.h"
 
+
+#define ADDRSTREAM addrStream
+#define DATASTREAM dataStream
 
 char *ScoreSegmentOperatorReadOnly_instancename=
   "ScoreSegmentOperatorReadOnly_instance";
@@ -142,70 +146,44 @@ void ScoreSegmentOperatorReadOnly::constructorHelper(
        exit(2);
     }
   } else {
+
+//    segment = new ScoreSegmentReadOnly(segPtr, addr, data);
+
+    pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
+    pthread_attr_init(a_thread_attribute);
+    pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
+
     segment = segPtr;
     addrStream = addr;
     dataStream = data;
+
+    pthread_create(&rpt,a_thread_attribute,&ScoreSegmentOperatorReadOnly_proc_run, this);
+
+
     // FIX ME!
-    cerr << "NEED TO ADD SCORESEGMENTOPERATORREADONLY SPAWNING CODE!" << endl;
-    exit(2);
+//   cerr << "NEED TO ADD SCORESEGMENTOPERATORREADONLY SPAWNING CODE!" << endl;
+//    exit(2);
   }
 }
 
 
-#if 0
-void ScoreSegmentOperatorReadOnly::proc_run() {
+#if 1
+void* ScoreSegmentOperatorReadOnly::proc_run() {
   
-  int address, data, *atable=(int *)dataPtr;
+  int address, data, *atable=(int *)segment->dataPtr;
+/*
+  while (1) {
+    segment->step();
+    sched_yield();
+  }
+*/
 
   while (1) {
-    if (sim_isFaulted) {
-      if (checkIfAddrFault(sim_faultedAddr)) {
-	if (VERBOSEDEBUG || DEBUG) {
-	  cout << "   SEG RAMSRC: faulting on address " << sim_faultedAddr << 
-	    endl;
-	}
-      } else { 
-	address = sim_faultedAddr;
-
-	sim_isFaulted = 0;
-	sim_faultedAddr = 0;
-
-	// writing data to DATASTREAM
-	data = atable[address];
-	if (VERBOSEDEBUG || DEBUG) {
-	  cout << "   SEG RAMSRC: firing - data is " << data << endl;
-	}
-	DATASTREAM->stream_write(data);
-      }
-    } else if (ADDRSTREAM->stream_eos()) {
-	if (VERBOSEDEBUG || DEBUG) {
-	  cout << "   SEG RAMSRC: firing EOS input" << endl;
-	}
-	break;
-    } else { // address stream not faulted and not eos
+      cout << "Inside proc_run()\n" << endl;
       address = ADDRSTREAM->stream_read();
-      if (VERBOSEDEBUG || DEBUG) {
-	cout << "   SEG RAMSRC: firing - address is " << address << endl;
-      }
-
-      // check if the address is within bounds of the mapped address block.
-      if (checkIfAddrFault(address)) {
-	sim_isFaulted = 1;
-	sim_faultedAddr = address;
-
-	if (VERBOSEDEBUG || DEBUG) {
-	  cout << "   SEG RAMSRC: faulting on address " << sim_faultedAddr << 
-	    endl;
-	}
-      }
-
-      // writing data to DATASTREAM
       data = atable[address];
-      if (VERBOSEDEBUG || DEBUG) {
-	cout << "   SEG RAMSRC: firing - data is " << data << endl;
-      }
       DATASTREAM->stream_write(data);
-    }
+      sched_yield();
   }
 
   stream_free(ADDRSTREAM);

@@ -147,7 +147,7 @@ class ScoreSegment : public ScoreGraphNode {
   char this_segment_is_done;
 
   struct sembuf incrementuse, waitfornouse, decrementuse;
-  int semid;
+  int semid; // made static by Nachiket 1/16/2010
   union semun arg;
   static void *dataPtrTable[NUMOFSHAREDSEG];
   static void *dataRangeTable[NUMOFSHAREDSEG];

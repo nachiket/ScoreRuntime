@@ -313,7 +313,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
   sched_src = sched_sink = NULL;
 
   if (USE_POLLING_STREAMS) {
-    
+
 //    cout << "Semaphore status:" << ScoreStream::doneSemId << endl;
     // one shared semaphore needs to be initialized
     if (doneSemId == -1) {
