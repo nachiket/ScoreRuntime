@@ -96,6 +96,9 @@ class ScoreSegmentOperatorReadWrite : public ScoreOperator {
 
   void *proc_run();
 
+  ScoreSegment *segment;
+  ScoreStream *addrStream, *dataRStream, *dataWStream, *writeStream;
+
 
  private:
   void constructorHelper(unsigned int dwidth, unsigned int awidth, 
@@ -105,9 +108,6 @@ class ScoreSegmentOperatorReadWrite : public ScoreOperator {
 			 ScoreStream *dataR,
 			 ScoreStream *dataW,
 			 ScoreStream *write);
-
-  ScoreSegment *segment;
-  ScoreStream *addrStream, *dataRStream, *dataWStream, *writeStream;
 
   pthread_t rpt;
 };

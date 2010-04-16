@@ -229,7 +229,7 @@ extern "C" void *new_unsigned_score_segment(int n, int w) {
 }
 
 extern "C" void *new_boolean_score_segment(int n, int w) {
-  return((void *) NEW_BOOLEAN_SCORE_SEGMENT(n, w));
+  return((void *) NEW_BOOLEAN_SCORE_SEGMENT(n));
 }
 
 extern "C" void *new_signed_fixed_score_segment(int n, int w) {

@@ -265,8 +265,8 @@ typedef TypedScoreSegment<SCORE_STREAM_UNSIGNED_FIXED_TYPE>* UNSIGNED_FIXED_SCOR
    (new TypedScoreSegment<SCORE_STREAM_SIGNED_TYPE>(n,w))
 #define NEW_UNSIGNED_SCORE_SEGMENT(n,w) \
    (new TypedScoreSegment<SCORE_STREAM_UNSIGNED_TYPE>(n,w))
-#define NEW_BOOLEAN_SCORE_SEGMENT(n,w) \
-   (new TypedScoreSegment<SCORE_STREAM_BOOLEAN_TYPE>(n,w))
+#define NEW_BOOLEAN_SCORE_SEGMENT(n) \
+   (new TypedScoreSegment<SCORE_STREAM_BOOLEAN_TYPE>(n,1))
 #define NEW_SIGNED_FIXED_SCORE_SEGMENT(n,w) \
    (new TypedScoreSegment<SCORE_STREAM_SIGNED_FIXED_TYPE>(n,w))
 #define NEW_UNSIGNED_FIXED_SCORE_SEGMENT(n,w) \

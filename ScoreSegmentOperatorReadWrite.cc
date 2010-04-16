@@ -43,6 +43,7 @@
 #include "ScoreOperator.h"
 #include "ScoreOperatorElement.h"
 #include "ScoreSegmentOperatorReadWrite.h"
+#include "ScoreSegmentReadWrite.h"
 #include "ScoreConfig.h"
 
 
@@ -157,63 +158,85 @@ void ScoreSegmentOperatorReadWrite::constructorHelper(
        exit(2);
     }
   } else {
-    segment = segPtr;
-    addrStream = addr;
-    dataRStream = dataR;
-    dataWStream = dataW;
-    writeStream = write;
+
+//    segment = (ScoreSegment *)malloc(sizeof(ScoreSegment *));
+//    addrStream = new ScoreStream [1];
+//    dataRStream = new ScoreStream [1];
+//    dataWStream = new ScoreStream [1];
+//    writeStream = new ScoreStream [1];
+//    segment = segPtr;
+//    addrStream = addr;
+ //   dataRStream = dataR;
+  //  dataWStream = dataW;
+    //writeStream = write;
+
+    segment = new ScoreSegmentReadWrite(segPtr, addr,
+		    dataR, dataW,
+		    write);
+    
+    pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
+    pthread_attr_init(a_thread_attribute);
+    pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
+
+    pthread_create(&rpt,a_thread_attribute,&ScoreSegmentOperatorReadWrite_proc_run, this);
+				
 
     // FIX ME!
-    cerr << "NEED TO ADD SCORESEGMENTOPERATORREADWRITE SPAWNING CODE!" << endl;
-    exit(2);
+    // cerr << "NEED TO ADD SCORESEGMENTOPERATORREADWRITE SPAWNING CODE!" << endl;
+    // exit(2);
   }
 }
 
 
-#if 0
-void ScoreSegmentOperatorReadWrite::proc_run() {
+#if 1
+void *ScoreSegmentOperatorReadWrite::proc_run() {
   
-  int address, data, *atable=(int *)dataPtr;
-
+  printf("Inside proc_run()\n"); fflush(stdout);
+  //int address, data, *atable=(int *)segment->dataPtr;
   while (1) {
-    if (sim_isFaulted) {
-      if (checkIfAddrFault(sim_faultedAddr)) {
+    segment->step();
+    sched_yield();
+  }
+
+/*  
+    if (segment->sim_isFaulted) {
+      if (segment->checkIfAddrFault(segment->sim_faultedAddr)) {
 	if (VERBOSEDEBUG || DEBUG) {
-	  cout << "   SEG RAMSRCSINK: faulting on address " << sim_faultedAddr << 
+	  cout << "   SEG RAMSRCSINK: faulting on address " << segment->sim_faultedAddr << 
 	    endl;
 	}
       } else { 
-	address = sim_faultedAddr;
+	address = segment->sim_faultedAddr;
 
-	sim_isFaulted = 0;
-	sim_faultedAddr = 0;
+	segment->sim_isFaulted = 0;
+	segment->sim_faultedAddr = 0;
 
 	// writing data to dataOutStream
 	data = atable[address];
 	if (VERBOSEDEBUG || DEBUG) {
 	  cout << "   SEG RAMSRCSINK: firing - data is " << data << endl;
 	}
-	dataOutStream->stream_write(data);
+	segment->dataOutStream->stream_write(data);
       }
     } else if (addrStream->stream_eos()) {
 	if (VERBOSEDEBUG || DEBUG) {
 	  cout << "   SEG RAMSRCSINK: firing EOS input" << endl;
 	}
 	break;
-    } else { // address stream not faulted and not eos
+    } else { // address stream not faulted and not eos    
       address = addrStream->stream_read();
       if (VERBOSEDEBUG || DEBUG) {
 	cout << "   SEG RAMSRCSINK: firing - address is " << address << endl;
       }
 
       // check if the address is within bounds of the mapped address block.
-      if (checkIfAddrFault(address)) {
-	sim_isFaulted = 1;
-	sim_faultedAddr = address;
-	sim_faultedMode = rwToken;
+      if (segment->checkIfAddrFault(address)) {
+	segment->sim_isFaulted = 1;
+	segment->sim_faultedAddr = address;
+	segment->sim_faultedMode = rwToken;
 
 	if (VERBOSEDEBUG || DEBUG) {
-	  cout << "   SEG RAMSRCSINK: faulting on address " << sim_faultedAddr << 
+	  cout << "   SEG RAMSRCSINK: faulting on address " << segment->sim_faultedAddr << 
 	    endl;
 	}
       }
@@ -223,14 +246,16 @@ void ScoreSegmentOperatorReadWrite::proc_run() {
       if (VERBOSEDEBUG || DEBUG) {
 	cout << "   SEG RAMSRCSINK: firing - data is " << data << endl;
       }
-      dataOutStream->stream_write(data);
+      segment->dataOutStream->stream_write(data);
     }
   }
 
   stream_free(addrStream);
-  stream_close(dataOutStream);
+  stream_close(segment->dataOutStream);
+*/  
 
 }
+// ELIMINATED ON April 16th 2010
 #else
 void *ScoreSegmentOperatorReadWrite::proc_run() {
   cerr << "FIX ME!!!!!!" << endl;
