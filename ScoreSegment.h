@@ -101,6 +101,11 @@ class ScoreSegment : public ScoreGraphNode {
     return(dataPtr);
   }
 
+  // set data
+//  void setData(int address, long long int data) {
+//    dataPtr[address]=data;
+//  }
+
   // length of segment 
   // to humor Eylon, this means number of elements
   size_t length() {

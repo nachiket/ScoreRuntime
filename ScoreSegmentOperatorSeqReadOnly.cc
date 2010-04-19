@@ -42,12 +42,14 @@
 #include "ScoreOperator.h"
 #include "ScoreOperatorElement.h"
 #include "ScoreSegmentOperatorSeqReadOnly.h"
+#include "ScoreSegmentSeqReadOnly.h"
 #include "ScoreConfig.h"
 
+#define ADDRSTREAM addrStream
+#define DATASTREAM dataStream
 
-char *ScoreSegmentOperatorSeqReadOnly_instancename=
+static char *ScoreSegmentOperatorSeqReadOnly_instancename=
   "ScoreSegmentOperatorSeqReadOnly_instance";
-
 
 void *ScoreSegmentOperatorSeqReadOnly_proc_run(void *obj) {
   return(((ScoreSegmentOperatorSeqReadOnly *)obj)->proc_run());
@@ -58,6 +60,12 @@ ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
   unsigned int dwidth, unsigned int awidth, size_t nelems,
   UNSIGNED_SCORE_SEGMENT segPtr,
   UNSIGNED_SCORE_STREAM data) {
+
+//  cout << "Debug: data()=" << ((long long *)segPtr->data()) << endl;
+//  cout << "Debug: dataPtr=" << ((long long *)segPtr->dataPtr) << endl;
+//  cout << "Debug: data[1]=" << ((long long *)segPtr->dataPtr)[1] << endl;
+//  cout << "Debug: data[1]=" << ((long long *)segPtr->data())[1] << endl;
+
   constructorHelper(dwidth, awidth, nelems, segPtr, data);
 }
 
@@ -100,6 +108,7 @@ void ScoreSegmentOperatorSeqReadOnly::constructorHelper(
   unsigned int dwidth, unsigned int awidth, size_t nelems,
   ScoreSegment *segPtr,
   ScoreStream *data) {
+  //char *instance_fn=(char*)NULL; //resolve(ScoreSegmentOperatorSeqReadOnly_instancename);
   char *instance_fn=resolve(ScoreSegmentOperatorSeqReadOnly_instancename);
 
   // do sanity checking!
@@ -141,20 +150,54 @@ void ScoreSegmentOperatorSeqReadOnly::constructorHelper(
        exit(2);
     }
   } else {
+
+//	  segment = new ScoreSegmentSeqReadOnly(segPtr, data);
+
+	  pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
+	  pthread_attr_init(a_thread_attribute);
+	  pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
+	  pthread_create(&rpt,a_thread_attribute,&ScoreSegmentOperatorSeqReadOnly_proc_run, this);
+
     segment = segPtr;
     dataStream = data;
 
     // FIX ME!
-    cerr << "NEED TO ADD SCORESEGMENTOPERATORSEQREADONLY SPAWNING CODE!" << 
-      endl;
-    exit(2);
+    //cerr << "NEED TO ADD SCORESEGMENTOPERATORSEQREADONLY SPAWNING CODE!" << 
+    //  endl;
+    //exit(2);
   }
 }
 
 
-#if 0
-void ScoreSegmentOperatorSeqReadOnly::proc_run() {
-  
+#if 1
+void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
+
+  int address;
+  long long int data;
+  long long int *atable=(long long int*)segment->data(); // this shouldn't point to dataPtr.. jesus
+
+  while(1) {
+    if(!DATASTREAM->stream_full()) {
+      // get address
+      address=segment->readAddr;
+      segment->readAddr++;
+      data=atable[address];
+      // recycle to start and resume operation
+      if(segment->readAddr==segment->segLength) {
+        segment->readAddr=0;
+        stream_close(DATASTREAM);
+      } else {
+//        cout << "Internally addr=" << segment->readAddr << 
+//			   " dataPtr=" << segment->dataPtr << 
+//			   " data=" << data << endl;
+        // write data
+        DATASTREAM->stream_write(atable[address]);
+      }
+    }
+    sched_yield();
+  }
+
+/*
   int data, *atable=(int *)dataPtr;
 
   while (1) {
@@ -209,6 +252,7 @@ void ScoreSegmentOperatorSeqReadOnly::proc_run() {
   }
 
   stream_close(DATASTREAM);
+*/  
 
 }
 #else

@@ -49,7 +49,7 @@ void *ScoreSegment::dataRangeTable[NUMOFSHAREDSEG] = {0};
 ScoreSegment *ScoreSegment::segPtrTable[NUMOFSHAREDSEG] = {0};
 
 // want to initiate signal catching code
-//int ScoreSegment::initSig=initSigCatch();
+int ScoreSegment::initSig=initSigCatch();
 
 
 void *ScoreSegment::operator new(size_t size) {
@@ -91,7 +91,7 @@ void *ScoreSegment::operator new(size_t size) {
 		  10*(buffer[2]-48)+
 		  100*(buffer[1]-48)+
 		  1000*(buffer[0]-48);
-	          cout << "Found existing /tmp/streamid: " << tempID << endl;
+//	          cout << "Found existing /tmp/streamid: " << tempID << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
@@ -312,7 +312,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 		  10*(buffer[2]-48)+
 		  100*(buffer[1]-48)+
 		  1000*(buffer[0]-48);
-	          cout << "Found existing /tmp/streamid: " << recycleID1 << endl;
+//	          cout << "Found existing /tmp/streamid: " << recycleID1 << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
@@ -338,6 +338,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 	  exit(errno);
   }
 
+
   // create a share memory segment and stored the segment ID in dataID
   if ((dataID=shmget((int)recycleID1, segSize, 
 			IPC_EXCL | IPC_CREAT | 0666)) != -1) {
@@ -353,12 +354,13 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
     exit(errno);
   }
 
+  printf("Segsize=%d Ptr=%x\n",segSize, dataPtr); 
   // want to setup the semaphore
   start_val[0] = 0;
 
   // create and initialize the semaphores
-  // if ((semid=semget(segmentID, 1, IPC_EXCL | IPC_CREAT | 0666)) != -1) {
-  if ((semid=semget(0xdeadaabe, 1, IPC_CREAT | 0666)) != -1) {
+  if ((semid=semget(segmentID, 1, IPC_EXCL | IPC_CREAT | 0666)) != -1) {
+//  if ((semid=semget(0xdeadaabe, 1, IPC_CREAT | 0666)) != -1) {
     static ushort start_val_tmp = 1;		
     arg.array = &start_val_tmp;
     if (semctl(semid, 0, SETALL, arg) == -1) {
@@ -397,6 +399,10 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
     perror ("       due to implementation limitation");
     exit(-1);
   }
+
+//  for(int k=0; k<segPtr->segLength; k++) {
+//  	((long long int*)dataPtr)[k]=k*k;
+//  }
 
   if (VERBOSEDEBUG || DEBUG) {
     cout << "   SEG: segment creation" << endl;

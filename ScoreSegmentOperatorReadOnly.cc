@@ -170,7 +170,9 @@ void ScoreSegmentOperatorReadOnly::constructorHelper(
 #if 1
 void* ScoreSegmentOperatorReadOnly::proc_run() {
   
-  int address, data, *atable=(int *)segment->dataPtr;
+  int address;
+  long long int data;
+  long long int *atable=(long long int *)segment->data(); //Ptr
 /*
   while (1) {
     segment->step();
@@ -179,10 +181,14 @@ void* ScoreSegmentOperatorReadOnly::proc_run() {
 */
 
   while (1) {
-      cout << "Inside proc_run()\n" << endl;
-      address = ADDRSTREAM->stream_read();
-      data = atable[address];
-      DATASTREAM->stream_write(data);
+      if(!ADDRSTREAM->stream_empty()) {
+	address = ADDRSTREAM->stream_read();
+      	data = atable[address];
+      	cout << "Inside proc_run() Addr=" << address << " Data=" << data << endl;
+      	if(!DATASTREAM->stream_full()) {
+		DATASTREAM->stream_write(data);
+      	}
+      }
       sched_yield();
   }
 

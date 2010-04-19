@@ -77,7 +77,7 @@ void ScoreSegmentReadOnly::constructorHelper(unsigned int dwidth,
       perror("dwidth -- seg constructor helper -- not agree with segWidth ");
       exit(errno);
     }
-      
+
   segSize = segPtr->segSize;
   semid = segPtr->semid;
 

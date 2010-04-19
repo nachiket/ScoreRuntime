@@ -427,14 +427,13 @@ public:
   unsigned int stat_fireCount;
 #endif
 
-// moved outside protected to avoid NULL errors on out and in.. wtf?? 4/16/2010
-  SCORE_STREAM *out;
+protected:
+  char* name; // added by Nachiket on 1/20/2010 to support dumping out stream connectivity information.. 
   int inputs; 
   int outputs;
-  char* name; // added by Nachiket on 1/20/2010 to support dumping out stream connectivity information.. // inserted between out and in ptrs.. 
   SCORE_STREAM *in;
+  SCORE_STREAM *out;
 
-protected:
   unsigned int *inConsumption;
   unsigned int *outProduction;
   ScoreStreamType **in_types;
