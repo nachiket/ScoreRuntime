@@ -185,7 +185,8 @@ void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
       // recycle to start and resume operation
       if(segment->readAddr==segment->segLength) {
         segment->readAddr=0;
-        stream_close(DATASTREAM);
+//        stream_close(DATASTREAM);
+        DATASTREAM->stream_write(atable[address]);
       } else {
 //        cout << "Internally addr=" << segment->readAddr << 
 //			   " dataPtr=" << segment->dataPtr << 

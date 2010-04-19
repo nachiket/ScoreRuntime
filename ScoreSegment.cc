@@ -49,7 +49,7 @@ void *ScoreSegment::dataRangeTable[NUMOFSHAREDSEG] = {0};
 ScoreSegment *ScoreSegment::segPtrTable[NUMOFSHAREDSEG] = {0};
 
 // want to initiate signal catching code
-int ScoreSegment::initSig=initSigCatch();
+//int ScoreSegment::initSig=initSigCatch();
 
 
 void *ScoreSegment::operator new(size_t size) {
@@ -354,7 +354,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
     exit(errno);
   }
 
-  printf("Segsize=%d Ptr=%x\n",segSize, dataPtr); 
+//  printf("Segsize=%d Ptr=%x\n",segSize, dataPtr); 
   // want to setup the semaphore
   start_val[0] = 0;
 
