@@ -32,6 +32,14 @@
 #include "ScoreSegment.h"
 #include "ScoreConfig.h"
 
+#include <iostream> // added by Nachiket for newer file IO constructs
+#include <iomanip> // added by Nachiket for newer file IO constructs
+#include <ios> // added by Nachiket for newer file IO constructs
+
+using std::ios;
+using std::fstream;
+using std::setfill;
+using std::setw;
 
 int ScoreSegment::currentID = 0;
 int ScoreSegment::tempID = 0;
@@ -41,13 +49,14 @@ void *ScoreSegment::dataRangeTable[NUMOFSHAREDSEG] = {0};
 ScoreSegment *ScoreSegment::segPtrTable[NUMOFSHAREDSEG] = {0};
 
 // want to initiate signal catching code
-int ScoreSegment::initSig=initSigCatch();
+//int ScoreSegment::initSig=initSigCatch();
 
 
 void *ScoreSegment::operator new(size_t size) {
 
   // create a new shared segment and malloc
 
+/* COMMENT_REMOVE on April 15th 2010 (Anyone reading this, DO YOUR FREAKING TAXES!!)
   // need to get new segmentID
   // since we don't have one for Segment ID, we will re-use /proc/streamid
   int file = (int) open("/proc/streamid",O_RDONLY);
@@ -62,6 +71,52 @@ void *ScoreSegment::operator new(size_t size) {
     exit(errno);
   }
   close(file);
+*/  // COMMENT_REMOVE
+
+  fstream infile("/tmp/streamid",ios::in);
+  if (infile.fail() || infile.bad()) {
+	  cout << "Initialize /tmp/streamid" << endl;
+	  infile.close();
+	  // initialize the file..
+	  fstream outfile("/tmp/streamid",ios::out);
+	  outfile << setfill('0');
+	  outfile << setw(4);
+	  outfile << 1;
+	  tempID=0;
+	  outfile.close();
+  } else {
+	  char* buffer=new char[4];
+	  infile.read(buffer,4);
+	  tempID=(buffer[3]-48)+
+		  10*(buffer[2]-48)+
+		  100*(buffer[1]-48)+
+		  1000*(buffer[0]-48);
+	  //        cout << "Found existing /tmp/streamid: " << tempID << endl;
+	  infile.close();
+
+	  // Nachiket added update routine...
+	  // need to get new streamID
+	  fstream outfile("/tmp/streamid",ios::out);
+	  outfile << setfill('0');
+	  outfile << setw(4);
+	  outfile << tempID+1;
+	  outfile.close();
+
+  }
+
+  // Nachiket added update routine...
+  // need to get new streamID
+  fstream outfile("/tmp/streamid",ios::out);
+  outfile << setfill('0');
+  outfile << setw(4);
+  outfile << tempID+1;
+  outfile.close();
+
+  if(errno) {
+	  perror("Something went wrong..");
+	  exit(errno);
+  }
+
 
   // need to allocate new segment of share memory
 
@@ -220,7 +275,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
   // the "data" section will be another shared memory segment
   // it will be page aligned when attached to a process
 
-
+/*
   // open /proc/streamid to get a unique number
   int file = (int) open("/proc/streamid",O_RDONLY);
 
@@ -236,6 +291,52 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
     exit(errno);
   }
   close(file);
+*/
+
+
+  fstream infile("/tmp/streamid",ios::in);
+  if (infile.fail() || infile.bad()) {
+	  cout << "Initialize /tmp/streamid" << endl;
+	  infile.close();
+	  // initialize the file..
+	  fstream outfile("/tmp/streamid",ios::out);
+	  outfile << setfill('0');
+	  outfile << setw(4);
+	  outfile << 1;
+	  recycleID1=0;
+	  outfile.close();
+  } else {
+	  char* buffer=new char[4];
+	  infile.read(buffer,4);
+	  recycleID1=(buffer[3]-48)+
+		  10*(buffer[2]-48)+
+		  100*(buffer[1]-48)+
+		  1000*(buffer[0]-48);
+	  //        cout << "Found existing /tmp/streamid: " << tempID << endl;
+	  infile.close();
+
+	  // Nachiket added update routine...
+	  // need to get new streamID
+	  fstream outfile("/tmp/streamid",ios::out);
+	  outfile << setfill('0');
+	  outfile << setw(4);
+	  outfile << recycleID1+1;
+	  outfile.close();
+
+  }
+
+  // Nachiket added update routine...
+  // need to get new streamID
+  fstream outfile("/tmp/streamid",ios::out);
+  outfile << setfill('0');
+  outfile << setw(4);
+  outfile << recycleID1+1;
+  outfile.close();
+
+  if(errno) {
+	  perror("Something went wrong..");
+	  exit(errno);
+  }
 
   // create a share memory segment and stored the segment ID in dataID
   if ((dataID=shmget((int)recycleID1, segSize, 

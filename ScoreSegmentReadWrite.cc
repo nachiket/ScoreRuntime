@@ -51,6 +51,8 @@ void ScoreSegmentReadWrite::constructorHelper(unsigned int dwidth,
 					      ScoreStream* dataR_t,
 					      ScoreStream* dataW_t,
 					      ScoreStream* write_t) {
+
+  printf("Setup a score segment rw\n");
   segmentType = SCORE_SEGMENT_READONLY;
 
   if (VERBOSEDEBUG || DEBUG) {
@@ -84,6 +86,11 @@ void ScoreSegmentReadWrite::constructorHelper(unsigned int dwidth,
   segSize = segPtr->segSize;
   semid = segPtr->semid;
 
+  printf("Setting up streams.. addr_t=%llx\n",addr_t);
+  printf("Setting up streams.. dataW_t=%llx\n",dataW_t);
+  printf("Setting up streams.. write_t=%llx\n",write_t);
+  printf("Setting up streams.. dataR_t=%llx \n",dataR_t);
+
   // Fourth, set the page inputs and outputs 
   declareIO(3,1);
   bindInput(SCORE_CMB_RAMSRCSINK_ADDR_INNUM,
@@ -92,9 +99,14 @@ void ScoreSegmentReadWrite::constructorHelper(unsigned int dwidth,
 	    dataW_t,new ScoreStreamType(0,dwidth));
   bindInput(SCORE_CMB_RAMSRCSINK_WRITE_INNUM,
 	    write_t,new ScoreStreamType(0,1));
+
+  printf("Setting up streams.. addr_t=%llx, ADDRSTREAM=%llx\n",addr_t, in[0]);
+  printf("Setting up streams.. dataW_t=%llx, DATAWSTREAM=%llx\n",dataW_t, in[1]);
+  printf("Setting up streams.. write_t=%llx, WRSTREAM=%llx\n",write_t, in[2]);
+  
   bindOutput(SCORE_CMB_RAMSRCSINK_DATAR_OUTNUM,
 	     dataR_t,new ScoreStreamType(0,dwidth));
-
+  printf("Setting up streams.. dataR_t=%llx, DATARSTREAM=%llx\n",dataR_t, out[0]);
 
   // Initiate variables
   writeToken = NOT_READ;
@@ -126,6 +138,8 @@ ScoreSegmentReadWrite::~ScoreSegmentReadWrite() {
 }
 
 int ScoreSegmentReadWrite::step() {
+
+  printf("Inside step\n"); fflush(stdout); //exit(1);
   
   int address;
   long long int data, *atable=(long long int *)dataPtr;
@@ -134,8 +148,11 @@ int ScoreSegmentReadWrite::step() {
     return(0);
   }
 
+    printf("Huh? DATARSTREAM check starting..\n"); fflush(stdout);
+    printf("Huh? DATARSTREAM=%d\n",DATARSTREAM); fflush(stdout);
   if (!STREAM_FULL(DATARSTREAM)) {
     if (sim_isFaulted) {
+    printf("checking for address fault\n"); fflush(stdout);
       if (checkIfAddrFault(sim_faultedAddr)) {
 	if (VERBOSEDEBUG || DEBUG) {
 	  cout << "   SEG RAMSRCSINK: faulting on address " 
