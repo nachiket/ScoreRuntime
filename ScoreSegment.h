@@ -83,56 +83,16 @@
 
 // the various types of ScoreSegment derivations so that the delete
 // operator knows what to do.
-#define SCORE_SEGMENT_PLAIN        0
-#define SCORE_SEGMENT_READONLY     1
-#define SCORE_SEGMENT_STITCH       2
+#define SCORE_SEGMENT_PLAIN        1
+#define SCORE_SEGMENT_READONLY     2
+#define SCORE_SEGMENT_STITCH       3
 
 
 // ScoreSegment: a memory segment.
 class ScoreSegment : public ScoreGraphNode {
- public:
-  void *operator new(size_t size);
-  void operator delete(void *p, size_t size);
-  ScoreSegment();
-  ScoreSegment(int, int, ScoreType); //first arg is lenth, second arg is width
+public:
 
-  // should return a pointer to data in segment
-  void *data() {
-    return(dataPtr);
-  }
-
-  // set data
-//  void setData(int address, long long int data) {
-//    dataPtr[address]=data;
-//  }
-
-  // length of segment 
-  // to humor Eylon, this means number of elements
-  size_t length() {
-    return(segLength);
-  }
-
-  // data width
-  int width() {
-    return(segWidth);
-  }
-
-  // size in bytes.
-  int size() {
-    return(segSize);
-  }
-
-  SCORE_SEGMENT_ID id() {return segmentID;}  // return id (like ScoreStream)
-  void noAccess() ; // remove access from parent process
-                    //  maybe others, maybe should take args
-  void returnAccess(); // put access back
-
-  ~ScoreSegment();
-
-  virtual int step() {return(0);}// should be overridden
-
-  virtual NodeTags getTag() { return ScoreSegmentTag; }
-
+  void *dataPtr;
   // used to store mode/bounds information.
   int mode;
   unsigned int maxAddr;             // this is the size of the loaded
@@ -162,11 +122,11 @@ class ScoreSegment : public ScoreGraphNode {
   int dataID;
   size_t segLength;
   unsigned int segWidth;
-  void *dataPtr;
   SCORE_SEGMENT_ID segmentID;
 
   char sim_isFaulted;
   unsigned int sim_faultedAddr;
+  unsigned int segmentType;
 
   unsigned int getSegmentType() {return(segmentType);}
   ScoreType segType;
@@ -222,32 +182,75 @@ class ScoreSegment : public ScoreGraphNode {
   unsigned int sched_residentStart;
   unsigned int sched_residentLength;
 
+
   //////////////////////////////////////////////////////
   // END SCHEDULER VARIABLES  
   //////////////////////////////////////////////////////
+  int recycleID1;
 
   ScoreIOMaskType sim_segmentInputMask;
 
   char shouldUseUSECOUNT;
+  int recycleID0; // same as tempID, need to recycle this on exit
 
- protected:
   char checkIfAddrFault(unsigned int newAddr);
-
-  unsigned int segmentType;
-
- private:
 
   static int tempID;
   static SCORE_SEGMENT_ID currentID;
   static int initSig; // variable used to initialize initSigCatch only once
 
-  int recycleID0; // same as tempID, need to recycle this on exit
-  int recycleID1;
+  static ScoreSegment *shmptr;
   ScoreSegment *segPtr;
   ushort start_val[1];
-  static ScoreSegment *shmptr;
+
+  void *operator new(size_t size);
+  void operator delete(void *p, size_t size);
+  ScoreSegment();
+  ScoreSegment(int, int, ScoreType); //first arg is lenth, second arg is width
+
+  // should return a pointer to data in segment
+  void* data() {
+  printf("Case size of this %d\n",sizeof(*this));
+//  printf("returning hiy: %d %lu,  %lu\n",hiy,&hiy,dataPtr);
+    return(dataPtr);
+  }
+
+  // set data
+  void setData(int address, long long int data) {
+    ((long long int*)dataPtr)[address]=data;
+  }
+
+  // length of segment 
+  // to humor Eylon, this means number of elements
+  size_t length() {
+    return(segLength);
+  }
+
+  // data width
+  int width() {
+    return(segWidth);
+  }
+
+  // size in bytes.
+  int size() {
+    return(segSize);
+  }
+
+  long MORON;
+  SCORE_SEGMENT_ID id() {return segmentID;}  // return id (like ScoreStream)
+  void noAccess() ; // remove access from parent process
+                    //  maybe others, maybe should take args
+  void returnAccess(); // put access back
+
+  ~ScoreSegment();
+
+  virtual int step() {return(0);}// should be overridden
+
+  virtual NodeTags getTag() { return ScoreSegmentTag; }
+
 };
 
+//public
 template <ScoreType ScoreType_t>
 class TypedScoreSegment : public ScoreSegment
 {

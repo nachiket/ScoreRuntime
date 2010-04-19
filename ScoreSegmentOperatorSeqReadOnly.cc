@@ -61,8 +61,9 @@ ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
   UNSIGNED_SCORE_SEGMENT segPtr,
   UNSIGNED_SCORE_STREAM data) {
 
-//  cout << "Debug: data()=" << ((long long *)segPtr->data()) << endl;
-//  cout << "Debug: dataPtr=" << ((long long *)segPtr->dataPtr) << endl;
+  cout << "Debug: segPtr=" << segPtr << endl;
+  cout << "Debug: data()=" << ((long long *)segPtr->data()) << endl;
+  cout << "Debug: dataPtr=" << ((long long *)segPtr->dataPtr) << endl;
 //  cout << "Debug: data[1]=" << ((long long *)segPtr->dataPtr)[1] << endl;
 //  cout << "Debug: data[1]=" << ((long long *)segPtr->data())[1] << endl;
 
@@ -174,7 +175,7 @@ void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
 
   int address;
   long long int data;
-  long long int *atable=(long long int*)segment->data(); // this shouldn't point to dataPtr.. jesus
+  long long int *atable=(long long int*)segment->dataPtr; // this shouldn't point to dataPtr.. jesus
 
   while(1) {
     if(!DATASTREAM->stream_full()) {
@@ -185,12 +186,12 @@ void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
       // recycle to start and resume operation
       if(segment->readAddr==segment->segLength) {
         segment->readAddr=0;
-//        stream_close(DATASTREAM);
+        stream_close(DATASTREAM);
         DATASTREAM->stream_write(atable[address]);
       } else {
-//        cout << "Internally addr=" << segment->readAddr << 
-//			   " dataPtr=" << segment->dataPtr << 
-//			   " data=" << data << endl;
+        cout << "Internally addr=" << segment->readAddr << 
+			   " dataPtr=" << segment->dataPtr << 
+			   " data=" << data << endl;
         // write data
         DATASTREAM->stream_write(atable[address]);
       }

@@ -60,6 +60,8 @@ void ScoreSegmentReadOnly::constructorHelper(unsigned int dwidth,
       if (errno != EINTR)
 	exit(errno);
    }
+   
+cout << "Attach addr=" << dataPtr << endl;
 
   // Third,  copy some data over
   segLength = segPtr->segLength;

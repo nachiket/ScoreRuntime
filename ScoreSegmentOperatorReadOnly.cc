@@ -62,7 +62,9 @@ ScoreSegmentOperatorReadOnly::ScoreSegmentOperatorReadOnly(
   unsigned int dwidth, unsigned int awidth, size_t nelems,
   UNSIGNED_SCORE_SEGMENT segPtr,
   UNSIGNED_SCORE_STREAM addr, UNSIGNED_SCORE_STREAM data) {
+  cout << "Before=" << segPtr->dataPtr << endl;
   constructorHelper(dwidth, awidth, nelems, segPtr, addr, data);
+  cout << "After=" << segPtr->dataPtr << endl;
 }
 
 
@@ -104,7 +106,9 @@ void ScoreSegmentOperatorReadOnly::constructorHelper(
   unsigned int dwidth, unsigned int awidth, size_t nelems,
   ScoreSegment *segPtr,
   ScoreStream *addr, ScoreStream *data) {
-  char *instance_fn=resolve(ScoreSegmentOperatorReadOnly_instancename);
+  char *instance_fn=(char*)NULL;//resolve(ScoreSegmentOperatorReadOnly_instancename);
+
+
 
   // do sanity checking!
   if (segPtr->segLength != nelems) {
@@ -147,13 +151,18 @@ void ScoreSegmentOperatorReadOnly::constructorHelper(
     }
   } else {
 
-//    segment = new ScoreSegmentReadOnly(segPtr, addr, data);
+    cout << "Case 3: contents" << segPtr << " dataPtr=" << segPtr->dataPtr << " &dataPtr=" << &(segPtr->dataPtr) << endl;
+    segment = new ScoreSegmentReadOnly(segPtr, addr, data);
+
+    cout << "Case 3.5: contents" << segPtr << " dataPtr=" << segPtr->dataPtr << " &dataPtr=" << &(segPtr->dataPtr) << endl;
+
+//  cout << "Inside segPtr=" << segPtr << " length=" << segPtr->segLength << " datsID=" << segPtr->dataID << " data()=" << segPtr->data() << " dataPtr" << segPtr->dataPtr << endl;
 
     pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
     pthread_attr_init(a_thread_attribute);
     pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
 
-    segment = segPtr;
+//    segment = segPtr;
     addrStream = addr;
     dataStream = data;
 
@@ -172,14 +181,14 @@ void* ScoreSegmentOperatorReadOnly::proc_run() {
   
   int address;
   long long int data;
-  long long int *atable=(long long int *)segment->data(); //Ptr
-/*
+  long long int *atable=(long long int *)segment->dataPtr;
+
   while (1) {
-    segment->step();
+//    segment->step();
     sched_yield();
   }
-*/
 
+/*
   while (1) {
       if(!ADDRSTREAM->stream_empty()) {
 	address = ADDRSTREAM->stream_read();
@@ -192,6 +201,7 @@ void* ScoreSegmentOperatorReadOnly::proc_run() {
       sched_yield();
   }
 
+*/
   stream_free(ADDRSTREAM);
   stream_close(DATASTREAM);
 

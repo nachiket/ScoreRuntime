@@ -59,6 +59,9 @@ void ScoreSegmentSeqReadOnly::constructorHelper(unsigned int dwidth,
 	exit(errno);
    }
 
+
+   cout << "dataPtr inside Segment=" << dataPtr << endl;
+
   // Third, copy some data over
   segLength = segPtr->segLength;
   readAddr = 0;
