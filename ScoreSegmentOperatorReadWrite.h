@@ -94,6 +94,14 @@ class ScoreSegmentOperatorReadWrite : public ScoreOperator {
 				UNSIGNED_FIXED_STREAM dataW,
 				BOOLEAN_SCORE_STREAM write);
 
+  ScoreSegmentOperatorReadWrite(unsigned int dwidth, unsigned int awidth, 
+				size_t nelems,
+				DOUBLE_SCORE_SEGMENT segPtr,
+				UNSIGNED_SCORE_STREAM addr,
+				DOUBLE_SCORE_STREAM dataR,
+				DOUBLE_SCORE_STREAM dataW,
+				BOOLEAN_SCORE_STREAM write);
+
   void *proc_run();
 
   ScoreSegment *segment;

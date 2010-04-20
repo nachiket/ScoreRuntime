@@ -76,6 +76,11 @@ class ScoreSegmentOperatorSeqReadOnly : public ScoreOperator {
 				  UNSIGNED_FIXED_SCORE_SEGMENT segPtr,
 				  UNSIGNED_FIXED_STREAM data);
 
+  ScoreSegmentOperatorSeqReadOnly(unsigned int dwidth, unsigned int awidth, 
+				  size_t nelems,
+				  DOUBLE_SCORE_SEGMENT segPtr,
+				  DOUBLE_SCORE_STREAM data);
+
   void *proc_run();
 
 

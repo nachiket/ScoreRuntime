@@ -102,6 +102,13 @@ ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
   constructorHelper(dwidth, awidth, nelems, segPtr, data);
 }
 
+ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
+  unsigned int dwidth, unsigned int awidth, size_t nelems,
+  DOUBLE_SCORE_SEGMENT segPtr, 
+  DOUBLE_SCORE_STREAM data) {
+  constructorHelper(dwidth, awidth, nelems, segPtr, data);
+}
+
 
 // Decides whether or not the ScoreSegmentOperator should be sent to the
 // scheduler. If not, then it spawns the operator as a thread.
@@ -152,14 +159,14 @@ void ScoreSegmentOperatorSeqReadOnly::constructorHelper(
     }
   } else {
 
-//	  segment = new ScoreSegmentSeqReadOnly(segPtr, data);
+	  segment = new ScoreSegmentSeqReadOnly(segPtr, data);
 
 	  pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
 	  pthread_attr_init(a_thread_attribute);
 	  pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
 	  pthread_create(&rpt,a_thread_attribute,&ScoreSegmentOperatorSeqReadOnly_proc_run, this);
 
-    segment = segPtr;
+//    segment = segPtr;
     dataStream = data;
 
     // FIX ME!
@@ -186,12 +193,9 @@ void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
       // recycle to start and resume operation
       if(segment->readAddr==segment->segLength) {
         segment->readAddr=0;
-        stream_close(DATASTREAM);
+//        stream_close(DATASTREAM);
         DATASTREAM->stream_write(atable[address]);
       } else {
-        cout << "Internally addr=" << segment->readAddr << 
-			   " dataPtr=" << segment->dataPtr << 
-			   " data=" << data << endl;
         // write data
         DATASTREAM->stream_write(atable[address]);
       }

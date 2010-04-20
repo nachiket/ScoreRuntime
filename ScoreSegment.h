@@ -282,9 +282,9 @@ typedef TypedScoreSegment<SCORE_STREAM_FLOAT_TYPE>* FLOAT_SCORE_SEGMENT;
 #define NEW_UNSIGNED_FIXED_SCORE_SEGMENT(n,w) \
    (new TypedScoreSegment<SCORE_STREAM_UNSIGNED_FIXED_TYPE>(n,w))
 #define NEW_DOUBLE_SCORE_SEGMENT(n) \
-   (new TypedScoreSegment<SCORE_STREAM_DOUBLE_TYPE>(n))
+   (new TypedScoreSegment<SCORE_STREAM_DOUBLE_TYPE>(n,64))
 #define NEW_FLOAT_SCORE_SEGMENT(n) \
-   (new TypedScoreSegment<SCORE_STREAM_FLOAT_TYPE>(n))
+   (new TypedScoreSegment<SCORE_STREAM_FLOAT_TYPE>(n,32))
 
 #define SEGMENT_OBJ_TO_ID(x) (segmentOBJ_to_ID(x))
 #define SEGMENT_ID_TO_OBJ(x) (segmentID_to_OBJ(x))

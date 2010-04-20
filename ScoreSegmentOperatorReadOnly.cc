@@ -99,6 +99,14 @@ ScoreSegmentOperatorReadOnly::ScoreSegmentOperatorReadOnly(
   constructorHelper(dwidth, awidth, nelems, segPtr, addr, data);
 }
 
+ScoreSegmentOperatorReadOnly::ScoreSegmentOperatorReadOnly(
+  unsigned int dwidth, unsigned int awidth, size_t nelems,
+  DOUBLE_SCORE_SEGMENT segPtr, 
+  UNSIGNED_SCORE_STREAM addr, 
+  DOUBLE_SCORE_STREAM data) {
+  constructorHelper(dwidth, awidth, nelems, segPtr, addr, data);
+}
+
 
 // Decides whether or not the ScoreSegmentOperator should be sent to the
 // scheduler. If not, then it spawns the operator as a thread.

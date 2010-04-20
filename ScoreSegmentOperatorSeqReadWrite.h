@@ -85,6 +85,12 @@ class ScoreSegmentOperatorSeqReadWrite : public ScoreOperator {
 				   UNSIGNED_FIXED_STREAM dataR,
 				   UNSIGNED_FIXED_STREAM dataW);
 
+  ScoreSegmentOperatorSeqReadWrite(unsigned int dwidth, unsigned int awidth, 
+				   size_t nelems,
+				   DOUBLE_SCORE_SEGMENT segPtr,
+				   DOUBLE_SCORE_STREAM dataR,
+				   DOUBLE_SCORE_STREAM dataW);
+
   void *proc_run();
 
 
