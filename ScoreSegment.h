@@ -291,6 +291,18 @@ typedef TypedScoreSegment<SCORE_STREAM_FLOAT_TYPE>* FLOAT_SCORE_SEGMENT;
 
 #define GET_SEGMENT_DATA(x) (x->data())
 
+#define SEGMENT_WRITE_DOUBLE(x,y,z) \
+  { \
+    unsigned long long* data = (unsigned long long*)x->data(); \
+    data[z]=(long long int)y; \
+  }
+
+#define SEGMENT_WRITE(x,y,z) \
+  { \
+    unsigned long long* data = (unsigned long long*)x->data(); \
+    data[z]=(long long int)y; \
+  }
+
 int initSigCatch();
 void catchSig(int, siginfo_t *, void *);
 
