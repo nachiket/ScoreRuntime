@@ -61,9 +61,9 @@ ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
   UNSIGNED_SCORE_SEGMENT segPtr,
   UNSIGNED_SCORE_STREAM data) {
 
-  cout << "Debug: segPtr=" << segPtr << endl;
-  cout << "Debug: data()=" << ((long long *)segPtr->data()) << endl;
-  cout << "Debug: dataPtr=" << ((long long *)segPtr->dataPtr) << endl;
+//  cout << "Debug: segPtr=" << segPtr << endl;
+//  cout << "Debug: data()=" << ((long long *)segPtr->data()) << endl;
+//  cout << "Debug: dataPtr=" << ((long long *)segPtr->dataPtr) << endl;
 //  cout << "Debug: data[1]=" << ((long long *)segPtr->dataPtr)[1] << endl;
 //  cout << "Debug: data[1]=" << ((long long *)segPtr->data())[1] << endl;
 
@@ -195,6 +195,7 @@ void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
         segment->readAddr=0;
 //        stream_close(DATASTREAM);
         DATASTREAM->stream_write(atable[address]);
+//        DATASTREAM->stream_write(EOFR);
       } else {
         // write data
         DATASTREAM->stream_write(atable[address]);

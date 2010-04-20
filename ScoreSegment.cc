@@ -136,7 +136,7 @@ void *ScoreSegment::operator new(size_t size) {
   if (VERBOSEDEBUG || DEBUG) {
     cout << "   SegmentID is: " << currentID << "\n";
   }
-    cout << "   SegmentID is: " << currentID << " shmptr=" << shmptr << "\n";
+//    cout << "   SegmentID is: " << currentID << " shmptr=" << shmptr << "\n";
 
   return shmptr;
 }
@@ -368,7 +368,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 
   MORON=-1;
 
-  cout << "Case 1: contents " << this << " dataPtr=" << this->dataPtr << " &dataPtr=" << &dataPtr << endl;
+//  cout << "Case 1: contents " << this << " dataPtr=" << this->dataPtr << " &dataPtr=" << &dataPtr << endl;
 //  cout << "Segsize=" << segSize << " dataPtr=" << dataPtr << ", dataId=" << dataID << " recycleId=" << recycleID1 << endl; 
   // want to setup the semaphore
 
