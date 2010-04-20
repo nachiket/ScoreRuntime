@@ -106,7 +106,8 @@ void ScoreSegmentOperatorReadOnly::constructorHelper(
   unsigned int dwidth, unsigned int awidth, size_t nelems,
   ScoreSegment *segPtr,
   ScoreStream *addr, ScoreStream *data) {
-  char *instance_fn=(char*)NULL;//resolve(ScoreSegmentOperatorReadOnly_instancename);
+  //char *instance_fn=(char*)NULL;//resolve(ScoreSegmentOperatorReadOnly_instancename);
+  char *instance_fn=resolve(ScoreSegmentOperatorReadOnly_instancename);
 
 
 
@@ -151,10 +152,10 @@ void ScoreSegmentOperatorReadOnly::constructorHelper(
     }
   } else {
 
-    cout << "Case 3: contents" << segPtr << " dataPtr=" << segPtr->dataPtr << " &dataPtr=" << &(segPtr->dataPtr) << endl;
+//    cout << "Case 3: contents" << segPtr << " dataPtr=" << segPtr->dataPtr << " &dataPtr=" << &(segPtr->dataPtr) << endl;
     segment = new ScoreSegmentReadOnly(segPtr, addr, data);
 
-    cout << "Case 3.5: contents" << segPtr << " dataPtr=" << segPtr->dataPtr << " &dataPtr=" << &(segPtr->dataPtr) << endl;
+//    cout << "Case 3.5: contents" << segPtr << " dataPtr=" << segPtr->dataPtr << " &dataPtr=" << &(segPtr->dataPtr) << endl;
 
 //  cout << "Inside segPtr=" << segPtr << " length=" << segPtr->segLength << " datsID=" << segPtr->dataID << " data()=" << segPtr->data() << " dataPtr" << segPtr->dataPtr << endl;
 
@@ -183,17 +184,21 @@ void* ScoreSegmentOperatorReadOnly::proc_run() {
   long long int data;
   long long int *atable=(long long int *)segment->dataPtr;
 
+
+//  cout << "proc_run() Data Pointer=" << segment->dataPtr << endl;
+/*
   while (1) {
-//    segment->step();
+    segment->step();
     sched_yield();
   }
+*/
 
-/*
+
   while (1) {
       if(!ADDRSTREAM->stream_empty()) {
 	address = ADDRSTREAM->stream_read();
       	data = atable[address];
-      	cout << "Inside proc_run() Addr=" << address << " Data=" << data << endl;
+//      	cout << "Inside proc_run() Addr=" << address << " Data=" << data << endl;
       	if(!DATASTREAM->stream_full()) {
 		DATASTREAM->stream_write(data);
       	}
@@ -201,7 +206,7 @@ void* ScoreSegmentOperatorReadOnly::proc_run() {
       sched_yield();
   }
 
-*/
+
   stream_free(ADDRSTREAM);
   stream_close(DATASTREAM);
 
