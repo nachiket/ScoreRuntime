@@ -51,9 +51,13 @@ char *ScoreOperator::resolve(char *base)
   char *trial_path;
   char *tname;
   char *original_lpath=lpath;
+  
+  // Added April 19th 2010 to avoid resolve() null ptrs.. wtf?
+  if(base==(char*)NULL) {
+     return(NULL);
+  }
 
   //  search through library path
-
   if (lpath==(char *)NULL)
     {
       lpath=(char *)malloc(strlen(DEFAULT_PATH));

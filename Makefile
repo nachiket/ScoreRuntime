@@ -165,7 +165,7 @@ ScoreMangler: ScoreMangler.o ScoreOperatorMangle.o
 	$(CXX) -o $@ $^
 
 %.o: %.cc
-	$(CXX) -fPIC -c $(CXXFLAGS) $(INCLUDE) $< -o $@
+	$(CXX) -Wno-write-strings -fPIC -c $(CXXFLAGS) $(INCLUDE) $< -o $@ 
 
 clean:
 	rm -f *.o ScoreRuntime ScoreRuntime-efence *.a ScorePlayer \

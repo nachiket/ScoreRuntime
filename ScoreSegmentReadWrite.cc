@@ -86,27 +86,25 @@ void ScoreSegmentReadWrite::constructorHelper(unsigned int dwidth,
   segSize = segPtr->segSize;
   semid = segPtr->semid;
 
-  printf("Setting up streams.. addr_t=%llx\n",addr_t);
-  printf("Setting up streams.. dataW_t=%llx\n",dataW_t);
-  printf("Setting up streams.. write_t=%llx\n",write_t);
-  printf("Setting up streams.. dataR_t=%llx \n",dataR_t);
+/* // April 16th 2010 - something bizarre is happening with outputs..
+  cout << "Setting up streams.. addr_t=" << addr_t << " id=" << addr_t->streamID << endl;
+  cout << "Setting up streams.. dataW_t=" << dataW_t << " id=" << dataW_t->streamID << endl;
+  cout << "Setting up streams.. write_t=" << write_t << " id=" << write_t->streamID<< endl;
+  cout << "Setting up streams.. dataR_t=" << dataR_t << " id=" << dataR_t->streamID << endl;
+*/
+  
 
   // Fourth, set the page inputs and outputs 
   declareIO(3,1);
+  
   bindInput(SCORE_CMB_RAMSRCSINK_ADDR_INNUM,
 	    addr_t,new ScoreStreamType(0,awidth));
   bindInput(SCORE_CMB_RAMSRCSINK_DATAW_INNUM,
 	    dataW_t,new ScoreStreamType(0,dwidth));
   bindInput(SCORE_CMB_RAMSRCSINK_WRITE_INNUM,
 	    write_t,new ScoreStreamType(0,1));
-
-  printf("Setting up streams.. addr_t=%llx, ADDRSTREAM=%llx\n",addr_t, in[0]);
-  printf("Setting up streams.. dataW_t=%llx, DATAWSTREAM=%llx\n",dataW_t, in[1]);
-  printf("Setting up streams.. write_t=%llx, WRSTREAM=%llx\n",write_t, in[2]);
-  
   bindOutput(SCORE_CMB_RAMSRCSINK_DATAR_OUTNUM,
 	     dataR_t,new ScoreStreamType(0,dwidth));
-  printf("Setting up streams.. dataR_t=%llx, DATARSTREAM=%llx\n",dataR_t, out[0]);
 
   // Initiate variables
   writeToken = NOT_READ;
@@ -148,8 +146,8 @@ int ScoreSegmentReadWrite::step() {
     return(0);
   }
 
-    printf("Huh? DATARSTREAM check starting..\n"); fflush(stdout);
-    printf("Huh? DATARSTREAM=%d\n",DATARSTREAM); fflush(stdout);
+//    printf("Huh? DATARSTREAM check starting..\n"); fflush(stdout);
+//    printf("Huh? DATARSTREAM=%d\n",DATARSTREAM); fflush(stdout);
   if (!STREAM_FULL(DATARSTREAM)) {
     if (sim_isFaulted) {
     printf("checking for address fault\n"); fflush(stdout);

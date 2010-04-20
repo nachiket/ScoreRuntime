@@ -49,7 +49,7 @@ void *ScoreSegment::dataRangeTable[NUMOFSHAREDSEG] = {0};
 ScoreSegment *ScoreSegment::segPtrTable[NUMOFSHAREDSEG] = {0};
 
 // want to initiate signal catching code
-//int ScoreSegment::initSig=initSigCatch();
+int ScoreSegment::initSig=initSigCatch();
 
 
 void *ScoreSegment::operator new(size_t size) {
@@ -85,13 +85,13 @@ void *ScoreSegment::operator new(size_t size) {
 	  tempID=0;
 	  outfile.close();
   } else {
-	  char* buffer=new char[4];
+	  char buffer[4]; //=(char*)malloc(4);
 	  infile.read(buffer,4);
 	  tempID=(buffer[3]-48)+
 		  10*(buffer[2]-48)+
 		  100*(buffer[1]-48)+
 		  1000*(buffer[0]-48);
-	  //        cout << "Found existing /tmp/streamid: " << tempID << endl;
+//	          cout << "Found existing /tmp/streamid: " << tempID << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
@@ -106,11 +106,11 @@ void *ScoreSegment::operator new(size_t size) {
 
   // Nachiket added update routine...
   // need to get new streamID
-  fstream outfile("/tmp/streamid",ios::out);
-  outfile << setfill('0');
-  outfile << setw(4);
-  outfile << tempID+1;
-  outfile.close();
+//  fstream outfile("/tmp/streamid",ios::out);
+//  outfile << setfill('0');
+//  outfile << setw(4);
+//  outfile << tempID+1;
+//  outfile.close();
 
   if(errno) {
 	  perror("Something went wrong..");
@@ -136,6 +136,7 @@ void *ScoreSegment::operator new(size_t size) {
   if (VERBOSEDEBUG || DEBUG) {
     cout << "   SegmentID is: " << currentID << "\n";
   }
+    cout << "   SegmentID is: " << currentID << " shmptr=" << shmptr << "\n";
 
   return shmptr;
 }
@@ -165,6 +166,7 @@ void ScoreSegment::operator delete(void *p, size_t size) {
 //
 // Return value: None.
 ///////////////////////////////////////////////////////////////////////////////
+
 ScoreSegment::ScoreSegment() {
   sched_isStitch = 0;
   mode = 0;
@@ -212,6 +214,8 @@ ScoreSegment::ScoreSegment() {
   sched_this_segment_is_done = 0;
 
   sched_old_mode = 0;
+  dataPtr = (void*)11111;
+  dataID = 2;
 
   shouldUseUSECOUNT = 0;
 
@@ -219,7 +223,6 @@ ScoreSegment::ScoreSegment() {
   _isOperator = 0;
   _isSegment = 1;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // ScoreSegment::ScoreSegment:
@@ -231,9 +234,10 @@ ScoreSegment::ScoreSegment() {
 // Return value: None.
 ///////////////////////////////////////////////////////////////////////////////
 ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
-  segmentType = SCORE_SEGMENT_PLAIN;
 
   segType = type_t;
+  //segmentType = SCORE_SEGMENT_PLAIN;
+  segmentType = 0;
   sched_isStitch = 0;
   mode = 0;
   maxAddr = 0;
@@ -293,6 +297,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
   close(file);
 */
 
+  int newID=0;
 
   fstream infile("/tmp/streamid",ios::in);
   if (infile.fail() || infile.bad()) {
@@ -303,16 +308,16 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << 1;
-	  recycleID1=0;
+	  newID=0;
 	  outfile.close();
   } else {
-	  char* buffer=new char[4];
-	  infile.read(buffer,4);
-	  recycleID1=(buffer[3]-48)+
-		  10*(buffer[2]-48)+
-		  100*(buffer[1]-48)+
-		  1000*(buffer[0]-48);
-	  //        cout << "Found existing /tmp/streamid: " << tempID << endl;
+	  char buffer1[4]; //=(char*)malloc(4);
+	  infile.read(buffer1,4);
+	  newID=(buffer1[3]-48)+
+		  10*(buffer1[2]-48)+
+		  100*(buffer1[1]-48)+
+		  1000*(buffer1[0]-48);
+//	          cout << "Found existing /tmp/streamid: " << recycleID1 << endl;
 	  infile.close();
 
 	  // Nachiket added update routine...
@@ -320,23 +325,27 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 	  fstream outfile("/tmp/streamid",ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
-	  outfile << recycleID1+1;
+	  outfile << newID+1;
 	  outfile.close();
 
   }
+  
+  recycleID1=0;
+  recycleID1=newID;
 
   // Nachiket added update routine...
   // need to get new streamID
-  fstream outfile("/tmp/streamid",ios::out);
-  outfile << setfill('0');
-  outfile << setw(4);
-  outfile << recycleID1+1;
-  outfile.close();
+//  fstream outfile("/tmp/streamid",ios::out);
+//  outfile << setfill('0');
+//  outfile << setw(4);
+//  outfile << recycleID1+1;
+//  outfile.close();
 
   if(errno) {
 	  perror("Something went wrong..");
 	  exit(errno);
   }
+
 
   // create a share memory segment and stored the segment ID in dataID
   if ((dataID=shmget((int)recycleID1, segSize, 
@@ -353,12 +362,23 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
     exit(errno);
   }
 
+/*
+  dataPtr = (void*)malloc(segSize);
+*/
+
+  MORON=-1;
+
+  cout << "Case 1: contents " << this << " dataPtr=" << this->dataPtr << " &dataPtr=" << &dataPtr << endl;
+//  cout << "Segsize=" << segSize << " dataPtr=" << dataPtr << ", dataId=" << dataID << " recycleId=" << recycleID1 << endl; 
   // want to setup the semaphore
-  start_val[0] = 0;
+
+//  start_val[0] = 0;
 
   // create and initialize the semaphores
   if ((semid=semget(segmentID, 1, IPC_EXCL | IPC_CREAT | 0666)) != -1) {
-    arg.array = start_val;
+//  if ((semid=semget(0xdeadaabe, 1, IPC_CREAT | 0666)) != -1) {
+    static ushort start_val_tmp = 1;		
+    arg.array = &start_val_tmp;
     if (semctl(semid, 0, SETALL, arg) == -1) {
       perror("semctl -- segment constructor -- initialization");
       exit(errno);
@@ -396,6 +416,11 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
     exit(-1);
   }
 
+// Initialization
+//  for(int k=0; k<segPtr->segLength; k++) {
+//  	((long long int*)dataPtr)[k]=k*k;
+//  }
+
   if (VERBOSEDEBUG || DEBUG) {
     cout << "   SEG: segment creation" << endl;
     cout << "   SEG: dataPtr - " << dataPtr << endl;     
@@ -418,6 +443,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
   _isPage = 0;
   _isOperator = 0;
   _isSegment = 1;
+//  cout << "Again Segsize=" << segSize << " dataPtr=" << dataPtr << ", dataId=" << dataID << " recycleId=" << recycleID1 << endl; 
 }
 
 
@@ -435,7 +461,9 @@ ScoreSegment::~ScoreSegment() {
 
 
 void ScoreSegment::noAccess() {
-
+ return ;
+}
+/*
   // will use mprotect() call to protect a page from read/write
   // the trick is to catch the SIGSEGV signal
   // instead of exit, we want the thread/process to wait
@@ -458,9 +486,12 @@ void ScoreSegment::noAccess() {
 
   shouldUseUSECOUNT = 1;
 }
+*/
 
 void ScoreSegment::returnAccess() {
-
+ return ;
+}
+/*
   // need to release/unprotect the memory segment and wakeup any thread/process
   // blocking on this memory segment
 
@@ -478,7 +509,7 @@ void ScoreSegment::returnAccess() {
   }
 
 }
-
+*/
 int initSigCatch() {
 
   // set up signal handling

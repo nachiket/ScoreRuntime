@@ -97,7 +97,6 @@ class ScoreSegmentReadWrite : public ScoreSegment {
   //
   // untyped signature with no checking
   //
-
   ScoreSegmentReadWrite(ScoreSegment *segPtr, 
 			ScoreStream *addr,
 			ScoreStream *dataR,

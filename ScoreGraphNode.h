@@ -85,15 +85,18 @@ public:
   
   void declareIO(int new_inputs, int new_outputs, char* base=NULL) {
   	// name added by Nachiket on 1/20/2010
-
+/*
 	if(base!=NULL) {
 		name=(char *)malloc(strlen(base));
 		sprintf(name,"%s",base);
 		//memcpy(name,base,strlen(base));
 	} else {
-		name=NULL;
+		//name=NULL;
+		char* newbase="nullname";
+		name=(char *)malloc(strlen(newbase));
+		sprintf(name,"%s",newbase);
 	}
-
+*/
     int i;
 
     inputs=new_inputs;
@@ -189,6 +192,7 @@ public:
   void bindOutput(int which, SCORE_STREAM strm,
 		  ScoreStreamType *stype) {
     out[which]=strm;
+//    cout << "which=" << which << endl;
     sched_out[which]=strm;
     strm->srcNum = which; // output of a graph node is a stream source
     strm->sched_srcNum = which; // output of a graph node is a stream source
@@ -201,6 +205,9 @@ public:
     } else if (_isOperator) {
       STREAM_BIND_SRC(strm,this,stype,STREAM_OPERATOR_TYPE);
     }
+
+//    cout << "out[which]=" << out[which] << endl;
+    
   }
 
   // this is used by the scheduler when building a processor node which does
@@ -421,11 +428,12 @@ public:
 #endif
 
 protected:
-  char* name; // added by Nachiket on 1/20/2010 to support dumping out stream connectivity information..
+  char* name; // added by Nachiket on 1/20/2010 to support dumping out stream connectivity information.. 
   int inputs; 
   int outputs;
   SCORE_STREAM *in;
   SCORE_STREAM *out;
+
   unsigned int *inConsumption;
   unsigned int *outProduction;
   ScoreStreamType **in_types;

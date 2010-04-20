@@ -86,7 +86,7 @@
 #define STALL_DETECT_VERBOSE  0
 #define VERBOSE_STREAM  0
 #define RECONFIG_ACCT  1
-#define GET_FEEDBACK  1
+#undef GET_FEEDBACK
 #define VERBOSEDEBUG  0
 #define DEBUG  0
 #define EXTRA_DEBUG  0

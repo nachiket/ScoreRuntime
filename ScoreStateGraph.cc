@@ -672,8 +672,10 @@ bool ScoreStateGraph::writeNetlist(FILE *myfile, bool uniqRes)
 	assert(scoreGraphNode->sched_isResident);
 	int tmpLoc = scoreGraphNode->sched_residentLoc;
 	if (uniqRes) {
+#ifdef GET_FEEDBACK	
 	  resSink = (int) (scoreGraphNode->isSegment() ?
 	    (-scoreGraphNode->uniqTag-10) : scoreGraphNode->uniqTag+10);
+#endif	    
 	} else {
 	  resSink = scoreGraphNode->isSegment() ? 2 * tmpLoc + 1 : 2 * tmpLoc;
 	}
@@ -699,8 +701,10 @@ bool ScoreStateGraph::writeNetlist(FILE *myfile, bool uniqRes)
 	assert(scoreGraphNode->sched_isResident);
 	int tmpLoc = scoreGraphNode->sched_residentLoc;
 	if (uniqRes) {
+#ifdef GET_FEEDBACK	
 	  resSrc = (int) (scoreGraphNode->isSegment() ? 
 	    (-scoreGraphNode->uniqTag-10) : scoreGraphNode->uniqTag+10);
+#endif	    
 	} else {
 	  resSrc = scoreGraphNode->isSegment() ? 2 * tmpLoc + 1 : 2 * tmpLoc;
 	}

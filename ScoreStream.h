@@ -479,6 +479,8 @@ class ScoreStream {
       sched_src = src = srcNode;
       sched_srcFunc = srcFunc = newSrcFunc;
     }
+
+//    cout << "this=" << this << endl;
   }
 
   void stream_bind_sink(ScoreGraphNode *sinkNode, ScoreStreamType *sinkType,

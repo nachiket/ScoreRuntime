@@ -116,6 +116,7 @@ void ScoreSegmentOperatorReadWrite::constructorHelper(
   ScoreStream *write) {
   char *instance_fn=resolve(ScoreSegmentOperatorReadWrite_instancename);
 
+  cout << "Inside segPtr=" << segPtr << " length=" << segPtr->segLength << endl;
   // do sanity checking!
   if (segPtr->segLength != nelems) {
     cerr << "SCORESEGMENTOPERATORREADWRITEERR: segPtr->segLength != nelems" <<

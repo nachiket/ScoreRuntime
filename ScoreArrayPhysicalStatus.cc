@@ -53,7 +53,9 @@ ScoreArrayPhysicalStatus::ScoreArrayPhysicalStatus(int numIns, int numOuts) {
 
 void ScoreArrayPhysicalStatus::update(ScoreGraphNode *node, int status) {
 
+#ifdef GET_FEEDBACK
   tag = node->uniqTag;
+#endif  
 
   isDone = (char)(status == 0);
   if (isDone) {

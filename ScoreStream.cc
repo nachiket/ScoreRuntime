@@ -313,7 +313,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
   sched_src = sched_sink = NULL;
 
   if (USE_POLLING_STREAMS) {
-    
+
 //    cout << "Semaphore status:" << ScoreStream::doneSemId << endl;
     // one shared semaphore needs to be initialized
     if (doneSemId == -1) {
@@ -1909,7 +1909,9 @@ void ScoreStream::print(FILE *f)
 	  srcNum, (long)src);
   if (srcFunc > 1) { // it's PAGE or Segment
     assert(src);
+#ifdef GET_FEEDBACK    
     fprintf(f, "uniqTag = %d ", src->uniqTag);
+#endif    
     if (src->isPage()) {
       fprintf(f, "\'%s\'", ((ScorePage*)src)->source);
     }
@@ -1922,7 +1924,9 @@ void ScoreStream::print(FILE *f)
 	  snkNum, (long)sink);
   if (snkFunc > 1) { // it's PAGE or Segment
     assert(sink);
+#ifdef GET_FEEDBACK    
     fprintf(f, "uniqTag = %d ", sink->uniqTag);
+#endif    
     if (sink->isPage()) {
       fprintf(f, "\'%s\'", ((ScorePage*)sink)->source);
     }

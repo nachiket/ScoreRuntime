@@ -5345,7 +5345,9 @@ void ScoreSchedulerDynamic::scheduleClusters() {
 	    newStitch->sched_parentProcess = attachedNode->sched_parentProcess;
 
 	    // YM: assign a uniqTag right away
+#ifdef GET_FEEDBACK	    
 	    newStitch->uniqTag = newStitch->sched_parentProcess->getNextTag();
+#endif	    
 	  
 	    newStitch->sched_residentStart = 0;
 	    newStitch->sched_maxAddr = newStitch->length();
@@ -5496,7 +5498,9 @@ void ScoreSchedulerDynamic::scheduleClusters() {
 	  newStitch->sched_parentProcess = currentNode->sched_parentProcess;
 	  
 	  // YM: assign a uniqTag right away
+#ifdef GET_FEEDBACK	    
 	  newStitch->uniqTag = newStitch->sched_parentProcess->getNextTag();
+#endif	    
 
 	  newStitch->sched_residentStart = 0;
 	  newStitch->sched_maxAddr = newStitch->length();
@@ -5643,7 +5647,9 @@ void ScoreSchedulerDynamic::scheduleClusters() {
 	  newStitch->sched_parentProcess = currentNode->sched_parentProcess;
 
 	  // YM: assign a uniqTag right away
+#ifdef GET_FEEDBACK	    
 	  newStitch->uniqTag = newStitch->sched_parentProcess->getNextTag();
+#endif	    
 	  
 	  newStitch->sched_residentStart = 0;
 	  newStitch->sched_maxAddr = newStitch->length();
@@ -5753,7 +5759,9 @@ void ScoreSchedulerDynamic::scheduleClusters() {
 	    newStitch->sched_parentProcess = attachedNode->sched_parentProcess;
 
 	    // YM: assign a uniqTag right away
+#ifdef GET_FEEDBACK	    
 	    newStitch->uniqTag = newStitch->sched_parentProcess->getNextTag();
+#endif	    
 	    
 	    newStitch->sched_residentStart = 0;
 	    newStitch->sched_maxAddr = newStitch->length();
@@ -5851,7 +5859,9 @@ void ScoreSchedulerDynamic::scheduleClusters() {
 	    newStitch->sched_parentProcess = attachedNode->sched_parentProcess;
 
 	    // YM: assign a uniqTag right away
+#ifdef GET_FEEDBACK	    
 	    newStitch->uniqTag = newStitch->sched_parentProcess->getNextTag();
+#endif	    
 
 	    
 	    newStitch->sched_residentStart = 0;
@@ -9006,7 +9016,9 @@ void ScoreSchedulerDynamic::resolveBufferLockedStreams(
       newStitch->sched_parentProcess = currentSrc->sched_parentProcess;
 
       // YM: assign a uniqTag right away
+#ifdef GET_FEEDBACK	    
       newStitch->uniqTag = newStitch->sched_parentProcess->getNextTag();
+#endif	    
 
 	      
       newStitch->sched_residentStart = 0;
@@ -9096,7 +9108,9 @@ void ScoreSchedulerDynamic::resolveBufferLockedStreams(
       newStitch->sched_parentProcess = currentSrc->sched_parentProcess;
 
       // YM: assign a uniqTag right away
+#ifdef GET_FEEDBACK	    
       newStitch->uniqTag = newStitch->sched_parentProcess->getNextTag();
+#endif	    
 
 
       newStitch->sched_residentStart = 0;

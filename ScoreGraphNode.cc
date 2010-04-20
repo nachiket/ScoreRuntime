@@ -260,9 +260,11 @@ void ScoreGraphNode::print(FILE *f, bool printShort)
     }
   }
   
+#if GET_FEEDBACK
   fprintf(f, "%s %d [%d] %s:\n", node_names[node_names_index],
 	  uniqTag, (long) this,
 	  _isPage ? ((ScorePage*)this)->getSource() : "");
+#endif	  
   
   if (!printShort) {
     
