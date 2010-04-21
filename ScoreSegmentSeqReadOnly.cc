@@ -119,19 +119,18 @@ int ScoreSegmentSeqReadOnly::step() {
   long long int *atable = (long long int *)dataPtr;
 	if(!DATASTREAM->stream_full()) {
 		// get address
-		unsigned int address=readAddr;
-		readAddr=address+1;
-		long long int data=atable[address];
+		long long int data=atable[readAddr];
 		// recycle to start and resume operation
-		if(address==segLength) {
+		if(readAddr==segLength-1) {
 			readAddr=0;
 			DATASTREAM->stream_write(data);
 			DATASTREAM->stream_write(EOFR);
 		} else {
+			readAddr++;
 			// write data
 			DATASTREAM->stream_write(data);
 		}
-//		cout << "Seg:" << segment->readAddr << endl;
+//		cout << "Seg:" << readAddr << endl;
 	}
 
 }
