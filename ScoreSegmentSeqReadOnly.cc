@@ -116,7 +116,27 @@ ScoreSegmentSeqReadOnly::~ScoreSegmentSeqReadOnly() {
 }
 
 int ScoreSegmentSeqReadOnly::step() {
-  
+  long long int *atable = (long long int *)dataPtr;
+	if(!DATASTREAM->stream_full()) {
+		// get address
+		unsigned int address=readAddr;
+		readAddr=address+1;
+		long long int data=atable[address];
+		// recycle to start and resume operation
+		if(address==segLength) {
+			readAddr=0;
+			DATASTREAM->stream_write(data);
+			DATASTREAM->stream_write(EOFR);
+		} else {
+			// write data
+			DATASTREAM->stream_write(data);
+		}
+//		cout << "Seg:" << segment->readAddr << endl;
+	}
+
+}
+
+/*
   long long int data, *atable=(long long int *)dataPtr;
 
   if (this_segment_is_done) {
@@ -193,3 +213,4 @@ int ScoreSegmentSeqReadOnly::step() {
    
   return(1);
 }
+*/
