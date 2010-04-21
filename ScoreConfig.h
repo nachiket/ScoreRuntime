@@ -37,6 +37,8 @@
 
 #include "AllocationTracker.h"
 
+#include "ScoreImplConf.h"
+
 // defines default hardware parameters.
 #define SCORE_DEFAULT_NUMPHYSICALPAGES       16
 #define SCORE_DEFAULT_NUMPHYSICALSEGMENTS    16

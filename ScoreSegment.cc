@@ -29,6 +29,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <signal.h>
+#include <execinfo.h>
 #include "ScoreSegment.h"
 #include "ScoreConfig.h"
 
@@ -49,7 +50,7 @@ void *ScoreSegment::dataRangeTable[NUMOFSHAREDSEG] = {0};
 ScoreSegment *ScoreSegment::segPtrTable[NUMOFSHAREDSEG] = {0};
 
 // want to initiate signal catching code
-//int ScoreSegment::initSig=initSigCatch();
+int ScoreSegment::initSig=initSigCatch();
 
 
 void *ScoreSegment::operator new(size_t size) {
@@ -461,9 +462,9 @@ ScoreSegment::~ScoreSegment() {
 
 
 void ScoreSegment::noAccess() {
- return ;
-}
-/*
+// return ;
+//}
+
   // will use mprotect() call to protect a page from read/write
   // the trick is to catch the SIGSEGV signal
   // instead of exit, we want the thread/process to wait
@@ -486,7 +487,7 @@ void ScoreSegment::noAccess() {
 
   shouldUseUSECOUNT = 1;
 }
-*/
+
 
 void ScoreSegment::returnAccess() {
  return ;
@@ -530,8 +531,32 @@ int initSigCatch() {
   return(1);
 }
 
+// Added by Nachiket on 21st April 2010
+// http://www.soopertutorials.com/technology/programming/3538-generate-system-stack-trace.html
+// print a backtrace
+void print_btrace(void)
+{
+	void *trace[50];
+	int tsize, counter;
+	char **buffer;
+	// get backtrace of process
+	tsize = backtrace(trace, 50);
+	//get back trace symbolsl
+	buffer = backtrace_symbols(trace, tsize);
+	if (buffer == NULL)
+	{
+		perror("backtrace_symbols");
+		return;
+	}
+	for (counter = 0; counter < tsize; counter++)
+		printf("%s\n", buffer[counter]);
+	//release memeory
+	free(buffer);
+}
+
 void catchSig(int sig, siginfo_t *si, void *ctx) {
 
+  print_btrace();
   int index;
 
   // sanity check

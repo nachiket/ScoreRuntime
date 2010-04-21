@@ -38,7 +38,7 @@
 
 /***/
 #define DYNAMIC_SCHEDULER 0
-#define LEDA_STL_ITERATORS 1
+//#define LEDA_STL_ITERATORS 1
 
 
 

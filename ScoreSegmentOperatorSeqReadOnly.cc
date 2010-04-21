@@ -159,14 +159,13 @@ void ScoreSegmentOperatorSeqReadOnly::constructorHelper(
     }
   } else {
 
-	  segment = new ScoreSegmentSeqReadOnly(segPtr, data);
 
 	  pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
 	  pthread_attr_init(a_thread_attribute);
 	  pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
 	  pthread_create(&rpt,a_thread_attribute,&ScoreSegmentOperatorSeqReadOnly_proc_run, this);
 
-//    segment = segPtr;
+    segment = segPtr;
     dataStream = data;
 
     // FIX ME!
@@ -180,30 +179,39 @@ void ScoreSegmentOperatorSeqReadOnly::constructorHelper(
 #if 1
 void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
 
-  int address;
+  ScoreSegment* local_segment = new ScoreSegmentSeqReadOnly(segment, dataStream);
+  unsigned int address;
   long long int data;
-  long long int *atable=(long long int*)segment->dataPtr; // this shouldn't point to dataPtr.. jesus
+  //long long int *atable=(long long int*)local_segment->dataPtr; // this shouldn't point to dataPtr.. jesus
+  long long int *atable=(long long int*)local_segment->data(); // this shouldn't point to dataPtr.. jesus
 
+  while(1) {
+//      cout << "Seg:" << local_segment->readAddr << endl;
+   local_segment->step();
+   sched_yield();
+  }
+
+/*
   while(1) {
     if(!DATASTREAM->stream_full()) {
       // get address
-      address=segment->readAddr;
-      segment->readAddr++;
+      address=local_segment->readAddr;
+      local_segment->readAddr=address+1;
       data=atable[address];
       // recycle to start and resume operation
-      if(segment->readAddr==segment->segLength) {
-        segment->readAddr=0;
-//        stream_close(DATASTREAM);
-        DATASTREAM->stream_write(atable[address]);
+      if(address==local_segment->segLength) {
+        local_segment->readAddr=0;
+        DATASTREAM->stream_write(data);
         DATASTREAM->stream_write(EOFR);
-//	cout << "EOFR pushed" << endl;
       } else {
         // write data
-        DATASTREAM->stream_write(atable[address]);
+        DATASTREAM->stream_write(data);
       }
+      cout << "Seg:" << local_segment->readAddr << endl;
     }
     sched_yield();
   }
+*/
 
 /*
   int data, *atable=(int *)dataPtr;
