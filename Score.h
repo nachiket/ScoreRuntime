@@ -39,6 +39,10 @@ using std::cout;
 using std::endl;
 using std::cerr;
 
+// Added by Nachiket on 21st April 2010
+// painful lesson about two diff. compiles
+#include "ScoreImplConf.h"
+
 #include "ScoreOperator.h"
 #include "ScoreOperatorElement.h"
 #include "ScoreOperatorInstance.h"

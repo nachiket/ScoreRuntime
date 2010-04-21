@@ -49,7 +49,7 @@ void *ScoreSegment::dataRangeTable[NUMOFSHAREDSEG] = {0};
 ScoreSegment *ScoreSegment::segPtrTable[NUMOFSHAREDSEG] = {0};
 
 // want to initiate signal catching code
-int ScoreSegment::initSig=initSigCatch();
+//int ScoreSegment::initSig=initSigCatch();
 
 
 void *ScoreSegment::operator new(size_t size) {
