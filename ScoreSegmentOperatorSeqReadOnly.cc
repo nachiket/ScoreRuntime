@@ -195,7 +195,8 @@ void* ScoreSegmentOperatorSeqReadOnly::proc_run() {
         segment->readAddr=0;
 //        stream_close(DATASTREAM);
         DATASTREAM->stream_write(atable[address]);
-//        DATASTREAM->stream_write(EOFR);
+        DATASTREAM->stream_write(EOFR);
+//	cout << "EOFR pushed" << endl;
       } else {
         // write data
         DATASTREAM->stream_write(atable[address]);
