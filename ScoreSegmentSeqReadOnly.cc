@@ -120,7 +120,8 @@ int ScoreSegmentSeqReadOnly::step() {
 	if(!DATASTREAM->stream_full()) {
 		// get address
 		long long int data=atable[readAddr];
-		// recycle to start and resume operation
+		printf("Read %g from %lu\n", data, readAddr);
+		// recycle to start and resume operation		
 		if(readAddr==segLength-1) {
 			readAddr=0;
 			DATASTREAM->stream_write(data);

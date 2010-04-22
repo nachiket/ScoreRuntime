@@ -42,6 +42,7 @@
 #include "ScoreOperator.h"
 #include "ScoreOperatorElement.h"
 #include "ScoreSegmentOperatorSeqReadWrite.h"
+#include "ScoreSegmentSeqReadWrite.h"
 #include "ScoreConfig.h"
 
 
@@ -149,9 +150,16 @@ void ScoreSegmentOperatorSeqReadWrite::constructorHelper(
        exit(2);
     }
   } else {
-    segment = segPtr;
+    //segment = segPtr;
+    segment = new ScoreSegmentSeqReadWrite(segPtr, dataR, dataW);
     dataRStream = dataR;
     dataWStream = dataW;
+
+    pthread_attr_t *a_thread_attribute=(pthread_attr_t *)malloc(sizeof(pthread_attr_t));
+    pthread_attr_init(a_thread_attribute);
+    pthread_attr_setdetachstate(a_thread_attribute,PTHREAD_CREATE_DETACHED);
+    pthread_create(&rpt,a_thread_attribute,&ScoreSegmentOperatorSeqReadWrite_proc_run, this);
+
 
     // FIX ME!
     cerr << "NEED TO ADD SCORESEGMENTOPERATORSEQREADWRITE SPAWNING CODE!" << 
@@ -161,9 +169,15 @@ void ScoreSegmentOperatorSeqReadWrite::constructorHelper(
 }
 
 
-#if 0
-void ScoreSegmentOperatorSeqReadWrite::proc_run() {
-  
+#if 1
+void* ScoreSegmentOperatorSeqReadWrite::proc_run() {
+
+  while(1) {
+    segment->step();
+    sched_yield();
+  }
+
+/*
   int data, *atable=(int *)dataPtr;
 
   while (1) {
@@ -218,7 +232,7 @@ void ScoreSegmentOperatorSeqReadWrite::proc_run() {
   }
 
   stream_close(DATASTREAM);
-
+*/
 }
 #else
 void *ScoreSegmentOperatorSeqReadWrite::proc_run() {

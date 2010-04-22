@@ -294,7 +294,9 @@ typedef TypedScoreSegment<SCORE_STREAM_FLOAT_TYPE>* FLOAT_SCORE_SEGMENT;
 #define SEGMENT_WRITE_DOUBLE(x,y,z) \
   { \
     unsigned long long* data = (unsigned long long*)x->data(); \
-    data[z]=(long long int)y; \
+    double y_val = y; \
+    long long int* y_ptr = (long long int*) &y_val; \
+    data[z]=*y_ptr; \
   }
 
 #define SEGMENT_WRITE(x,y,z) \
