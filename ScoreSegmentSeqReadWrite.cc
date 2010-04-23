@@ -117,91 +117,54 @@ ScoreSegmentSeqReadWrite::~ScoreSegmentSeqReadWrite() {
 }
 
 int ScoreSegmentSeqReadWrite::step() {
+/*
   // FIX ME! THIS DOES NOT WORK!!! ALSO, MAKE SURE TO UPDATE READCOUT AND
   //         WRITECOUNT APPROPRIATELY!
   // AND FIX THE STREAM_READ and STREAM_WRITE to ARRAY versions
   cerr << "SEQREADWRITE DOES NOT WORK!" << endl;
   exit(1);
-#if 0
-  
+*/
+
+// on April 22nd Nachiket's changes for making this work
+// read() and write() should strictly alternate.. 
+// arbitrarily read goes first.
+
   long long int data, *atable=(long long int *)dataPtr;
-
-  if (this_segment_is_done) {
-    return(0);
+  if(!DATARSTREAM->stream_full()) {
+  	// check address
+	// read should be ahead of write
+	if(readAddr==writeAddr) {
+		// read can proceed..
+		data=atable[readAddr];
+		if(readAddr==segLength-1) {
+			readAddr=0;
+			DATARSTREAM->stream_write(data);
+			DATARSTREAM->stream_write(EOFR);
+		} else {
+			readAddr++;
+			DATARSTREAM->stream_write(data);
+		}
+	} else {
+		// read should wait for a write
+	}
   }
 
-  if (sim_isFaulted) {
-    if (checkIfAddrFault(sim_faultedAddr)) {
-      if (VERBOSEDEBUG || DEBUG) {
-	cout << "   SEG SEQSRCSINK: faulting on address " << sim_faultedAddr << 
-	  endl;
-      }
-
-      stall++;
-
-      return(1);
-    } else { 
-
-      sim_isFaulted = 0;
-      sim_faultedAddr = 0;
-
-      // move data to DATASTREAM
-      data = atable[readAddr];
-      readCount++;
-      readAddr++; // increment the address counter
-      if (VERBOSEDEBUG || DEBUG) {
-	cout << "   SEG SEQSRCSINK: firing - data is " << data << endl;
-      }
-      DATASTREAM->stream_write(data);
-      fire++;
-    }
-  } else if (readAddr == segLength) { // SEQSRC is empty
-    if (VERBOSEDEBUG || DEBUG) {
-      cout << "   SEG SEQSRCSINK: firing EOS input" << endl;
-    }
-    fire++;
-
-    stream_close(DATASTREAM);
-
-    this_segment_is_done = 1;
-      
-    return(0);
-  } else if (!DATASTREAM->stream_full()) {
-
-    if (VERBOSEDEBUG || DEBUG) {
-      cout << "   SEG SEQSRCSINK: firing - address is " << writeAddr << endl;
-    }
-
-    // check if the address is within bounds of the mapped address block.
-    if (checkIfAddrFault(writeAddr)) {
-      sim_isFaulted = 1;
-      sim_faultedAddr = writeAddr;
-
-      if (VERBOSEDEBUG || DEBUG) {
-	cout << "   SEG SEQSRCSINK: faulting on address " 
-	     << sim_faultedAddr << endl;
-      }
-
-      stall++;
-
-      return(1);
-    }
-
-    // writing data to DATASTREAM
-    data = atable[readAddr];
-    readCount++;
-    readAddr++;
-    if (VERBOSEDEBUG || DEBUG) {
-      cout << "   SEG SEQSRCSINK: firing - data is " << data << endl;
-    }
-    DATASTREAM->stream_write(data);
-    fire++;
-  } else {
-    if (VERBOSEDEBUG) {
-      cout << "   SEG SEQSRCSINK: not firing" << endl;
-    }
-    stall++;
+  if(!DATAWSTREAM->stream_empty()) {
+  	// check address
+	// write trails read
+	if( (writeAddr==readAddr-1 && readAddr!=0) ||
+		(writeAddr==segLength-1 && readAddr==0)) {
+		// write can proceed
+		data=STREAM_READ_NOACC(DATAWSTREAM); // ouch, what about type?
+		atable[writeAddr]=data;
+		if(writeAddr==segLength-1) {
+			writeAddr=0;
+		} else {
+			writeAddr++;
+		}
+	} else {
+		// write must wait for read
+	}
   }
-#endif
   return(1);
 }
