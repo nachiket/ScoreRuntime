@@ -347,6 +347,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 	  exit(errno);
   }
 
+  if(segSize==0) { cout<<"Warning: segSize=0, assuming you really wanted to create a 0-sized segment" << endl; segSize=1;}
 
   // create a share memory segment and stored the segment ID in dataID
   if ((dataID=shmget((int)recycleID1, segSize, 

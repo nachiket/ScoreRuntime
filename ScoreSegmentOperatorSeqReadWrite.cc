@@ -162,9 +162,9 @@ void ScoreSegmentOperatorSeqReadWrite::constructorHelper(
 
 
     // FIX ME!
-    cerr << "NEED TO ADD SCORESEGMENTOPERATORSEQREADWRITE SPAWNING CODE!" << 
-      endl;
-    exit(2);
+//    cerr << "NEED TO ADD SCORESEGMENTOPERATORSEQREADWRITE SPAWNING CODE!" << 
+//      endl;
+//    exit(2);
   }
 }
 

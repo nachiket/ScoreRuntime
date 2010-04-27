@@ -141,6 +141,7 @@ int ScoreSegmentSeqReadWrite::step() {
 			DATARSTREAM->stream_write(data);
 			DATARSTREAM->stream_write(EOFR);
 		} else {
+//  			cout << "wrote data" << endl;
 			readAddr++;
 			DATARSTREAM->stream_write(data);
 		}
@@ -150,20 +151,25 @@ int ScoreSegmentSeqReadWrite::step() {
   }
 
   if(!DATAWSTREAM->stream_empty()) {
-  	// check address
-	// write trails read
-	if( (writeAddr==readAddr-1 && readAddr!=0) ||
-		(writeAddr==segLength-1 && readAddr==0)) {
-		// write can proceed
-		data=STREAM_READ_NOACC(DATAWSTREAM); // ouch, what about type?
-		atable[writeAddr]=data;
-		if(writeAddr==segLength-1) {
-			writeAddr=0;
-		} else {
-			writeAddr++;
-		}
+  	// check and skip EOFRs
+	if(STREAM_EOFR(DATAWSTREAM)) {
+		STREAM_READ_NOACC(DATAWSTREAM);
 	} else {
-		// write must wait for read
+  		// check address
+		// write trails read
+		if( (writeAddr==readAddr-1 && readAddr!=0) ||
+			(writeAddr==segLength-1 && readAddr==0)) {
+			// write can proceed
+			data=STREAM_READ_NOACC(DATAWSTREAM); // ouch, what about type?
+			atable[writeAddr]=data;
+			if(writeAddr==segLength-1) {
+				writeAddr=0;
+			} else {
+				writeAddr++;
+			}
+		} else {
+			// write must wait for read
+		}
 	}
   }
   return(1);
