@@ -137,8 +137,57 @@ ScoreSegmentReadWrite::~ScoreSegmentReadWrite() {
 
 int ScoreSegmentReadWrite::step() {
 
-  printf("Inside step\n"); fflush(stdout); //exit(1);
-  
+	long long int data, *atable=(long long int *) dataPtr;
+	
+	// Get the write signal
+	long long int write;
+	bool eofr_detected=false;
+	if(!WRITESTREAM->stream_empty()) {
+		if(STREAM_EOFR(WRITESTREAM)) {
+			STREAM_READ_NOACC(WRITESTREAM);
+			write = 0;
+			eofr_detected = true;
+		} else {
+			write = WRITESTREAM->stream_read();
+		}
+	}
+
+	// Get the address
+	int address;
+	if(!ADDRSTREAM->stream_empty()) {
+		if(STREAM_EOFR(ADDRSTREAM)) {
+			STREAM_READ_NOACC(ADDRSTREAM);
+			if(!eofr_detected) {
+				cerr << "eofr on write but not on addr" << endl;
+				exit(1);
+			}
+		} else {
+			address = STREAM_READ_NOACC(ADDRSTREAM);
+		}
+	}
+
+	// Get/Put data
+	if(eofr_detected) {
+		// propagate EOFR to the output stream?
+		DATARSTREAM->stream_write(EOFR);
+	} else {
+		if(write==0) {
+			if(!DATARSTREAM->stream_full()) {
+				data=atable[address];
+				DATARSTREAM->stream_write(data);
+			}
+		} else {
+			if(!DATAWSTREAM->stream_empty()) {
+				data=STREAM_READ_NOACC(DATAWSTREAM);
+				atable[address]=data;
+			}
+		}
+	}
+}
+
+/* Commented on April 26th 2010
+{
+
   int address;
   long long int data, *atable=(long long int *)dataPtr;
 
@@ -146,8 +195,6 @@ int ScoreSegmentReadWrite::step() {
     return(0);
   }
 
-//    printf("Huh? DATARSTREAM check starting..\n"); fflush(stdout);
-//    printf("Huh? DATARSTREAM=%d\n",DATARSTREAM); fflush(stdout);
   if (!STREAM_FULL(DATARSTREAM)) {
     if (sim_isFaulted) {
     printf("checking for address fault\n"); fflush(stdout);
@@ -385,7 +432,7 @@ int ScoreSegmentReadWrite::step() {
   }
   
   return(1);
-}
+} */
 
 
 

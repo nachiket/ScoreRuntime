@@ -169,11 +169,6 @@ void ScoreSegmentOperatorReadWrite::constructorHelper(
     }
   } else {
 
-//    segment = (ScoreSegment *)malloc(sizeof(ScoreSegment *));
-//    addrStream = new ScoreStream [1];
-//    dataRStream = new ScoreStream [1];
-//    dataWStream = new ScoreStream [1];
-//    writeStream = new ScoreStream [1];
 //    segment = segPtr;
 //    addrStream = addr;
  //   dataRStream = dataR;
@@ -201,7 +196,7 @@ void ScoreSegmentOperatorReadWrite::constructorHelper(
 #if 1
 void *ScoreSegmentOperatorReadWrite::proc_run() {
   
-  printf("Inside proc_run()\n"); fflush(stdout);
+  //printf("Inside proc_run()\n"); fflush(stdout);
   //int address, data, *atable=(int *)segment->dataPtr;
   while (1) {
     segment->step();
