@@ -52,7 +52,7 @@ void ScoreSegmentReadWrite::constructorHelper(unsigned int dwidth,
 					      ScoreStream* dataW_t,
 					      ScoreStream* write_t) {
 
-  printf("Setup a score segment rw\n");
+//  printf("Setup a score segment rw\n");
   segmentType = SCORE_SEGMENT_READONLY;
 
   if (VERBOSEDEBUG || DEBUG) {
