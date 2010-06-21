@@ -36,8 +36,6 @@
 #define ADDRSTREAM in[SCORE_CMB_RAMSRC_ADDR_INNUM]
 #define DATASTREAM out[SCORE_CMB_RAMSRC_DATA_OUTNUM]
 
-#define VERBOSEDEBUG 1
-
 void *ScoreSegmentReadOnly::operator new(size_t size) {
   return((void *) malloc(size));
 }
