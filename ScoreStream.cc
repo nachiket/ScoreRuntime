@@ -846,7 +846,7 @@ int ScoreStream::stream_eos() {
      if(local_buffer == (long long int)EOFR) {
      	cout << "EOS AND EOFR are overlapping??" << endl;
      } else {
-        cout << "EOS and EOFR are playing some trick.." << endl;
+//        cout << "EOS and EOFR are playing some trick.." << endl;
      }
 
       isEOS = 1;
