@@ -308,8 +308,8 @@ typedef TypedScoreSegment<SCORE_STREAM_FLOAT_TYPE>* FLOAT_SCORE_SEGMENT;
 #define SEGMENT_WRITE_ARRAY(x,y,z) \
   { \
     int i=0;\
+    unsigned long long* data = (unsigned long long*)x->data(); \
     for(i=0; i<z; i++) { \
-      unsigned long long* data = (unsigned long long*)x->data(); \
       data[i]=(long long int)y[i]; \
     } \
   }

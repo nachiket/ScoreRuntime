@@ -138,6 +138,7 @@ ScoreSegmentReadWrite::~ScoreSegmentReadWrite() {
 int ScoreSegmentReadWrite::step() {
 
 	long long int data, *atable=(long long int *) dataPtr;
+
 	
 	// Get the write signal
 	long long int write;
@@ -163,6 +164,7 @@ int ScoreSegmentReadWrite::step() {
 			}
 		} else {
 			address = STREAM_READ_NOACC(ADDRSTREAM);
+	cout << "Address=" << address << endl; fflush(stdout);
 		}
 	}
 

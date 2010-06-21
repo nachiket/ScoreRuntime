@@ -196,7 +196,7 @@ void ScoreSegmentOperatorReadWrite::constructorHelper(
 #if 1
 void *ScoreSegmentOperatorReadWrite::proc_run() {
   
-  //printf("Inside proc_run()\n"); fflush(stdout);
+//  printf("Inside proc_run()\n"); fflush(stdout);
   //int address, data, *atable=(int *)segment->dataPtr;
   while (1) {
     segment->step();
