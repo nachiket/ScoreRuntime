@@ -305,6 +305,15 @@ typedef TypedScoreSegment<SCORE_STREAM_FLOAT_TYPE>* FLOAT_SCORE_SEGMENT;
     data[z]=(long long int)y; \
   }
 
+#define SEGMENT_WRITE_ARRAY(x,y,z) \
+  { \
+    int i=0;\
+    for(i=0; i<z; i++) { \
+      unsigned long long* data = (unsigned long long*)x->data(); \
+      data[i]=(long long int)y[i]; \
+    } \
+  }
+
 int initSigCatch();
 void catchSig(int, siginfo_t *, void *);
 
