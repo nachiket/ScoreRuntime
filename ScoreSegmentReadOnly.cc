@@ -123,6 +123,7 @@ int ScoreSegmentReadOnly::step() {
   }
 
   if (!STREAM_FULL(DATASTREAM)) {
+  /* this stuff seems totally beserky!
     if (sim_isFaulted) {
       if (checkIfAddrFault(sim_faultedAddr)) {
 	if (VERBOSEDEBUG || DEBUG) {
@@ -148,7 +149,8 @@ int ScoreSegmentReadOnly::step() {
 	STREAM_WRITE_ARRAY(DATASTREAM, data);
 	fire++;
       }
-    } else if (STREAM_DATA(ADDRSTREAM)) {
+      */
+    if (STREAM_DATA(ADDRSTREAM)) {
       if (STREAM_EOS_ARRAY(ADDRSTREAM)) {
 	if (VERBOSEDEBUG || DEBUG) {
 	  cout << "   SEG RAMSRC: firing EOS input" << endl;
@@ -166,7 +168,8 @@ int ScoreSegmentReadOnly::step() {
 	if (VERBOSEDEBUG || DEBUG) {
 	  cout << "   SEG RAMSRC: firing - address is " << address << endl;
 	}
-	
+
+/*
 	// check if the address is within bounds of the mapped address block.
 	if (checkIfAddrFault(address)) {
 	  sim_isFaulted = 1;
@@ -181,7 +184,7 @@ int ScoreSegmentReadOnly::step() {
 	  
 	  return(1);
 	}
-	
+*/	
 	// writing data to DATASTREAM
 	data = atable[address];
 	readCount++;

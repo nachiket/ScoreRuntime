@@ -204,10 +204,10 @@ void* ScoreSegmentOperatorReadOnly::proc_run() {
 
   while (1) {
       if(!ADDRSTREAM->stream_empty()) {
-	address = ADDRSTREAM->stream_read();
-      	data = atable[address];
 //      	cout << "Inside proc_run() Addr=" << address << " Data=" << data << endl;
       	if(!DATASTREAM->stream_full()) {
+		address = ADDRSTREAM->stream_read();
+      		data = atable[address];
 		DATASTREAM->stream_write(data);
       	}
       }

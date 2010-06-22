@@ -139,23 +139,25 @@ int ScoreSegmentReadWrite::step() {
 
 	long long int data, *atable=(long long int *) dataPtr;
 
-	
 	// Get the write signal
 	long long int write;
 	bool eofr_detected=false;
-	if(!WRITESTREAM->stream_empty()) {
+	if(!WRITESTREAM->stream_empty() && !ADDRSTREAM->stream_empty()) {
+
 		if(STREAM_EOFR(WRITESTREAM)) {
 			STREAM_READ_NOACC(WRITESTREAM);
 			write = 0;
 			eofr_detected = true;
+			// propagate EOFR to the output stream?
+			DATARSTREAM->stream_write(EOFR);
 		} else {
 			write = WRITESTREAM->stream_read();
 		}
-	}
 
-	// Get the address
-	int address;
-	if(!ADDRSTREAM->stream_empty()) {
+//		cout << "write=" << write << endl; fflush(stdout);
+
+		// Get the address
+		int address;
 		if(STREAM_EOFR(ADDRSTREAM)) {
 			STREAM_READ_NOACC(ADDRSTREAM);
 			if(!eofr_detected) {
@@ -164,25 +166,24 @@ int ScoreSegmentReadWrite::step() {
 			}
 		} else {
 			address = STREAM_READ_NOACC(ADDRSTREAM);
-	cout << "Address=" << address << endl; fflush(stdout);
 		}
-	}
+	
+		if(eofr_detected) {
+			cout << "RW EOFR" << endl;
+			return(0);
+		}
 
-	// Get/Put data
-	if(eofr_detected) {
-		// propagate EOFR to the output stream?
-		DATARSTREAM->stream_write(EOFR);
-	} else {
 		if(write==0) {
-			if(!DATARSTREAM->stream_full()) {
-				data=atable[address];
-				DATARSTREAM->stream_write(data);
-			}
-		} else {
-			if(!DATAWSTREAM->stream_empty()) {
-				data=STREAM_READ_NOACC(DATAWSTREAM);
-				atable[address]=data;
-			}
+			while(DATARSTREAM->stream_full()) {sched_yield();}
+			data=atable[address];
+			DATARSTREAM->stream_write(data);
+//			cout << "Address=" << address << "Read=" << (double)data << endl; fflush(stdout);
+
+		} else if(write==1) {
+			while(DATAWSTREAM->stream_empty()) {sched_yield();}
+			data=STREAM_READ_NOACC(DATAWSTREAM);
+			atable[address]=data;
+//			cout << "Address=" << address << "Write=" << (double)data << endl; fflush(stdout);
 		}
 	}
 }
