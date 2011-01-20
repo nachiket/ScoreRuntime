@@ -40,7 +40,7 @@
 #include "ScoreOperatorMangle.h"
 
 const char *DEFAULT_PATH=".";
-
+ofstream* ScoreOperator::fout=NULL;
 char *ScoreOperator::mangle(char *base, int nparam, int *params)
 {
   return mangleOpName(base, nparam, params);

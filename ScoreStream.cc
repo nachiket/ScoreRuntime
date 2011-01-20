@@ -528,7 +528,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
       union semun arg;
       int value=semctl(semid, 0, GETVAL, arg);
     
-//      cout << "Acquiring semaphore for read=" << semid << " value=" << value << endl;
+      cout << "Acquiring semaphore for read=" << semid << " value=" << value << endl;
       while (semop(semid, &acquire, 1) == -1) {
 	perror("semop -- stream_read -- acquire ");
 	if (errno != EINTR)
