@@ -1941,3 +1941,24 @@ void ScoreStream::incrementInputConsumption()
     sink->incrementInputConsumption(snkNum);
   }
 }
+
+void ScoreStream::plot(FILE *f)
+{
+	fprintf(f, "set termimal postscript eps enhanced color\n");
+	fprintf(f, "set output test.eps\n");
+	fprintf(f, "plot '-' with lines\n");
+
+	int ptr;
+	ptr=tail;
+	bool done=false;
+	while(!done) {
+		double data = buffer[ptr].token;	
+		fprintf(f, "%g\n",buffer[ptr].token);
+		ptr=(ptr+1)%(length+1+1);
+		done=(ptr==head);
+	}
+	fprintf(f, "e\n");
+}
+
+
+

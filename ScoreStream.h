@@ -623,6 +623,7 @@ class ScoreStream {
   void syncSchedToReal();
 
   void print(FILE *f);
+  void plot(FILE *f);
 
   char* name;
   void setName(char* name_arg) {
@@ -739,7 +740,6 @@ void stream_frame_close(ScoreStream *);
 void stream_free_hw(ScoreStream *);
 void stream_close_hw(ScoreStream *);
 void stream_gc(ScoreStream *);
-
 
 template <ScoreType ScoreType_t>
 class TypedScoreStream : public ScoreStream
