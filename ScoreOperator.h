@@ -73,7 +73,7 @@ protected:
 
 };
 
-//ofstream* ScoreOperator::fout=NULL;
+
 
 #endif
 

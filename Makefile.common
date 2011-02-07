@@ -25,7 +25,7 @@ DEBUGFLAG = -g
 else
 DEBUGFLAG = -O3 -DNDEBUG
 endif
-
+PAPI_INC = /usr/local/include
 
 TOOL_PATH=
 
