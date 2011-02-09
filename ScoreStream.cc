@@ -1944,22 +1944,28 @@ void ScoreStream::incrementInputConsumption()
   }
 }
 
-void ScoreStream::plot(std::ofstream *f)
+//void ScoreStream::plot(char* fileName)
+void ScoreStream::plot()
 {
-	f << "set termimal postscript eps enhanced color" << endl;
-	f << "set output test.eps" << endl;
+	std::ofstream f ("test.gplot");
+
+	f << "set terminal postscript eps enhanced color" << endl;
+	f << "set output \"test.eps\"" << endl;
+	f << "# head=" << head << ", tail=" << tail << endl;
 	f << "plot '-' with lines" << endl;
 
 	int ptr;
-	ptr=tail;
+	ptr=head;
 	bool done=false;
 	while(!done) {
 		double data = buffer[ptr].token;	
 		f << data << endl;
 		ptr=(ptr+1)%(length+1+1);
-		done=(ptr==head);
+		done=(ptr==tail);
 	}
 	f << "e" << endl;
+
+	f.close();
 }
 
 
