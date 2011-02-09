@@ -42,6 +42,8 @@
 #include <iostream> // added by Nachiket for newer file IO constructs
 #include <iomanip> // added by Nachiket for newer file IO constructs
 #include <ios> // added by Nachiket for newer file IO constructs
+#include <iostream>
+#include <fstream>
 
 #include "ScorePage.h"
 
@@ -1942,22 +1944,22 @@ void ScoreStream::incrementInputConsumption()
   }
 }
 
-void ScoreStream::plot(FILE *f)
+void ScoreStream::plot(std::ofstream *f)
 {
-	fprintf(f, "set termimal postscript eps enhanced color\n");
-	fprintf(f, "set output test.eps\n");
-	fprintf(f, "plot '-' with lines\n");
+	f << "set termimal postscript eps enhanced color" << endl;
+	f << "set output test.eps" << endl;
+	f << "plot '-' with lines" << endl;
 
 	int ptr;
 	ptr=tail;
 	bool done=false;
 	while(!done) {
 		double data = buffer[ptr].token;	
-		fprintf(f, "%g\n",buffer[ptr].token);
+		f << data << endl;
 		ptr=(ptr+1)%(length+1+1);
 		done=(ptr==head);
 	}
-	fprintf(f, "e\n");
+	f << "e" << endl;
 }
 
 

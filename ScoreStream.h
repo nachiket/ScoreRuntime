@@ -74,6 +74,8 @@
 #include "ScoreCustomStack.h"
 //#include "ScoreGraphNode.h"
 #include "LEDA/core/list.h"
+#include <iostream>
+#include <fstream>
 
 using leda::list;
 
@@ -623,7 +625,7 @@ class ScoreStream {
   void syncSchedToReal();
 
   void print(FILE *f);
-  void plot(FILE *f);
+  void plot(std::ofstream *f);
 
   char* name;
   void setName(char* name_arg) {
