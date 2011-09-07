@@ -113,7 +113,8 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 	  tempID=0;
 	  outfile.close();
   } else {
-	  char* buffer=new char[4];
+	  char* buffer=(char*)malloc(sizeof(char)*4);
+	  //char* buffer=new char[4];
 	  infile.read(buffer,4);
 	  tempID=(buffer[3]-48)+
 		  10*(buffer[2]-48)+
@@ -121,6 +122,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 		  1000*(buffer[0]-48);
 //	  cout << "Found existing /tmp/streamid: " << tempID << endl;
 	  infile.close();
+	  free(buffer);
 
 	  // Nachiket added update routine...
 	  // need to get new streamID
@@ -389,6 +391,8 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 
   sched_isProcessorArrayStream = 0;
 
+  readThreadCounter = NULL;
+  writeThreadCounter = NULL;
   if (user_stream_type == USER_READ_STREAM) {
     readThreadCounter = globalCounter->threadCounter;
     writeThreadCounter = NULL;
@@ -489,7 +493,7 @@ double ScoreStream::stream_read_double(long long unsigned _cTime) {
 
 long long int ScoreStream::stream_read(long long unsigned _cTime) {
 
-  long long unsigned cTime;
+  long long unsigned cTime=0;
 
   if (readThreadCounter != NULL) {
     cTime = _cTime - 
