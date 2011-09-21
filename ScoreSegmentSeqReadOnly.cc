@@ -122,9 +122,15 @@ int ScoreSegmentSeqReadOnly::step() {
 		long long int data=atable[readAddr];
 		//printf("Read %g from %lu\n", data, readAddr);
 		// recycle to start and resume operation		
-		if(readAddr==segLength-1) {
-			readAddr=0;
+		// Sep 21 2011: Don't want this behavior for KLU solve.. Ahem!
+		if(readAddr>=segLength) {
+			// stay
+		} else if(readAddr==segLength-1) {
+			readAddr++;
 			DATASTREAM->stream_write(data);
+			// not sure about EOFR insertion at end..
+			// 7th September 2011
+			// 21st September 2011: Back in again for now..
 			DATASTREAM->stream_write(EOFR);
 		} else {
 			readAddr++;
