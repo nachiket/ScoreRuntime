@@ -104,7 +104,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 */
 
  std::stringstream filename; 
- filename << "/tmp/streamid_" << getenv("USER");
+ filename << "/tmp/streamid." << getenv("USER");
  cout << filename << endl;
 
   fstream infile(filename.str().c_str(),ios::in);
