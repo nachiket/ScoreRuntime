@@ -37,10 +37,15 @@
 #include <iomanip> // added by Nachiket for newer file IO constructs
 #include <ios> // added by Nachiket for newer file IO constructs
 
+#include <sstream>
+#include <stdlib.h>
+
+
 using std::ios;
 using std::fstream;
 using std::setfill;
 using std::setw;
+using std::stringstream;
 
 int ScoreSegment::currentID = 0;
 int ScoreSegment::tempID = 0;
@@ -74,12 +79,16 @@ void *ScoreSegment::operator new(size_t size) {
   close(file);
 */  // COMMENT_REMOVE
 
-  fstream infile("/tmp/streamid",ios::in);
+	std::stringstream filename;
+	filename << "/tmp/streamid." << getenv("USER");
+	cout << filename << endl;
+
+  fstream infile(filename.str().c_str(),ios::in);
   if (infile.fail() || infile.bad()) {
-	  cout << "Initialize /tmp/streamid" << endl;
+	  cout << "Initialize " << filename << endl;
 	  infile.close();
 	  // initialize the file..
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << 1;
@@ -97,7 +106,7 @@ void *ScoreSegment::operator new(size_t size) {
 
 	  // Nachiket added update routine...
 	  // need to get new streamID
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << tempID+1;
@@ -300,12 +309,14 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 
   int newID=0;
 
-  fstream infile("/tmp/streamid",ios::in);
+   std::stringstream filename;
+	filename << "/tmp/streamid." << getenv("USER");
+  fstream infile(filename.str().c_str(),ios::in);
   if (infile.fail() || infile.bad()) {
-	  cout << "Initialize /tmp/streamid" << endl;
+	  cout << "Initialize " << filename.str().c_str() << endl;
 	  infile.close();
 	  // initialize the file..
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << 1;
@@ -323,7 +334,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 
 	  // Nachiket added update routine...
 	  // need to get new streamID
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << newID+1;

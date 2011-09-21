@@ -60,7 +60,7 @@ char *ScoreOperator::resolve(char *base)
   //  search through library path
   if (lpath==(char *)NULL)
     {
-      lpath=(char *)malloc(strlen(DEFAULT_PATH));
+      lpath=(char *)malloc(strlen(DEFAULT_PATH)+1);
       strcpy(lpath,DEFAULT_PATH);
       original_lpath=lpath;
     }
