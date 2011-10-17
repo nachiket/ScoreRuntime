@@ -52,6 +52,7 @@ using std::cerr;
 #include "ScoreSegmentWriteOnly.h"
 #include "ScoreSegmentReadWrite.h"
 #include "ScoreSegmentSeqReadOnly.h"
+#include "ScoreSegmentSeqCyclicReadOnly.h"
 #include "ScoreSegmentSeqWriteOnly.h"
 #include "ScoreSegmentSeqReadWrite.h"
 #include "ScoreGlobalCounter.h"
@@ -66,6 +67,7 @@ using std::cerr;
 #include "ScoreSegmentOperatorWriteOnly.h"
 #include "ScoreSegmentOperatorReadWrite.h"
 #include "ScoreSegmentOperatorSeqReadOnly.h"
+#include "ScoreSegmentOperatorSeqCyclicReadOnly.h"
 #include "ScoreSegmentOperatorSeqWriteOnly.h"
 #include "ScoreSegmentOperatorSeqReadWrite.h"
 

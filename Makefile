@@ -42,6 +42,7 @@ SRCS = ScoreArray.cc \
        ScoreSegmentReadOnly.cc \
        ScoreSegmentReadWrite.cc \
        ScoreSegmentSeqReadOnly.cc \
+       ScoreSegmentSeqCyclicReadOnly.cc \
        ScoreSegmentSeqReadWrite.cc \
        ScoreSegmentSeqWriteOnly.cc \
        ScoreSegmentStitch.cc \
@@ -123,6 +124,7 @@ USERSRCS = ScoreCInterface.cc \
            ScoreSegmentReadOnly.cc \
            ScoreSegmentReadWrite.cc \
            ScoreSegmentSeqReadOnly.cc \
+           ScoreSegmentSeqCyclicReadOnly.cc \
            ScoreSegmentSeqReadWrite.cc \
            ScoreSegmentSeqWriteOnly.cc \
            ScoreSegmentWriteOnly.cc \
