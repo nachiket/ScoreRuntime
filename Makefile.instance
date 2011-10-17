@@ -4,6 +4,7 @@ include Makefile.common
 INSTANCESRCS = ScoreSegmentOperatorReadOnly_instance.cc \
                ScoreSegmentOperatorReadWrite_instance.cc \
                ScoreSegmentOperatorSeqReadOnly_instance.cc \
+               ScoreSegmentOperatorSeqCyclicReadOnly_instance.cc \
                ScoreSegmentOperatorSeqReadWrite_instance.cc \
                ScoreSegmentOperatorSeqWriteOnly_instance.cc \
                ScoreSegmentOperatorWriteOnly_instance.cc \
