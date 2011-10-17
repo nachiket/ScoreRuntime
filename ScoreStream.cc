@@ -45,6 +45,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <stdlib.h>
+
 #include "ScorePage.h"
 
 using std::ios;
@@ -101,14 +103,17 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
   }
 */
 
+ std::stringstream filename; 
+ filename << "/tmp/streamid." << getenv("USER");
+// cout << filename << endl;
 
-  fstream infile("/tmp/streamid",ios::in);
+  fstream infile(filename.str().c_str(),ios::in);
 
   if (infile.fail() || infile.bad()) {
-	  cout << "Initialize /tmp/streamid" << endl;
+	  cout << "Initialize " << filename.str().c_str() << endl;
 	  infile.close();
 	  // initialize the file..
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << 1;
@@ -128,7 +133,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 
 	  // Nachiket added update routine...
 	  // need to get new streamID
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << tempID+1;
@@ -138,7 +143,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 
   // Nachiket added update routine...
   // need to get new streamID
-  fstream outfile("/tmp/streamid",ios::out);
+  fstream outfile(filename.str().c_str(),ios::out);
   outfile << setfill('0');
   outfile << setw(4);
   outfile << tempID+1;
