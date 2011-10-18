@@ -23,54 +23,28 @@
 //
 // BRASS source file
 //
-// SCORE runtime support
-// $Revision: 1.9 $
+// SCORE Segment Operator (Sequential Read-only) Instance
+// $Revision: 1.3 $
 //
 //////////////////////////////////////////////////////////////////////////////
-#ifndef _Score_H
+#ifndef _ScoreSegmentOperatorSeqCyclicReadOnly_instance_H
 
-#define _Score_H
+#define _ScoreSegmentOperatorSeqCyclicReadOnly_instance_H
 
-#ifdef __cplusplus
-
-#include <iostream>
-
-using std::cout;
-using std::endl;
-using std::cerr;
-
-// Added by Nachiket on 21st April 2010
-// painful lesson about two diff. compiles
-#include "ScoreConfig.h"
-
-#include "ScoreOperator.h"
-#include "ScoreOperatorElement.h"
+#include <stdlib.h>
+#include <unistd.h>
 #include "ScoreOperatorInstance.h"
-#include "ScoreStream.h"
 #include "ScoreSegment.h"
-#include "ScoreSegmentReadOnly.h"
-#include "ScoreSegmentWriteOnly.h"
-#include "ScoreSegmentReadWrite.h"
-#include "ScoreSegmentSeqReadOnly.h"
-#include "ScoreSegmentSeqCyclicReadOnly.h"
-#include "ScoreSegmentSeqWriteOnly.h"
-#include "ScoreSegmentSeqReadWrite.h"
-#include "ScoreGlobalCounter.h"
+#include "ScoreStream.h"
 
-#else
 
-#include "ScoreCInterface.h"
+class ScoreSegmentOperatorSeqCyclicReadOnly_instance : public ScoreOperatorInstance {
+ public:
+  ScoreSegmentOperatorSeqCyclicReadOnly_instance(ScoreSegment *segPtr,
+					   ScoreStream *data);
+  
+ private:
+};
 
 #endif
 
-#include "ScoreSegmentOperatorReadOnly.h"
-#include "ScoreSegmentOperatorWriteOnly.h"
-#include "ScoreSegmentOperatorReadWrite.h"
-#include "ScoreSegmentOperatorSeqReadOnly.h"
-#include "ScoreSegmentOperatorSeqCyclicReadOnly.h"
-#include "ScoreSegmentOperatorSeqWriteOnly.h"
-#include "ScoreSegmentOperatorSeqReadWrite.h"
-
-#include "ScoreConfig.h"
-
-#endif

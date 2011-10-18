@@ -29,19 +29,19 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include "ScoreSegmentSeqReadOnly.h"
+#include "ScoreSegmentSeqCyclicReadOnly.h"
 #include "ScoreConfig.h"
 
 
 #define DATASTREAM out[SCORE_CMB_SEQSRC_DATA_OUTNUM]
 
 
-void *ScoreSegmentSeqReadOnly::operator new(size_t size) {
+void *ScoreSegmentSeqCyclicReadOnly::operator new(size_t size) {
   return((void *) malloc(size));
 }
 
 
-void ScoreSegmentSeqReadOnly::constructorHelper(unsigned int dwidth, 
+void ScoreSegmentSeqCyclicReadOnly::constructorHelper(unsigned int dwidth, 
                                                 unsigned int awidth,
 					        unsigned int nelem,
 					        ScoreSegment* segPtr, 
@@ -109,23 +109,22 @@ void ScoreSegmentSeqReadOnly::constructorHelper(unsigned int dwidth,
 }
 
 
-ScoreSegmentSeqReadOnly::~ScoreSegmentSeqReadOnly() {
+ScoreSegmentSeqCyclicReadOnly::~ScoreSegmentSeqCyclicReadOnly() {
   // FIX ME! NEED TO DETACH FROM SHARED SEGMENT!
-  cerr << "ScoreSegmentSeqReadOnlyERR: NEED TO DETACH FROM SHARED SEGMENT!" << 
+  cerr << "ScoreSegmentSeqCyclicReadOnlyERR: NEED TO DETACH FROM SHARED SEGMENT!" << 
     endl;
 }
 
-int ScoreSegmentSeqReadOnly::step() {
+int ScoreSegmentSeqCyclicReadOnly::step() {
   long long int *atable = (long long int *)dataPtr;
 	if(!DATASTREAM->stream_full()) {
 		// get address
 		long long int data=atable[readAddr];
 		//printf("Read %g from %lu\n", data, readAddr);
 		// recycle to start and resume operation		
+		readAddr = (readAddr+1)%segLength;
 		// Sep 21 2011: Don't want this behavior for KLU solve.. Ahem!
-		if(readAddr>=segLength) {
-			// stay
-		} else if(readAddr==segLength-1) {
+		if(readAddr==segLength-1) {
 			readAddr++;
 			DATASTREAM->stream_write(data);
 			// not sure about EOFR insertion at end..

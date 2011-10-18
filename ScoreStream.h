@@ -74,6 +74,8 @@
 #include "ScoreCustomStack.h"
 //#include "ScoreGraphNode.h"
 #include "LEDA/core/list.h"
+#include <iostream>
+#include <fstream>
 
 using leda::list;
 
@@ -346,6 +348,7 @@ typedef unsigned int AllocationTag;
 #define STREAM_TOKENS_PRODUCED(x) (x->get_stream_tokens_written())
 #define STREAM_TOKENS_CONSUMED(x) (x->get_stream_tokens_read())
 #define STREAM_NUMTOKENS(x) (x->get_numtokens())
+#define STREAM_PLOT(x) (x->plot())
 
 typedef int SCORE_STREAM_ID;
 
@@ -623,13 +626,18 @@ class ScoreStream {
   void syncSchedToReal();
 
   void print(FILE *f);
-  void plot(FILE *f);
+  //void plot(char* fileName);
+  void plot();
 
   char* name;
   void setName(char* name_arg) {
-  	name=(char*)malloc(strlen(name_arg)); 
-	sprintf(name, "%s",name_arg);
-//  	printf("Setting stream anme to %s\n",name);
+	  // modified on 26/7/2011 by Nachiket... jesus!
+  	//name=(char*)malloc(strlen(name_arg)); 
+	//sprintf(name, "%s",name_arg);
+	  std::string name_str=std::string(name_arg);
+	  name=(char*)name_str.c_str();
+	  //name=(char*)malloc((name_str.size()+1)*sizeof(char));
+	  //strcpy(name,name_str.c_str());
   }
   char* getName() {
   	if(name==NULL) {

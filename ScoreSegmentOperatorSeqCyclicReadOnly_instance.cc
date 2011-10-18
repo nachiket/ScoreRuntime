@@ -23,54 +23,45 @@
 //
 // BRASS source file
 //
-// SCORE runtime support
-// $Revision: 1.9 $
+// SCORE Segment Operator (Sequential Read-only) Instance
+// $Revision: 1.4 $
 //
 //////////////////////////////////////////////////////////////////////////////
-#ifndef _Score_H
 
-#define _Score_H
-
-#ifdef __cplusplus
-
-#include <iostream>
-
-using std::cout;
-using std::endl;
-using std::cerr;
-
-// Added by Nachiket on 21st April 2010
-// painful lesson about two diff. compiles
-#include "ScoreConfig.h"
-
-#include "ScoreOperator.h"
-#include "ScoreOperatorElement.h"
-#include "ScoreOperatorInstance.h"
-#include "ScoreStream.h"
+#include <stdlib.h>
+#include <string.h>
+#include "ScorePage.h"
 #include "ScoreSegment.h"
-#include "ScoreSegmentReadOnly.h"
-#include "ScoreSegmentWriteOnly.h"
-#include "ScoreSegmentReadWrite.h"
-#include "ScoreSegmentSeqReadOnly.h"
-#include "ScoreSegmentSeqCyclicReadOnly.h"
-#include "ScoreSegmentSeqWriteOnly.h"
-#include "ScoreSegmentSeqReadWrite.h"
-#include "ScoreGlobalCounter.h"
-
-#else
-
-#include "ScoreCInterface.h"
-
-#endif
-
-#include "ScoreSegmentOperatorReadOnly.h"
-#include "ScoreSegmentOperatorWriteOnly.h"
-#include "ScoreSegmentOperatorReadWrite.h"
-#include "ScoreSegmentOperatorSeqReadOnly.h"
-#include "ScoreSegmentOperatorSeqCyclicReadOnly.h"
-#include "ScoreSegmentOperatorSeqWriteOnly.h"
-#include "ScoreSegmentOperatorSeqReadWrite.h"
-
+#include "ScoreStream.h"
 #include "ScoreConfig.h"
+#include "ScoreSegmentSeqCyclicReadOnly.h"
+#include "ScoreSegmentOperatorSeqCyclicReadOnly.h"
+#include "ScoreSegmentOperatorSeqCyclicReadOnly_instance.h"
 
-#endif
+
+ScoreSegmentOperatorSeqCyclicReadOnly_instance::ScoreSegmentOperatorSeqCyclicReadOnly_instance(
+  ScoreSegment *segPtr,
+  ScoreStream *data) {
+  ScoreSegment *segment_seq_r_inst = new ScoreSegmentSeqCyclicReadOnly(segPtr, data);
+
+  pages = 0;
+  segments = 1;
+  page = new ScorePage *[0];
+  segment = new ScoreSegment *[1];
+  page_group = new int[0];
+  segment_group = new int[1];
+  segment[0] = segment_seq_r_inst;
+  segment_group[0] = NO_GROUP; // FIX ME! SHOULD WE EVER GIVE THIS A GROUP??
+}
+
+
+extern "C" ScoreOperatorInstance *construct(char *argbuf) {
+  ScoreSegmentOperatorSeqCyclicReadOnly_arg *arg_data;
+
+  arg_data = (ScoreSegmentOperatorSeqCyclicReadOnly_arg *)
+    malloc(sizeof(ScoreSegmentOperatorSeqCyclicReadOnly_arg));
+  memcpy(arg_data, argbuf, sizeof(ScoreSegmentOperatorSeqCyclicReadOnly_arg));
+  return(new ScoreSegmentOperatorSeqCyclicReadOnly_instance(
+           SEGMENT_ID_TO_OBJ(arg_data->segPtrID),
+	   STREAM_ID_TO_OBJ(arg_data->dataID)));
+}

@@ -42,6 +42,10 @@
 #include <iostream> // added by Nachiket for newer file IO constructs
 #include <iomanip> // added by Nachiket for newer file IO constructs
 #include <ios> // added by Nachiket for newer file IO constructs
+#include <iostream>
+#include <fstream>
+
+#include <stdlib.h>
 
 #include "ScorePage.h"
 
@@ -99,21 +103,25 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
   }
 */
 
+ std::stringstream filename; 
+ filename << "/tmp/streamid." << getenv("USER");
+// cout << filename << endl;
 
-  fstream infile("/tmp/streamid",ios::in);
+  fstream infile(filename.str().c_str(),ios::in);
 
   if (infile.fail() || infile.bad()) {
-	  cout << "Initialize /tmp/streamid" << endl;
+	  cout << "Initialize " << filename.str().c_str() << endl;
 	  infile.close();
 	  // initialize the file..
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << 1;
 	  tempID=0;
 	  outfile.close();
   } else {
-	  char* buffer=new char[4];
+	  char* buffer=(char*)malloc(sizeof(char)*4);
+	  //char* buffer=new char[4];
 	  infile.read(buffer,4);
 	  tempID=(buffer[3]-48)+
 		  10*(buffer[2]-48)+
@@ -121,10 +129,11 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 		  1000*(buffer[0]-48);
 //	  cout << "Found existing /tmp/streamid: " << tempID << endl;
 	  infile.close();
+	  free(buffer);
 
 	  // Nachiket added update routine...
 	  // need to get new streamID
-	  fstream outfile("/tmp/streamid",ios::out);
+	  fstream outfile(filename.str().c_str(),ios::out);
 	  outfile << setfill('0');
 	  outfile << setw(4);
 	  outfile << tempID+1;
@@ -134,7 +143,7 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
 
   // Nachiket added update routine...
   // need to get new streamID
-  fstream outfile("/tmp/streamid",ios::out);
+  fstream outfile(filename.str().c_str(),ios::out);
   outfile << setfill('0');
   outfile << setw(4);
   outfile << tempID+1;
@@ -389,6 +398,8 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 
   sched_isProcessorArrayStream = 0;
 
+  readThreadCounter = NULL;
+  writeThreadCounter = NULL;
   if (user_stream_type == USER_READ_STREAM) {
     readThreadCounter = globalCounter->threadCounter;
     writeThreadCounter = NULL;
@@ -489,7 +500,7 @@ double ScoreStream::stream_read_double(long long unsigned _cTime) {
 
 long long int ScoreStream::stream_read(long long unsigned _cTime) {
 
-  long long unsigned cTime;
+  long long unsigned cTime=0;
 
   if (readThreadCounter != NULL) {
     cTime = _cTime - 
@@ -1942,22 +1953,28 @@ void ScoreStream::incrementInputConsumption()
   }
 }
 
-void ScoreStream::plot(FILE *f)
+//void ScoreStream::plot(char* fileName)
+void ScoreStream::plot()
 {
-	fprintf(f, "set termimal postscript eps enhanced color\n");
-	fprintf(f, "set output test.eps\n");
-	fprintf(f, "plot '-' with lines\n");
+	std::ofstream f ("test.gplot");
+
+	f << "set terminal postscript eps enhanced color" << endl;
+	f << "set output \"test.eps\"" << endl;
+	f << "# head=" << head << ", tail=" << tail << endl;
+	f << "plot '-' with lines" << endl;
 
 	int ptr;
-	ptr=tail;
+	ptr=head;
 	bool done=false;
 	while(!done) {
 		double data = buffer[ptr].token;	
-		fprintf(f, "%g\n",buffer[ptr].token);
+		f << data << endl;
 		ptr=(ptr+1)%(length+1+1);
-		done=(ptr==head);
+		done=(ptr==tail);
 	}
-	fprintf(f, "e\n");
+	f << "e" << endl;
+
+	f.close();
 }
 
 

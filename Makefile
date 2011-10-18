@@ -35,12 +35,14 @@ SRCS = ScoreArray.cc \
        ScoreSegmentOperatorReadOnly.cc \
        ScoreSegmentOperatorReadWrite.cc \
        ScoreSegmentOperatorSeqReadOnly.cc \
+       ScoreSegmentOperatorSeqCyclicReadOnly.cc \
        ScoreSegmentOperatorSeqReadWrite.cc \
        ScoreSegmentOperatorSeqWriteOnly.cc \
        ScoreSegmentOperatorWriteOnly.cc \
        ScoreSegmentReadOnly.cc \
        ScoreSegmentReadWrite.cc \
        ScoreSegmentSeqReadOnly.cc \
+       ScoreSegmentSeqCyclicReadOnly.cc \
        ScoreSegmentSeqReadWrite.cc \
        ScoreSegmentSeqWriteOnly.cc \
        ScoreSegmentStitch.cc \
@@ -83,6 +85,7 @@ RUNTIMESRCS = ScoreArray.cc \
               ScoreSegmentReadOnly.cc \
               ScoreSegmentReadWrite.cc \
               ScoreSegmentSeqReadOnly.cc \
+              ScoreSegmentSeqCyclicReadOnly.cc \
               ScoreSegmentSeqReadWrite.cc \
               ScoreSegmentSeqWriteOnly.cc \
               ScoreSegmentStitch.cc \
@@ -114,12 +117,14 @@ USERSRCS = ScoreCInterface.cc \
            ScoreSegmentOperatorReadOnly.cc \
            ScoreSegmentOperatorReadWrite.cc \
            ScoreSegmentOperatorSeqReadOnly.cc \
+           ScoreSegmentOperatorSeqCyclicReadOnly.cc \
            ScoreSegmentOperatorSeqReadWrite.cc \
            ScoreSegmentOperatorSeqWriteOnly.cc \
            ScoreSegmentOperatorWriteOnly.cc \
            ScoreSegmentReadOnly.cc \
            ScoreSegmentReadWrite.cc \
            ScoreSegmentSeqReadOnly.cc \
+           ScoreSegmentSeqCyclicReadOnly.cc \
            ScoreSegmentSeqReadWrite.cc \
            ScoreSegmentSeqWriteOnly.cc \
            ScoreSegmentWriteOnly.cc \
