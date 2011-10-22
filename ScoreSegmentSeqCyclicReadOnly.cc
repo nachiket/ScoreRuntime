@@ -125,14 +125,13 @@ int ScoreSegmentSeqCyclicReadOnly::step() {
 		readAddr = (readAddr+1)%segLength;
 		// Sep 21 2011: Don't want this behavior for KLU solve.. Ahem!
 		if(readAddr==segLength-1) {
-			readAddr++;
 			DATASTREAM->stream_write(data);
 			// not sure about EOFR insertion at end..
 			// 7th September 2011
 			// 21st September 2011: Back in again for now..
-			DATASTREAM->stream_write(EOFR);
+			//DATASTREAM->stream_write(EOFR);
 		} else {
-			readAddr++;
+			//readAddr++;
 			// write data
 			DATASTREAM->stream_write(data);
 		}
