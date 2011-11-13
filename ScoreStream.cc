@@ -275,7 +275,7 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
 
   } else if (tag_copy1 == ALLOCTAG_PRIVATE) {
 //  cout << length_t << "," << ARRAY_FIFO_SIZE << endl;
-    assert(length_t == ARRAY_FIFO_SIZE);
+    assert(length_t == ARRAY_FIFO_SIZE || length_t == DEFAULT_N_SLOTS);
 
     AllocationTag last_tag = *((AllocationTag*)
 			       (buffer + ARRAY_FIFO_SIZE + 1 + 1));
@@ -529,6 +529,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
 
   if (USE_POLLING_STREAMS) {
     // Nachifix: Why is this thread quitting?
+    cout << "Use polling streams=1" << endl;
     while (head == tail) {
       sched_yield();
     }

@@ -173,6 +173,8 @@ ScoreMangler: ScoreMangler.o ScoreOperatorMangle.o
 	$(CXX) -Wno-write-strings -fPIC -c $(CXXFLAGS) $(INCLUDE) $< -o $@ 
 
 clean:
+	rm -f Makefile.dep
+	rm -f Makefile.instance.dep
 	rm -f *.o ScoreRuntime ScoreRuntime-efence *.a ScorePlayer \
 		$(addsuffix /*.o, $(SCHEDULER_SRC_TREE))
 	$(MAKE) -f Makefile.instance clean
