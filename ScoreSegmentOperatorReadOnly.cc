@@ -123,6 +123,7 @@ void ScoreSegmentOperatorReadOnly::constructorHelper(
   if (segPtr->segLength != nelems) {
     cerr << "SCORESEGMENTOPERATORREADONLYERR: segPtr->segLength != nelems" <<
       endl;
+    cerr << segPtr->segLength << "," << nelems << endl;
     exit(1);
   }
   if (segPtr->segWidth != dwidth) {

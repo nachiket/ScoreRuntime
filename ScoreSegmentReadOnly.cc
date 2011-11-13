@@ -54,10 +54,15 @@ void ScoreSegmentReadOnly::constructorHelper(unsigned int dwidth,
   }
 
   // Second, attach the data segment to this process 
-   while ((dataPtr=(void *)shmat(segPtr->dataID, 0, 0))==(void *) -1) {
-      perror("dataPtr -- seg constructor helper -- attach ");
-      if (errno != EINTR)
+  if(IMPLEMENT_SEGMENT_WITH_SHMEM==1) {
+     while ((dataPtr=(void *)shmat(segPtr->dataID, 0, 0))==(void *) -1) {
+        perror("dataPtr -- seg constructor helper -- attach ");
+        if (errno != EINTR)
 	exit(errno);
+     }
+   } else {
+     // Added by Nachiket to avoid SHMEM implementation of segments..
+     dataPtr = segPtr->dataPtr;
    }
    
   // Third,  copy some data over
