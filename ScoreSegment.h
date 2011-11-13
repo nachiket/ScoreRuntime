@@ -55,7 +55,7 @@
 #define PAGESIZE 4096
 #endif
 
-#define IMPLEMENT_SEGMENT_WITH_SHMEM 1 // added by Nachiket 13/11/2011 for non-shared-memory implementation of SCORE segments
+#define IMPLEMENT_SEGMENT_WITH_SHMEM 0 // added by Nachiket 13/11/2011 for non-shared-memory implementation of SCORE segments
 
 // the various modes a segment can be in.
 #define SCORE_CMB_SEQSRC           0
