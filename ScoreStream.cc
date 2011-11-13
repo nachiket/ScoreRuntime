@@ -529,7 +529,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
 
   if (USE_POLLING_STREAMS) {
     // Nachifix: Why is this thread quitting?
-    cout << "Use polling streams=1" << endl;
+//    cout << "Use polling streams=1" << endl;
     while (head == tail) {
       sched_yield();
     }

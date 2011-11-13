@@ -129,18 +129,31 @@ void *ScoreSegment::operator new(size_t size) {
 
 
   // need to allocate new segment of share memory
-
-  if ((currentID=shmget((int)tempID, size, IPC_EXCL | IPC_CREAT | 0666)) != -1) {
-    // need to attach the segment on the page boundary
-    // this is done automatically already 
-    if ((shmptr=(ScoreSegment *)shmat(currentID, 0, 0))==(ScoreSegment *) -1) {
-      perror("shmptr -- segment new operator -- attach ");
+  if(IMPLEMENT_SEGMENT_WITH_SHMEM) 
+  {
+    if ((currentID=shmget((int)tempID, size, IPC_EXCL | IPC_CREAT | 0666)) != -1) 
+    {
+      // need to attach the segment on the page boundary
+      // this is done automatically already 
+      if ((shmptr=(ScoreSegment *)shmat(currentID, 0, 0))==(ScoreSegment *) -1) {
+        perror("shmptr -- segment new operator -- attach ");
+        exit(errno);
+      }
+    }
+    else {
+      perror("currentID -- segment new operator -- creation ");
       exit(errno);
     }
-  }
-  else {
-    perror("currentID -- segment new operator -- creation ");
-    exit(errno);
+  } else {
+    // Added by Nachiket on 13th November 2011
+    // Avoid using shared memory for segments.
+    // This mimics ALLOCTAG_PRIVATE behavior with Streams.
+    // Pardon the use of name shmptr for the non-shared-memory pointer
+    shmptr=(ScoreSegment*)malloc(size);
+    if(!shmptr) {
+      perror("ptr (shmptr) == segment new operator -- unable to allocate mem");
+      exit(0);
+    } 
   }
 
   if (VERBOSEDEBUG || DEBUG) {
