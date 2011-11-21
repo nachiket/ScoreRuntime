@@ -373,6 +373,7 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
 
   if(segSize==0) { cout<<"Warning: segSize=0, assuming you really wanted to create a 0-sized segment" << endl; segSize=1;}
 
+  if(IMPLEMENT_SEGMENT_WITH_SHMEM==1) {
   // create a share memory segment and stored the segment ID in dataID
   if ((dataID=shmget((int)recycleID1, segSize, 
 			IPC_EXCL | IPC_CREAT | 0666)) != -1) {
@@ -387,15 +388,15 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
     perror("dataID -- segment new operator -- creation ");
     exit(errno);
   }
-
-/*
-  dataPtr = (void*)malloc(segSize);
-*/
+  } else {
+	// avoiding shared-memory implementation
+    	dataPtr = (void*)malloc(segSize);
+//  cout << "Case 1: contents " << this << " dataPtr=" << this->dataPtr << " &dataPtr=" << &dataPtr << endl;
+//  cout << "Segsize=" << segSize << " dataPtr=" << dataPtr << ", dataId=" << dataID << " recycleId=" << recycleID1 << endl; 
+  }
 
   MORON=-1;
 
-//  cout << "Case 1: contents " << this << " dataPtr=" << this->dataPtr << " &dataPtr=" << &dataPtr << endl;
-//  cout << "Segsize=" << segSize << " dataPtr=" << dataPtr << ", dataId=" << dataID << " recycleId=" << recycleID1 << endl; 
   // want to setup the semaphore
 
 //  start_val[0] = 0;
@@ -443,9 +444,9 @@ ScoreSegment::ScoreSegment(int nlength, int nwidth, ScoreType type_t) {
   }
 
 // Initialization
-//  for(int k=0; k<segPtr->segLength; k++) {
-//  	((long long int*)dataPtr)[k]=k*k;
-//  }
+  for(int k=0; k<segPtr->segLength; k++) {
+  	((long long int*)dataPtr)[k]=k*k;
+  }
 
   if (VERBOSEDEBUG || DEBUG) {
     cout << "   SEG: segment creation" << endl;

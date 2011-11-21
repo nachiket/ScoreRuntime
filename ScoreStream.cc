@@ -163,18 +163,27 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
     
     // allocate space for extra tokens
     size += sizeof(ScoreToken) * (DEFAULT_N_SLOTS - ARRAY_FIFO_SIZE);
-    if ((currentID=shmget((int)tempID, size + sizeof(AllocationTag),
+
+    if(IMPLEMENT_STREAM_WITH_SHMEM==1) {
+      if ((currentID=shmget((int)tempID, size + sizeof(AllocationTag),
 			  IPC_EXCL | IPC_CREAT | 0666))
 	!= -1) {
-      if ((ptr = shmat(currentID, 0, 0)) == (ScoreStream *) -1) {
-	perror("shmptr -- stream new operator -- attach ");
-	exit(errno);
+        if ((ptr = shmat(currentID, 0, 0)) == (ScoreStream *) -1) {
+  	  perror("shmptr -- stream new operator -- attach ");
+	  exit(errno);
+        }
+      } else {
+        cout << currentID << endl;
+        cout << tempID << endl;
+        perror("currentID -- stream new operator -- creation ");
+        exit(errno);
       }
     } else {
-      cout << currentID << endl;
-      cout << tempID << endl;
-      perror("currentID -- stream new operator -- creation ");
-      exit(errno);
+      ptr = malloc(size + sizeof(AllocationTag));
+      if (!ptr) {
+        perror("ptr -- stream new operator -- unable to malloc mem");
+        exit(errno);
+      }
     }
 
     allocatedSize = size + sizeof(AllocationTag);
@@ -529,7 +538,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
 
   if (USE_POLLING_STREAMS) {
     // Nachifix: Why is this thread quitting?
-//    cout << "Use polling streams=1" << endl;
+    //cout << "SID=" << streamID << "Head=" << head << "Tail=" << tail << endl;
     while (head == tail) {
       sched_yield();
     }
@@ -566,7 +575,7 @@ long long int ScoreStream::stream_read(long long unsigned _cTime) {
 
   // increment the sink node's input consumption.
   if (snkFunc != STREAM_OPERATOR_TYPE) {
-    sink->incrementInputConsumption(snkNum);
+// 21st Nov 2011...    sink->incrementInputConsumption(snkNum);
   }
 
   if (VERBOSEDEBUG || DEBUG) {
@@ -707,6 +716,7 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
   }
 
   if (USE_POLLING_STREAMS) {
+    //cout << "SID=" << streamID << "Head=" << head << "Tail=" << tail << endl;
     while (((head - tail) == 1) || 
 	   ((tail == ((length+1+1)-1) && (head == 0)))) {
       sched_yield();
@@ -769,7 +779,7 @@ void ScoreStream::stream_write(long long int input, int writingEOS,
 
   // increment the source node's output production.
   if (srcFunc != STREAM_OPERATOR_TYPE) {
-    src->incrementOutputProduction(srcNum);
+// 21st Nov 2011    src->incrementOutputProduction(srcNum);
   }
 
   if (!USE_POLLING_STREAMS) {
