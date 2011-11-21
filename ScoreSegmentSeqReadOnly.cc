@@ -52,13 +52,17 @@ void ScoreSegmentSeqReadOnly::constructorHelper(unsigned int dwidth,
     cout << "attach address is: " << segPtr << endl;
   }
 
-  // Second, attach the data segment to this process 
+ if(IMPLEMENT_SEGMENT_WITH_SHMEM == 1) // added by Nachiket 13/11/2011 for non-shared-memory implementation of SCORE segments
+ {
+ // Second, attach the data segment to this process 
    while ((dataPtr=(void *)shmat(segPtr->dataID, 0, 0))==(void *) -1) {
       perror("dataPtr -- seg constructor helper -- attach ");
       if (errno != EINTR)
 	exit(errno);
    }
-
+}
+else
+	dataPtr = segPtr->dataPtr;
 
 //   cout << "dataPtr inside Segment=" << dataPtr << endl;
 
@@ -120,7 +124,7 @@ int ScoreSegmentSeqReadOnly::step() {
 	if(!DATASTREAM->stream_full()) {
 		// get address
 		long long int data=atable[readAddr];
-		//printf("Read %g from %lu\n", data, readAddr);
+	//	printf("Read %g from %lu\n", data, readAddr);
 		// recycle to start and resume operation		
 		// Sep 21 2011: Don't want this behavior for KLU solve.. Ahem!
 		if(readAddr>=segLength) {
