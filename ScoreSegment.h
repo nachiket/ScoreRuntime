@@ -93,7 +93,6 @@
 class ScoreSegment : public ScoreGraphNode {
 public:
 
-  void *dataPtr;
   // used to store mode/bounds information.
   int mode;
   unsigned int maxAddr;             // this is the size of the loaded
@@ -203,6 +202,8 @@ public:
   static ScoreSegment *shmptr;
   ScoreSegment *segPtr;
   ushort start_val[1];
+  
+  void *dataPtr;
 
   void *operator new(size_t size);
   void operator delete(void *p, size_t size);
