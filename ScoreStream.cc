@@ -185,6 +185,9 @@ void *ScoreStream::operator new(size_t size, AllocationTag allocTag) {
   } else if (allocTag == ALLOCTAG_PRIVATE) {
     PRINT_MSG(ALLOCTAG_PRIVATE);
     errno = 0;
+    // added by Nachiket on 2/3/2012 - WOAH? This is crazy
+    // allocate space for extra tokens
+    size += sizeof(ScoreToken) * (DEFAULT_N_SLOTS - ARRAY_FIFO_SIZE);
     ptr = malloc(size + sizeof(AllocationTag));
     if (!ptr) {
       perror("ptr -- stream new operator -- unable to malloc mem");
@@ -278,7 +281,8 @@ ScoreStream::ScoreStream(int width_t, int fixed_t, int length_t,
     assert(length_t == ARRAY_FIFO_SIZE || length_t == DEFAULT_N_SLOTS);
 
     AllocationTag last_tag = *((AllocationTag*)
-			       (buffer + ARRAY_FIFO_SIZE + 1 + 1));
+			       (buffer + DEFAULT_N_SLOTS + 1 + 1));
+			       // 2/3/2012 Nachiket (buffer + ARRAY_FIFO_SIZE + 1 + 1));
     assert(tag_copy1 == last_tag);
 
   } else {

@@ -85,7 +85,7 @@ using std::cerr;
 
 #define NO_STREAM (ScoreStream *)-1
 #define DEFAULT_N_SLOTS SCORE_INPUTFIFO_CAPACITY
-#define ARRAY_FIFO_SIZE 256
+#define ARRAY_FIFO_SIZE 512
 // LLU suffix for C99 support in C++ and GNU compilers! Allah is great! Allahu akbar!
 #define EOS 0xffffffffffffffffLLU
 #define EOFR 0xefffffffffffffffLLU
