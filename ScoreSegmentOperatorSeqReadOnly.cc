@@ -67,7 +67,7 @@ ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
 //  cout << "Debug: data[1]=" << ((long long *)segPtr->dataPtr)[1] << endl;
 //  cout << "Debug: data[1]=" << ((long long *)segPtr->data())[1] << endl;
 
- printf("I am called in unsigned segment...\n"); 
+// printf("I am called in unsigned segment...\n"); 
   constructorHelper(dwidth, awidth, nelems, segPtr, data);
 }
 
@@ -100,7 +100,7 @@ ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
   unsigned int dwidth, unsigned int awidth, size_t nelems,
   UNSIGNED_FIXED_SCORE_SEGMENT segPtr, 
   UNSIGNED_FIXED_STREAM data) {
- printf("I am called in unsigned...\n"); 
+// printf("I am called in unsigned...\n"); 
   constructorHelper(dwidth, awidth, nelems, segPtr, data);
 }
 
@@ -108,7 +108,7 @@ ScoreSegmentOperatorSeqReadOnly::ScoreSegmentOperatorSeqReadOnly(
   unsigned int dwidth, unsigned int awidth, size_t nelems,
   DOUBLE_SCORE_SEGMENT segPtr, 
   DOUBLE_SCORE_STREAM data) {
- printf("I am called in double...\n"); 
+// printf("I am called in double...\n"); 
  constructorHelper(dwidth, awidth, nelems, segPtr, data);
 }
 
@@ -130,7 +130,7 @@ void ScoreSegmentOperatorSeqReadOnly::constructorHelper(
     exit(1);
   }
   if (segPtr->segWidth != dwidth) {
-    cerr << "SCORESEGMENTOPERATORSEQREADONLYERR: segPtr->segWidth != dwidth" <<
+    cerr << "SCORESEGMENTOPERATORSEQREADONLYERR: segPtr->segWidth != dwidth segWidth=" << segPtr->segWidth << " dwidth=" << dwidth <<
       endl;
     exit(1);
   }
