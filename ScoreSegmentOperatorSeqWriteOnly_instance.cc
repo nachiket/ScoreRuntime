@@ -38,6 +38,7 @@
 #include "ScoreSegmentOperatorSeqWriteOnly.h"
 #include "ScoreSegmentOperatorSeqWriteOnly_instance.h"
 
+extern "C" { void *__dso_handle= NULL; }
 
 ScoreSegmentOperatorSeqWriteOnly_instance::ScoreSegmentOperatorSeqWriteOnly_instance(
   ScoreSegment *segPtr,

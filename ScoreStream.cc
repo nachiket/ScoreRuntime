@@ -42,7 +42,7 @@
 #include <iostream> // added by Nachiket for newer file IO constructs
 #include <iomanip> // added by Nachiket for newer file IO constructs
 #include <ios> // added by Nachiket for newer file IO constructs
-#include <iostream>
+//#include <iostream>
 #include <fstream>
 
 #include <stdlib.h>
@@ -1924,14 +1924,14 @@ int compare(ScoreStream * const & left, ScoreStream * const & right) {
 
 void ScoreStream::print(FILE *f)
 {
-  fprintf(f, "STREAM[streamID=%d,ptr=%u](tag_copy1=%x)\n", 
+  fprintf(f, "STREAM[streamID=%d,ptr=%lu](tag_copy1=%x)\n", 
 	  streamID, (long)this, tag_copy1);
 
   static const char *func_str[] = { "OPER", "PAGE", "SEG" };
 
   assert((srcFunc > 0) && (srcFunc < 4));
 
-  fprintf(f, "\t src: %s.out%d [%u]", func_str[srcFunc - 1],
+  fprintf(f, "\t src: %s.out%d [%lu]", func_str[srcFunc - 1],
 	  srcNum, (long)src);
   if (srcFunc > 1) { // it's PAGE or Segment
     assert(src);
@@ -1946,7 +1946,7 @@ void ScoreStream::print(FILE *f)
 
   assert((snkFunc > 0) && (snkFunc < 4));
 
-  fprintf(f, "\tsink: %s.in%d [%u]", func_str[snkFunc - 1], 
+  fprintf(f, "\tsink: %s.in%d [%lu]", func_str[snkFunc - 1], 
 	  snkNum, (long)sink);
   if (snkFunc > 1) { // it's PAGE or Segment
     assert(sink);

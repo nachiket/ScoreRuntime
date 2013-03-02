@@ -38,6 +38,7 @@
 #include "ScoreSegmentOperatorReadOnly.h"
 #include "ScoreSegmentOperatorReadOnly_instance.h"
 
+extern "C" { void *__dso_handle= NULL; }
 
 ScoreSegmentOperatorReadOnly_instance::ScoreSegmentOperatorReadOnly_instance(
   ScoreSegment *segPtr,

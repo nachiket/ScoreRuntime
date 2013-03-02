@@ -29,13 +29,13 @@ PAPI_INC = /usr/local/include
 
 TOOL_PATH=
 
-COMMON_FLAGS = $(DEBUGFLAG) $(GPROFFLAG) -Wall $(COMMON_DEFINES)
+COMMON_FLAGS = $(DEBUGFLAG) $(GPROFFLAG) -fPIC -Wall -Wno-unused-but-set-variable -Wno-unused-variable $(COMMON_DEFINES)
 
 CFLAGS = $(COMMON_FLAGS)
 CXXFLAGS = $(COMMON_FLAGS)
 
-CC = $(TOOL_PATH)gcc-4.4
-CXX = $(TOOL_PATH)g++-4.4
+#CC = $(TOOL_PATH)gcc-4.4
+#CXX = $(TOOL_PATH)g++-4.4
 AR = ar
 AR_OPTS = rc
 MAKE = make

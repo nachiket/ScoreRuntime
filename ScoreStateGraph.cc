@@ -273,7 +273,7 @@ bool ScoreStateGraphEdge::writeVCG(FILE* myfile, bool splitCPU, bool noCPU)
   if(status & EDGE_STATUS_EMPTY)
     fprintf(myfile, "\n*EMPTY*");
   if (visualFile_complete) {
-    fprintf(myfile, "(%d) [%u]", num_tokens, (long)ptr_val);
+    fprintf(myfile, "(%d) [%lu]", num_tokens, (long)ptr_val);
   }
 
   fprintf(myfile, "\"\n");
@@ -364,7 +364,7 @@ ScoreStateGraphNode* ScoreStateGraph::addNode(pid_t procId, int count, ScoreGrap
   switch(page->getTag()) {
   case ScorePageTag:
     if (visualFile_complete) {
-      sprintf(buf, "PID %d\\nPAGE %d\\n(source=%s)\\n(state=%d) [%d]",
+      sprintf(buf, "PID %d\\nPAGE %d\\n(source=%s)\\n(state=%d) [%ld]",
 	      procId, count, ((ScorePage*)page)->getSource(),
 	      ((ScorePage*)page)->sched_lastKnownState,
 	      (long) page);
@@ -381,7 +381,7 @@ ScoreStateGraphNode* ScoreStateGraph::addNode(pid_t procId, int count, ScoreGrap
     break;
   case ScoreSegmentTag:
     if (visualFile_complete) {
-      sprintf(buf, "PID %d\nSEGMENT %d [%d]\n%s", procId, count,
+      sprintf(buf, "PID %d\nSEGMENT %d [%ld]\n%s", procId, count,
 	      (long) page,
 	      segment_modes[((ScoreSegment*)page)->sched_mode]);
     } else {
@@ -396,7 +396,7 @@ ScoreStateGraphNode* ScoreStateGraph::addNode(pid_t procId, int count, ScoreGrap
     break;
   case ScoreSegmentStitchTag:
     if (visualFile_complete) {
-      sprintf(buf, "PID %d\nSTITCH %d [%d]\n%s", procId, count,
+      sprintf(buf, "PID %d\nSTITCH %d [%ld]\n%s", procId, count,
 	      (long) page,
 	      segment_modes[((ScoreSegment*)page)->sched_mode]);
     } else {
