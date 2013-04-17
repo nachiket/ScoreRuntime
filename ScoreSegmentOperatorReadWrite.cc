@@ -128,8 +128,8 @@ void ScoreSegmentOperatorReadWrite::constructorHelper(
 //  cout << "Inside segPtr=" << segPtr << " length=" << segPtr->segLength << endl;
   // do sanity checking!
   if (segPtr->segLength != nelems) {
-    cerr << "SCORESEGMENTOPERATORREADWRITEERR: segPtr->segLength != nelems" <<
-      endl;
+    cerr << "SCORESEGMENTOPERATORREADWRITEERR: segPtr->segLength != nelems" << endl;
+    cerr << "segPtr->segLength=" << segPtr->segLength << ", nelems=" << nelems << endl;
     exit(1);
   }
   if (segPtr->segWidth != dwidth) {
