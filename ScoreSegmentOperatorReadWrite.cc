@@ -133,7 +133,7 @@ void ScoreSegmentOperatorReadWrite::constructorHelper(
     exit(1);
   }
   if (segPtr->segWidth != dwidth) {
-    cerr << "SCORESEGMENTOPERATORREADWRITEERR: segPtr->segWidth != dwidth" <<
+    cerr << "SCORESEGMENTOPERATORREADWRITEERR: segPtr->segWidth != dwidth segWidth=" << segPtr->segWidth << " dwidth=" << dwidth <<
       endl;
     exit(1);
   }
